@@ -1,0 +1,93 @@
+/* =============================================================
+   04. PÁGINA DE AULA — HEADER
+   ============================================================= */
+.logo-img {
+  height: 2rem;
+  /* ajusta conforme o --header-height */
+  width: auto;
+}
+.lesson__header {
+  position: static;
+border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md) 0 var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-lg);
+  max-width: 100%;
+
+}
+.syn-comment {
+  display: block;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.lesson__title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.5rem, 5vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+  padding-left: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.lesson__position{
+
+}
+
+/* Botão "Marcar como concluída" */
+.lesson__btn-done {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background-color: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.1s ease;
+  /* align-self: flex-start; */
+  padding: 0.75rem 1rem;
+
+  margin-left: 0.75rem;
+  max-width: 350px;
+}
+
+
+.lesson__btn-done:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.lesson__btn-done:active {
+  transform: scale(0.97);
+}
+
+
+/* Estado ativo: aula marcada como concluída */
+.lesson__btn-done--active {
+  border-color: oklch(0.52 0.18 145);
+  color: oklch(83.273% 0.01241 350.61);
+  background-color: oklch(0.52 0.18 145 / 0.08);
+
+}
+
+[data-theme="dark"] .lesson__btn-done--active {
+  border-color: oklch(0.72 0.18 145);
+  color: oklch(0.72 0.18 145);
+  background-color: oklch(0.72 0.18 145 / 0.10);
+ 
+}

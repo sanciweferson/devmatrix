@@ -1,0 +1,866 @@
+/* =========================================================
+   HEADER — NÍVEL 10
+   =========================================================
+   Índice de seções:
+     01. Tokens locais do componente
+     02. Reset do componente
+     03. Logo
+     04. Header / Nav estrutura base (mobile first)
+     05. Botões de ação (hamburger e tema)
+     06. Ícones (lua / sol)
+     07. Drawer mobile — container lateral
+     08. Menu mobile — itens, links e submenus
+     09. Breakpoint ≥ 768px — transição para desktop
+     10. Dropdown portal (desktop)
+     11. Drawer — cabeçalho e rodapé fixos
+     12. Redução de movimento
+   ========================================================= */
+
+:root {
+  --nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-fast: 0.18s;
+  --nav-normal: 0.28s;
+  --nav-slow: 0.36s;
+
+  --nav-shadow-sm: 0 4px 16px oklch(0 0 0 / 8%);
+  --nav-shadow-md: 0 10px 30px oklch(0 0 0 / 14%);
+  --nav-shadow-lg: 0 20px 60px oklch(0 0 0 / 18%);
+  --nav-shadow-dropdown:
+    0 8px 32px oklch(0 0 0 / 18%),
+    0 2px 8px oklch(0 0 0 / 8%);
+
+  --nav-header-bg: color-mix(in srgb, var(--background) 86%, transparent);
+  --nav-drawer-surface: var(--sidebar, var(--background));
+  --nav-border-hover: color-mix(in srgb, var(--border) 70%, var(--foreground) 30%);
+  --nav-border-submenu: color-mix(in srgb, var(--border) 75%, transparent);
+  --nav-overlay-bg: oklch(0 0 0 / 45%);
+  --nav-blur: saturate(140%) blur(10px);
+}
+
+
+/* =========================================================
+   02. RESET DO COMPONENTE
+   ========================================================= */
+
+/* header,
+header *,
+header *::before,
+header *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+} */
+
+/* header ul,
+header ol {
+  list-style: none;
+} */
+
+/* header a {
+  text-decoration: none;
+  color: inherit;
+} */
+
+/* header button,
+header input,
+header textarea,
+header select {
+  font: inherit;
+} */
+
+
+
+header {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   03. LOGO
+   ========================================================= */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo__svg {
+  height: 2.75rem;
+  width: auto;
+  display: block;
+}
+
+.logo__svg--sm {
+  height: 2rem !important;
+}
+
+.logo__svg--lg {
+  height: 4rem !important;
+}
+
+.logo:hover .logo__svg {
+  opacity: 0.85;
+  transition: opacity var(--nav-fast) var(--nav-ease);
+}
+
+.logo:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.logo-img {
+  display: block;
+  width: auto;
+  height: 40px;
+  flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   04. HEADER / NAV — ESTRUTURA BASE (MOBILE FIRST)
+   ========================================================= */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+
+  background-color: var(--nav-header-bg);
+  backdrop-filter: var(--nav-blur);
+
+  border-bottom: 1px solid var(--border);
+
+  transition:
+    background-color var(--nav-normal) var(--nav-ease),
+    border-color var(--nav-normal) var(--nav-ease),
+    box-shadow var(--nav-normal) var(--nav-ease);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: var(--nav-height);
+  /* FIX: era --header-height, não existe em tokens.css */
+  max-width: var(--container-max);
+  /* FIX: era --container-max-width, não existe em tokens.css */
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav__list {
+  display: none;
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   05. BOTÕES DE AÇÃO (HAMBURGER E TEMA)
+   ========================================================= */
+
+.menu-toggle,
+.nav__btn-theme {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+
+  transition:
+    transform var(--nav-fast) var(--nav-ease),
+    background-color var(--nav-fast) var(--nav-ease),
+    border-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    box-shadow var(--nav-fast) var(--nav-ease);
+}
+
+.menu-toggle:hover,
+.nav__btn-theme:hover {
+  background-color: var(--accent);
+  border-color: var(--nav-border-hover);
+}
+
+.menu-toggle:active,
+.nav__btn-theme:active {
+  transform: scale(0.96);
+}
+
+.menu-toggle:focus-visible,
+.nav__btn-theme:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.menu-toggle[aria-expanded="true"] {
+  background-color: var(--accent);
+}
+
+.menu-toggle {
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.menu-toggle .icon:not([hidden]),
+.menu-toggle svg {
+  display: block;
+  line-height: 0;
+}
+
+
+/* =========================================================
+   06. ÍCONES (LUA / SOL)
+   ========================================================= */
+
+.icon--moon,
+.icon--sun {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.icon--sun {
+  display: none;
+}
+
+[data-theme="dark"] .icon--moon {
+  display: none;
+}
+
+[data-theme="dark"] .icon--sun {
+  display: flex;
+}
+
+.nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  pointer-events: none;
+  transition: transform 0.24s var(--nav-ease);
+  transform-origin: center;
+}
+
+
+/* =========================================================
+   07. DRAWER MOBILE — CONTAINER LATERAL
+   ========================================================= */
+
+.nav__drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-overlay) - 1);
+  background-color: var(--nav-overlay-bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--nav-slow) var(--nav-ease);
+}
+
+.nav__drawer-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav__drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(95%, 24rem);
+  height: 100dvh;
+  z-index: var(--z-overlay);
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--nav-drawer-surface);
+  border-right: 1px solid var(--border);
+  box-shadow: var(--nav-shadow-lg);
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  transform: translate3d(-100%, 0, 0);
+  will-change: transform;
+  transition: transform var(--nav-slow) var(--nav-ease);
+  scrollbar-width: none;
+}
+
+.nav__drawer.open {
+  transform: translate3d(0, 0, 0);
+}
+
+.nav__mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.875rem 0.75rem 1rem;
+}
+
+
+/* =========================================================
+   08. MENU MOBILE — ITENS, LINKS E SUBMENUS
+   ========================================================= */
+
+.nav__item--desktop {
+  display: none;
+}
+
+.nav__mobile-list .nav__item {
+  display: block;
+}
+
+.nav__mobile-list .nav__item>.nav__link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: calc(var(--radius) - 2px);
+
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--foreground);
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+}
+
+.nav__mobile-list .nav__item>.nav__link:hover {
+  background-color: var(--accent);
+}
+
+.nav__mobile-list .nav__item>.nav__link:active {
+  transform: translateX(1px);
+}
+
+.nav__mobile-list .nav__item>.nav__link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.nav__item--mobile>.nav__link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: calc(var(--radius) - 2px);
+
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--foreground);
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+    
+
+}
+
+.nav__item--mobile>.nav__link:hover {
+  background-color: var(--accent);
+}
+
+.nav__item--mobile>.nav__link:active {
+  transform: translateX(1px);
+}
+
+.nav__item--mobile>.nav__link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.nav__link__content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+}
+
+.nav__mobile-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav__mobile-row .nav__link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: calc(var(--radius) - 2px);
+
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--foreground);
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+}
+
+.nav__mobile-row .nav__link:hover {
+  background-color: var(--accent);
+}
+
+.nav__mobile-row .nav__link:active {
+  transform: translateX(1px);
+}
+
+.nav__mobile-row .nav__link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.nav__mobile-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 0.125rem;
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background-color: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+}
+
+.nav__mobile-toggle:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.nav__mobile-toggle:active {
+  transform: scale(0.96);
+}
+
+.nav__mobile-toggle:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.nav__mobile-item--has-submenu.is-open .nav__mobile-toggle .nav__chevron {
+  transform: rotate(180deg);
+}
+
+.nav__mobile-submenu {
+  display: none;
+  flex-direction: column;
+  gap: 0.18rem;
+
+  margin-top: 0.125rem;
+  margin-left: 0.75rem;
+  padding: 0.25rem 0 0.25rem 0.875rem;
+
+  border-left: 1px solid var(--nav-border-submenu);
+
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+}
+
+.nav__mobile-submenu:not([hidden]) {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav__mobile-sublink {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: calc(var(--radius) - 4px);
+
+  font-size: 0.82rem;
+  line-height: 1.2;
+  color: var(--muted-foreground);
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+}
+
+.nav__mobile-sublink:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.nav__mobile-sublink:active {
+  transform: translateX(2px);
+}
+
+.nav__mobile-sublink:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.nav__mobile-list .nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--chart-3);
+}
+
+.nav__mobile-list .nav__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* =========================================================
+   09. BREAKPOINT ≥ 768px — TRANSIÇÃO PARA DESKTOP
+   ========================================================= */
+
+.nav__btn-theme--desktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+
+  .nav {
+    padding-inline: 1.5rem;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  .nav__drawer {
+    display: none !important;
+  }
+
+  .nav__list {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    padding-inline: 0.4rem;
+    padding-block: 0.25rem;
+  }
+
+  .nav__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav__actions {
+    margin-left: 0;
+  }
+
+  .nav__item--desktop {
+    display: block;
+  }
+
+  .nav__item--desktop .nav__icon {
+    display: none;
+  }
+
+  .nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 2.25rem;
+    padding: 0.42rem 0.7rem;
+    border-radius: calc(var(--radius) - 2px);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--muted-foreground);
+
+    transition:
+      background-color var(--nav-fast) var(--nav-ease),
+      color var(--nav-fast) var(--nav-ease),
+      transform var(--nav-fast) var(--nav-ease);
+  }
+
+  .nav__link:hover {
+    color: var(--foreground);
+    background-color: var(--accent);
+  }
+
+  .nav__link:active {
+    transform: translateY(1px);
+  }
+
+  .nav__link:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .nav__item--desktop .nav__chevron {
+    margin-left: 0.33rem;
+  }
+
+  .nav__item--desktop[data-has-submenu]>.nav__link[aria-expanded="true"] .nav__chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav__btn-theme--desktop {
+    display: flex;
+  }
+
+  .nav__btn-theme--mobile {
+    display: none;
+  }
+
+  .nav__btn-theme {
+    display: inline-flex;
+  }
+}
+
+
+/* =========================================================
+   10. DROPDOWN PORTAL (DESKTOP)
+   ========================================================= */
+
+.nav__dropdown {
+  position: fixed;
+  min-width: 16rem;
+  padding: 0.4rem;
+  list-style: none;
+  z-index: var(--z-toast);
+
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  box-shadow: var(--nav-shadow-dropdown);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.985);
+  transform-origin: top center;
+
+  transition:
+    opacity 0.16s var(--nav-ease),
+    transform 0.16s var(--nav-ease);
+}
+
+.nav__dropdown.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.nav__dropdown-header a {
+  display: block;
+  margin-bottom: 0.25rem;
+  padding: 0.5rem 0.75rem;
+
+  border-bottom: 1px solid var(--border);
+
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease);
+}
+
+.nav__dropdown-header a:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.nav__dropdown-header a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius) - 4px);
+}
+
+.nav__dropdown-link {
+  display: block;
+  padding: 0.46rem 0.75rem;
+  border-radius: calc(var(--radius) - 4px);
+
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  color: var(--foreground);
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+}
+
+.nav__dropdown-link:hover {
+  background-color: var(--accent);
+}
+
+.nav__dropdown-link:active {
+  transform: translateX(2px);
+}
+
+.nav__dropdown-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   11. DRAWER — CABEÇALHO E RODAPÉ FIXOS
+   ========================================================= */
+
+.drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  height: 4rem;
+  flex-shrink: 0;
+
+  border-bottom: 1px solid var(--border);
+
+  background-color: var(--nav-drawer-surface);
+  backdrop-filter: var(--nav-blur);
+
+  position: sticky;
+  top: 0;
+  z-index: var(--z-raised);
+}
+
+.drawer__title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background-color: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease),
+    transform var(--nav-fast) var(--nav-ease);
+}
+
+.drawer__close:hover {
+  background-color: var(--accent);
+  color: var(--foreground);
+}
+
+.drawer__close:active {
+  transform: scale(0.94);
+}
+
+.drawer__close:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.drawer__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  margin-top: auto;
+  flex-shrink: 0;
+
+  border-top: 1px solid var(--border);
+
+  background-color: var(--nav-drawer-surface);
+  backdrop-filter: var(--nav-blur);
+
+  position: sticky;
+  bottom: 0;
+}
+
+.drawer__footer-label {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  opacity: 0.6;
+}
+
+
+/* =========================================================
+   12. REDUÇÃO DE MOVIMENTO
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  header,
+  .menu-toggle,
+  .nav__btn-theme,
+  .nav__chevron,
+  .nav__drawer,
+  .nav__link,
+  .nav__mobile-row .nav__link,
+  .nav__mobile-toggle,
+  .nav__mobile-submenu,
+  .nav__mobile-sublink,
+  .nav__dropdown,
+  .nav__dropdown-header a,
+  .nav__dropdown-link,
+  .logo:hover .logo__svg,
+  .drawer__close {
+    transition: none !important;
+    animation: none !important;
+  }
+}
