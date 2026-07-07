@@ -23,6 +23,10 @@ import { initModulePage } from "@pages/modulo";
 import { initLesson } from "@pages/lesson";
 import { initScrollTop } from "@core/scrollTop";
 
+import { initLegalPage } from "../pages/legal";
+const LEGAL_SLUGS = ["privacidade", "termos", "cookies"];
+
+// dentro de initPage(path), antes do "if (segments.length === 1)":
 
 // ─── CLEANUP ──────────────────────────────────────────────────────────────────
 //
@@ -143,6 +147,10 @@ export function initPage(path) {
     return initLesson();
   }
 
+  // dentro de initPage(path), antes do "if (segments.length === 1)":
+  if (segments.length === 1 && LEGAL_SLUGS.includes(segments[0])) {
+    return initLegalPage();
+  }
   // Path com 3+ segmentos não existe nas rotas atuais — retorna null.
   return null;
 }

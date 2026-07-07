@@ -197,6 +197,18 @@ export function content() {
     <!-- ── 3. Ambiente léxico ── -->
     <section class="lesson__section">
       <h2 class="lesson__section-title">Por dentro — o ambiente léxico</h2>
+
+      <p>
+        Em JavaScript, uma variável não é uma caixa que guarda valores.
+        Ela é um identificador registrado no ambiente léxico, que aponta
+        para um endereço de memória.
+      </p>
+      <p>
+        O ambiente léxico é a estrutura interna do JavaScript responsável
+        por registrar os identificadores, definir o escopo onde eles existem
+        e manter a referência ao valor armazenado na memória.
+      </p>
+
       <p>
         O hoisting não é mágica. Ele é uma consequência de como o motor JavaScript
         executa o código em duas fases distintas.

@@ -14,6 +14,7 @@
 import { Home } from "./pages/home";
 import { ModulePage } from "@pages/modulo.js";
 import { Lesson } from "@pages/lesson.js";
+import { LegalPage } from "./pages/legal";
 
 export const routes = [
 
@@ -23,7 +24,10 @@ export const routes = [
     component: Home
   },
 
-
+  {
+    path: "/privacidade",
+    component: () => LegalPage({ slug: "privacidade" }),
+  },
   // ── Páginas de módulo ─────────────────────────────────────────────────────
   //
   // Cada módulo tem sua própria URL (/fundamentos, /funcoes, etc.).
@@ -103,8 +107,9 @@ export const routes = [
     `,
   },
 
+  
+   
 
 ]
 
 
-console.log(Home)

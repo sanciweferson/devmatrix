@@ -1,0 +1,100 @@
+/* src/styles/legal.css */
+/* Mobile first: base styles target small screens, then scale up. */
+
+.legal {
+  width: min(100%, var(--content-width));
+  margin-inline: auto;
+  padding: var(--space-lg) var(--space-md) var(--space-xl);
+  color: var(--foreground);
+}
+
+.legal__topbar {
+  margin-bottom: var(--space-lg);
+}
+
+.legal__breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-sm);
+  line-height: var(--lh-sm);
+  color: var(--muted-foreground);
+}
+
+.legal__breadcrumb a {
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-default),
+    background-color var(--duration-fast) var(--ease-default);
+}
+
+.legal__breadcrumb a:hover {
+  color: var(--primary);
+}
+
+.legal__breadcrumb a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.legal__breadcrumb-sep {
+  color: var(--border);
+}
+
+.legal__header {
+  padding-bottom: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.legal__title {
+  max-width: 12ch;
+  margin: 0;
+  color: var(--foreground);
+  font-size: var(--text-3xl);
+  line-height: var(--lh-3xl);
+  font-weight: 760;
+  letter-spacing: 0;
+}
+
+.legal__updated {
+  margin: var(--space-md) 0 0;
+  color: var(--muted-foreground);
+  font-size: var(--text-sm);
+  line-height: var(--lh-sm);
+}
+
+.legal__content {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.legal__section {
+  display: grid;
+  gap: var(--space-md);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.legal__section:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.legal__section-title {
+  margin: 0;
+  color: var(--foreground);
+  font-size: var(--text-xl);
+  line-height: var(--lh-xl);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.legal__content p {
+  margin: 0;
+  color: var(--foreground);
+  font-size: var(--text-base);
+  line-height: var(--lh-base);}

@@ -25,167 +25,170 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  color-scheme: light dark;
+   color-scheme: light dark;
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      01. ESPAÇAMENTO — Escala geométrica (cada step é 1.5x do anterior)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --space-2xs: 0.125rem;
-  /* 2px   — gaps mínimos, dividers */
-  --space-xs: 0.25rem;
-  /* 4px   — padding compacto */
-  --space-sm: 0.5rem;
-  /* 8px   — gap padrão entre ícone + label */
-  --space-md: 1rem;
-  /* 16px  — padding padrão */
-  --space-lg: 2rem;
-  /* 32px  — gap entre seções */
-  --space-xl: 4rem;
-  /* 64px  — padding de hero */
-  --space-2xl: 6rem;
-  /* 96px  — espaçamento de seção grande */
-  --space-3xl: 8rem;
-  /* 128px — max padding */
+   --space-2xs: 0.125rem;
+   /* 2px   — gaps mínimos, dividers */
+   --space-xs: 0.25rem;
+   /* 4px   — padding compacto */
+   --space-sm: 0.5rem;
+   /* 8px   — gap padrão entre ícone + label */
+   --space-md: 1rem;
+   /* 16px  — padding padrão */
+   --space-lg: 2rem;
+   /* 32px  — gap entre seções */
+   --space-xl: 4rem;
+   /* 64px  — padding de hero */
+   --space-2xl: 6rem;
+   /* 96px  — espaçamento de seção grande */
+   --space-3xl: 8rem;
+   /* 128px — max padding */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      02. RAIOS DE BORDA — Fechado até pílula
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --radius-xs: 2px;
-  /* micro: tag, checkbox */
-  --radius-sm: 4px;
-  /* pequeno: input, dropdown */
-  --radius-md: 8px;
-  /* padrão: botão, card compacto */
-  --radius-lg: 12px;
-  /* card elevado, modal */
-  --radius-xl: 16px;
-  /* card hero, imagem */
-  --radius-full: 9999px;
-  /* pílula: avatar, chip */
+   --radius-xs: 2px;
+   /* micro: tag, checkbox */
+   --radius-sm: 4px;
+   /* pequeno: input, dropdown */
+   --radius-md: 8px;
+   /* padrão: botão, card compacto */
+   --radius-lg: 12px;
+   /* card elevado, modal */
+   --radius-xl: 16px;
+   /* card hero, imagem */
+   --radius-full: 9999px;
+   /* pílula: avatar, chip */
 
-  --radius: var(--radius-lg);
-  /* alias padrão */
+   --radius: var(--radius-lg);
+   /* alias padrão */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      03. TIPOGRAFIA — Font-sizes + line-heights pareados
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --text-xs: 0.75rem;
-  --lh-xs: 1.0;
-  /* 12px */
-  --text-sm: 0.875rem;
-  --lh-sm: 1.4;
-  /* 14px */
-  --text-base: 1rem;
-  --lh-base: 1.6;
-  /* 16px */
-  --text-lg: 1.125rem;
-  --lh-lg: 1.5;
-  /* 18px */
-  --text-xl: 1.25rem;
-  --lh-xl: 1.4;
-  /* 20px */
-  --text-2xl: 1.5rem;
-  --lh-2xl: 1.3;
-  /* 24px */
-  --text-3xl: 2rem;
-  --lh-3xl: 1.2;
-  /* 32px */
-  --text-4xl: 2.75rem;
-  --lh-4xl: 1.1;
-  /* 44px */
+   --text-xs: 0.75rem;
+   --lh-xs: 1.0;
+   /* 12px */
+   --text-sm: 0.875rem;
+   --lh-sm: 1.4;
+   /* 14px */
+   --text-base: 1rem;
+   --lh-base: 1.6;
+   /* 16px */
+   --text-lg: 1.125rem;
+   --lh-lg: 1.5;
+   /* 18px */
+   --text-xl: 1.25rem;
+   --lh-xl: 1.4;
+   /* 20px */
+   --text-2xl: 1.5rem;
+   --lh-2xl: 1.3;
+   /* 24px */
+   --text-3xl: 2rem;
+   --lh-3xl: 1.2;
+   /* 32px */
+   --text-4xl: 2.75rem;
+   --lh-4xl: 1.1;
+   /* 44px */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      04. LAYOUT — Breakpoints e dimensões
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --container-sm: 640px;
-  /* conteúdo textual */
-  --container-md: 768px;
-  /* dashboard estreito */
-  --container-lg: 1024px;
-  /* layout 2 colunas */
-  --container-xl: 1280px;
-  /* wide layout */
-  --container-max: 1380px;
-  /* máximo absoluto */
+   --container-sm: 640px;
+   /* conteúdo textual */
+   --container-md: 768px;
+   /* dashboard estreito */
+   --container-lg: 1024px;
+   /* layout 2 colunas */
+   --container-xl: 1280px;
+   /* wide layout */
+   --container-max: 1380px;
+   /* máximo absoluto */
 
-  --nav-height: 5rem;
-  /* 80px — altura fixa do header sticky */
-  --sidebar-width: 260px;
-  /* largura da sidebar lateral */
-  --content-width: 680px;
-  /* largura ótima de leitura */
+   --nav-height: 5rem;
+   /* 80px — altura fixa do header sticky */
+   --sidebar-width: 260px;
+   /* largura da sidebar lateral */
+   --content-width: 680px;
+   /* largura ótima de leitura */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      05. Z-INDEX — Camadas nomeadas (gaps de 100 para valores intermediários)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --z-base: 0;
-  /* fluxo normal */
-  --z-raised: 10;
-  /* cards com hover elevation */
-  --z-dropdown: 100;
-  /* dropdowns, popovers */
-  --z-sticky: 200;
-  /* header fixo, sticky sidebar */
-  --z-overlay: 300;
-  /* overlay escuro */
-  --z-modal: 400;
-  /* modal, dialog */
-  --z-toast: 500;
-  /* toasts, notificações */
+   --z-base: 0;
+   /* fluxo normal */
+   --z-raised: 10;
+   /* cards com hover elevation */
+   --z-dropdown: 100;
+   /* dropdowns, popovers */
+   --z-sticky: 200;
+   /* header fixo, sticky sidebar */
+   --z-overlay: 300;
+   /* overlay escuro */
+   --z-modal: 400;
+   /* modal, dialog */
+   --z-toast: 500;
+   /* toasts, notificações */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      06. CORES — LIGHT MODE (superfícies + semântica)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  /* ── Superfícies base ── */
-  --background: oklch(0.978 0.007 88);
-  /* página base, mais claro */
-  --foreground: oklch(0.135 0.003 88);
-  /* texto principal, contrast 15:1 */
-  --card: oklch(0.970 0.008 88);
-  /* cards elevados */
-  --card-foreground: oklch(0.135 0.003 88);
-  /* texto em cards */
-  --popover: oklch(0.978 0.007 88);
-  /* popovers, tooltips */
-  --popover-foreground: oklch(0.135 0.003 88);
+   /* ── Superfícies base ── */
+   --background: oklch(0.978 0.007 88);
+   /* página base, mais claro */
+   --foreground: oklch(0.135 0.003 88);
+   /* texto principal, contrast real 18.79:1 (AAA) */
+   --card: oklch(0.970 0.008 88);
+   /* cards elevados */
+   --card-foreground: oklch(0.135 0.003 88);
+   /* texto em cards */
+   --popover: oklch(0.978 0.007 88);
+   /* popovers, tooltips */
+   --popover-foreground: oklch(0.135 0.003 88);
 
-  /* ── Semântica de cores ── */
-  /* Primary — laranja Anthropic #d97757, L=0.580 garante contrast 4.5:1 */
-  --primary: oklch(0.580 0.130 34);
-  --primary-foreground: oklch(0.978 0.007 88);
-  /* branco máximo contrast */
+   /* ── Semântica de cores ── */
+   /* Primary — laranja Anthropic #d97757, L=0.580 garante contrast 4.26:1
+     (passa AA pra texto grande/negrito — é como é usado nos botões) */
+   --primary: oklch(0.580 0.130 34);
+   --primary-foreground: oklch(0.978 0.007 88);
+   /* branco máximo contrast */
 
-  /* Secondary/Muted — cinza quente (hue 88) para superfícies interativas */
-  --secondary: oklch(0.906 0.012 88);
-  --secondary-foreground: oklch(0.135 0.003 88);
+   /* Secondary/Muted — cinza quente (hue 88) para superfícies interativas */
+   --secondary: oklch(0.906 0.012 88);
+   --secondary-foreground: oklch(0.135 0.003 88);
 
-  --muted: oklch(0.906 0.012 88);
-  /* disabled text, placeholders */
-  --muted-foreground: oklch(0.720 0.010 88);
-  /* texto muted, contrast 3:1 */
+   --muted: oklch(0.906 0.012 88);
+   /* disabled text, placeholders */
+   --muted-foreground: oklch(0.500 0.010 88);
+   /* FIX: era L=0.720 → contrast real 2.33:1, falhava WCAG AA (4.5:1).
+     Calculado via conversão OKLCH→luminância real (não estimativa visual).
+     L=0.500 dá contrast 5.63:1 — passa AA com boa margem de segurança. */
 
-  --accent: oklch(0.906 0.012 88);
-  /* highlights, focus */
-  --accent-foreground: oklch(0.135 0.003 88);
+   --accent: oklch(0.906 0.012 88);
+   /* highlights, focus */
+   --accent-foreground: oklch(0.135 0.003 88);
 
-  /* Destructive — vermelho para erro/delete */
-  --destructive: oklch(0.577 0.245 27.325);
+   /* Destructive — vermelho para erro/delete */
+   --destructive: oklch(0.577 0.245 27.325);
 
-  /* ── Estrutura ── */
-  --border: oklch(0.875 0.014 88);
-  /* borda padrão */
-  --input: oklch(0.875 0.014 88);
-  /* input unfocused */
-  --ring: oklch(0.720 0.010 88);
-  /* focus ring */
+   /* ── Estrutura ── */
+   --border: oklch(0.875 0.014 88);
+   /* borda padrão */
+   --input: oklch(0.875 0.014 88);
+   /* input unfocused */
+   --ring: oklch(0.720 0.010 88);
+   /* focus ring */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      07. DARK MODE — [data-theme="dark"]
      
      Superfícies mais escuras com delta L constante (~0.04):
@@ -193,210 +196,219 @@
        --card        L=0.172 → +0.037 (elevação)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  /* ── Superfícies dark ── */
-  --background-dark: oklch(0.135 0.003 88);
-  --foreground-dark: oklch(0.978 0.007 88);
-  --card-dark: oklch(0.172 0.006 88);
-  --card-foreground-dark: oklch(0.978 0.007 88);
+   /* ── Superfícies dark ── */
+   --background-dark: oklch(0.135 0.003 88);
+   --foreground-dark: oklch(0.978 0.007 88);
+   --card-dark: oklch(0.172 0.006 88);
+   --card-foreground-dark: oklch(0.978 0.007 88);
 
-  /* ── Primária dark — mais luminosa e saturada ── */
-  --primary-dark: oklch(0.730 0.140 34);
-  /* L+0.15 para diferença perceptível */
-  --primary-foreground-dark: oklch(0.135 0.003 88);
+   /* ── Primária dark — mais luminosa e saturada ── */
+   --primary-dark: oklch(0.730 0.140 34);
+   /* L+0.15 para diferença perceptível */
+   --primary-foreground-dark: oklch(0.135 0.003 88);
 
-  --secondary-dark: oklch(0.215 0.008 88);
-  --secondary-foreground-dark: oklch(0.978 0.007 88);
+   --secondary-dark: oklch(0.215 0.008 88);
+   --secondary-foreground-dark: oklch(0.978 0.007 88);
 
-  --muted-dark: oklch(0.215 0.008 88);
-  --muted-foreground-dark: oklch(0.720 0.010 88);
+   --muted-dark: oklch(0.215 0.008 88);
+   --muted-foreground-dark: oklch(0.720 0.010 88);
+   /* Já era bom: contrast real 8.07:1 (AAA) contra --background-dark.
+     Mantido sem alteração — só o par light precisava de fix. */
 
-  --accent-dark: oklch(0.215 0.008 88);
-  --accent-foreground-dark: oklch(0.978 0.007 88);
+   --accent-dark: oklch(0.215 0.008 88);
+   --accent-foreground-dark: oklch(0.978 0.007 88);
 
-  --destructive-dark: oklch(0.704 0.191 22.216);
+   --destructive-dark: oklch(0.704 0.191 22.216);
 
-  /* ── Estrutura dark ── */
-  --border-dark: oklch(0.978 0.007 88 / 10%);
-  /* branco 10% — warm, não preto */
-  --input-dark: oklch(0.978 0.007 88 / 14%);
-  --ring-dark: oklch(0.560 0.010 88);
+   /* ── Estrutura dark ── */
+   --border-dark: oklch(0.978 0.007 88 / 10%);
+   /* branco 10% — warm, não preto */
+   --input-dark: oklch(0.978 0.007 88 / 14%);
+   --ring-dark: oklch(0.560 0.010 88);
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      08. GRÁFICOS — Paleta de charts (NUNCA use em UI, só dados)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --chart-1: oklch(0.820 0.085 55);
-  /* âmbar claro */
-  --chart-2: oklch(0.720 0.110 40);
-  /* laranja médio */
-  --chart-3: oklch(0.630 0.125 34);
-  /* laranja #d97757 */
-  --chart-4: oklch(0.645 0.090 228);
-  /* azul */
-  --chart-5: oklch(0.572 0.072 130);
-  /* verde */
+   --chart-1: oklch(0.820 0.085 55);
+   /* âmbar claro */
+   --chart-2: oklch(0.720 0.110 40);
+   /* laranja médio */
+   --chart-3: oklch(0.630 0.125 34);
+   /* laranja #d97757 */
+   --chart-4: oklch(0.645 0.090 228);
+   /* azul */
+   --chart-5: oklch(0.572 0.072 130);
+   /* verde */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      09. SIDEBAR — Variações de tema
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --sidebar: oklch(0.962 0.009 88);
-  --sidebar-foreground: oklch(0.135 0.003 88);
-  --sidebar-primary: oklch(0.580 0.130 34);
-  --sidebar-primary-foreground: oklch(0.978 0.007 88);
-  --sidebar-accent: oklch(0.906 0.012 88);
-  --sidebar-accent-foreground: oklch(0.135 0.003 88);
-  --sidebar-border: oklch(0.875 0.014 88);
-  --sidebar-ring: oklch(0.720 0.010 88);
+   --sidebar: oklch(0.962 0.009 88);
+   --sidebar-foreground: oklch(0.135 0.003 88);
+   --sidebar-primary: oklch(0.580 0.130 34);
+   --sidebar-primary-foreground: oklch(0.978 0.007 88);
+   --sidebar-accent: oklch(0.906 0.012 88);
+   --sidebar-accent-foreground: oklch(0.135 0.003 88);
+   --sidebar-border: oklch(0.875 0.014 88);
+   --sidebar-ring: oklch(0.720 0.010 88);
 
-  --sidebar-dark: oklch(0.172 0.006 88);
-  --sidebar-foreground-dark: oklch(0.978 0.007 88);
-  --sidebar-primary-dark: oklch(0.730 0.140 34);
-  --sidebar-primary-foreground-dark: oklch(0.135 0.003 88);
-  --sidebar-accent-dark: oklch(0.215 0.008 88);
-  --sidebar-accent-foreground-dark: oklch(0.978 0.007 88);
-  --sidebar-border-dark: oklch(0.978 0.007 88 / 10%);
-  --sidebar-ring-dark: oklch(0.440 0.008 88);
+   --sidebar-dark: oklch(0.172 0.006 88);
+   --sidebar-foreground-dark: oklch(0.978 0.007 88);
+   --sidebar-primary-dark: oklch(0.730 0.140 34);
+   --sidebar-primary-foreground-dark: oklch(0.135 0.003 88);
+   --sidebar-accent-dark: oklch(0.215 0.008 88);
+   --sidebar-accent-foreground-dark: oklch(0.978 0.007 88);
+   --sidebar-border-dark: oklch(0.978 0.007 88 / 10%);
+   --sidebar-ring-dark: oklch(0.440 0.008 88);
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      10. TEMA — Ícones de switch light/dark
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --theme-sun: oklch(0.85 0.16 55);
-  /* ícone sol — laranja/âmbar */
-  --theme-moon: oklch(0.50 0.06 260);
-  /* ícone lua — azul frio */
-  --theme-icon: oklch(0.135 0.003 88);
-  /* cor do ícone — escuro */
+   --theme-sun: oklch(0.85 0.16 55);
+   /* ícone sol — laranja/âmbar */
+   --theme-moon: oklch(0.50 0.06 260);
+   /* ícone lua — azul frio */
+   --theme-icon: oklch(0.135 0.003 88);
+   /* cor do ícone — escuro */
 
-  --theme-sun-dark: oklch(0.92 0.16 60);
-  /* sol mais luminoso em dark */
-  --theme-moon-dark: oklch(0.72 0.12 260);
-  /* lua mais brilhante */
-  --theme-icon-dark: oklch(0.978 0.007 88);
-  /* ícone branco */
+   --theme-sun-dark: oklch(0.92 0.16 60);
+   /* sol mais luminoso em dark */
+   --theme-moon-dark: oklch(0.72 0.12 260);
+   /* lua mais brilhante */
+   --theme-icon-dark: oklch(0.978 0.007 88);
+   /* ícone branco */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      11. SYNTAX — Destaque de código (light + dark)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  /* Light mode */
-  --syn-bg: oklch(0.965 0.009 88);
-  --syn-bg-console: oklch(0.940 0.011 88);
-  --syn-border: oklch(0.875 0.014 88);
-  --syn-text: oklch(0.135 0.003 88);
-  --syn-text-muted: oklch(0.560 0.010 88);
+   /* Light mode */
+   --syn-bg: oklch(0.965 0.009 88);
+   --syn-bg-console: oklch(0.940 0.011 88);
+   --syn-border: oklch(0.875 0.014 88);
+   --syn-text: oklch(0.135 0.003 88);
+   --syn-text-muted: oklch(0.530 0.010 88);
+   /* FIX: era L=0.560 → contrast real 4.20:1, ficava abaixo do AA (4.5:1).
+     L=0.530 dá contrast 4.77:1 — passa AA. */
 
-  --syn-keyword: oklch(0.560 0.135 34);
-  /* let, const, var */
-  --syn-id: oklch(0.420 0.080 228);
-  /* variáveis */
-  --syn-fn: oklch(0.420 0.080 228);
-  /* funções */
-  --syn-string: oklch(0.460 0.068 130);
-  /* strings */
-  --syn-number: oklch(0.510 0.095 50);
-  /* números */
-  --syn-boolean: oklch(0.560 0.135 34);
-  /* true/false */
-  --syn-nullish: oklch(0.490 0.055 270);
-  /* null, undefined */
-  --syn-comment: oklch(0.650 0.010 88);
-  /* comentários */
-  --syn-operator: oklch(0.380 0.008 88);
-  /* operadores */
-  --syn-property: oklch(0.460 0.068 130);
-  /* propriedades */
+   --syn-keyword: oklch(0.560 0.135 34);
+   /* let, const, var */
+   --syn-id: oklch(0.420 0.080 228);
+   /* variáveis */
+   --syn-fn: oklch(0.420 0.080 228);
+   /* funções */
+   --syn-string: oklch(0.460 0.068 130);
+   /* strings */
+   --syn-number: oklch(0.510 0.095 50);
+   /* números */
+   --syn-boolean: oklch(0.560 0.135 34);
+   /* true/false */
+   --syn-nullish: oklch(0.490 0.055 270);
+   /* null, undefined */
+   --syn-comment: oklch(0.500 0.010 88);
+   /* FIX: era L=0.650 → contrast real 2.92:1, falhava WCAG AA.
+     L=0.500 dá contrast 5.42:1 — passa AA com boa margem. */
+   --syn-operator: oklch(0.380 0.008 88);
+   /* operadores */
+   --syn-property: oklch(0.460 0.068 130);
+   /* propriedades */
 
-  /* Console output light */
-  --syn-output: oklch(0.460 0.068 130);
-  --syn-output-num: oklch(0.510 0.095 50);
-  --syn-output-str: oklch(0.460 0.068 130);
-  --syn-output-bool: oklch(0.560 0.135 34);
-  --syn-output-null: oklch(0.490 0.055 270);
-  --syn-output-undef: oklch(0.520 0.040 270);
-  --syn-output-error: oklch(0.490 0.200 27);
-  --syn-output-warn: oklch(0.540 0.095 50);
-  --syn-prompt: oklch(0.460 0.068 130);
-  --syn-prompt-bg: oklch(0.930 0.010 88);
+   /* Console output light */
+   --syn-output: oklch(0.460 0.068 130);
+   --syn-output-num: oklch(0.510 0.095 50);
+   --syn-output-str: oklch(0.460 0.068 130);
+   --syn-output-bool: oklch(0.560 0.135 34);
+   --syn-output-null: oklch(0.490 0.055 270);
+   --syn-output-undef: oklch(0.520 0.040 270);
+   --syn-output-error: oklch(0.490 0.200 27);
+   --syn-output-warn: oklch(0.540 0.095 50);
+   --syn-prompt: oklch(0.460 0.068 130);
+   --syn-prompt-bg: oklch(0.930 0.010 88);
 
-  /* Dark mode */
-  --syn-bg-dark: oklch(0.148 0.010 88);
-  --syn-bg-console-dark: oklch(0.120 0.008 88);
-  --syn-border-dark: oklch(0.265 0.015 88);
-  --syn-text-dark: oklch(0.950 0.009 88);
-  --syn-text-muted-dark: oklch(0.560 0.010 88);
+   /* Dark mode */
+   --syn-bg-dark: oklch(0.148 0.010 88);
+   --syn-bg-console-dark: oklch(0.120 0.008 88);
+   --syn-border-dark: oklch(0.265 0.015 88);
+   --syn-text-dark: oklch(0.950 0.009 88);
+   --syn-text-muted-dark: oklch(0.600 0.010 88);
+   /* FIX: era L=0.560 → contrast real 4.24:1, ficava abaixo do AA (4.5:1).
+     L=0.600 dá contrast 5.00:1 — passa AA. */
 
-  --syn-keyword-dark: oklch(0.720 0.125 34);
-  --syn-id-dark: oklch(0.750 0.075 228);
-  --syn-fn-dark: oklch(0.750 0.075 228);
-  --syn-string-dark: oklch(0.700 0.065 130);
-  --syn-number-dark: oklch(0.760 0.090 52);
-  --syn-boolean-dark: oklch(0.720 0.125 34);
-  --syn-nullish-dark: oklch(0.660 0.050 270);
-  --syn-comment-dark: oklch(0.500 0.010 88);
-  --syn-operator-dark: oklch(0.820 0.010 88);
-  --syn-property-dark: oklch(0.700 0.065 130);
+   --syn-keyword-dark: oklch(0.720 0.125 34);
+   --syn-id-dark: oklch(0.750 0.075 228);
+   --syn-fn-dark: oklch(0.750 0.075 228);
+   --syn-string-dark: oklch(0.700 0.065 130);
+   --syn-number-dark: oklch(0.760 0.090 52);
+   --syn-boolean-dark: oklch(0.720 0.125 34);
+   --syn-nullish-dark: oklch(0.660 0.050 270);
+   --syn-comment-dark: oklch(0.620 0.010 88);
+   /* FIX: era L=0.500 → contrast real 3.29:1, falhava WCAG AA.
+     L=0.620 dá contrast 5.42:1 — passa AA com boa margem. */
+   --syn-operator-dark: oklch(0.820 0.010 88);
+   --syn-property-dark: oklch(0.700 0.065 130);
 
-  /* Console output dark */
-  --syn-output-dark: oklch(0.700 0.065 130);
-  --syn-output-num-dark: oklch(0.760 0.090 52);
-  --syn-output-str-dark: oklch(0.700 0.065 130);
-  --syn-output-bool-dark: oklch(0.720 0.125 34);
-  --syn-output-null-dark: oklch(0.660 0.050 270);
-  --syn-output-undef-dark: oklch(0.610 0.040 270);
-  --syn-output-error-dark: oklch(0.650 0.195 25);
-  --syn-output-warn-dark: oklch(0.760 0.110 60);
-  --syn-prompt-dark: oklch(0.620 0.065 130);
-  --syn-prompt-bg-dark: oklch(0.128 0.010 88);
+   /* Console output dark */
+   --syn-output-dark: oklch(0.700 0.065 130);
+   --syn-output-num-dark: oklch(0.760 0.090 52);
+   --syn-output-str-dark: oklch(0.700 0.065 130);
+   --syn-output-bool-dark: oklch(0.720 0.125 34);
+   --syn-output-null-dark: oklch(0.660 0.050 270);
+   --syn-output-undef-dark: oklch(0.610 0.040 270);
+   --syn-output-error-dark: oklch(0.650 0.195 25);
+   --syn-output-warn-dark: oklch(0.760 0.110 60);
+   --syn-prompt-dark: oklch(0.620 0.065 130);
+   --syn-prompt-bg-dark: oklch(0.128 0.010 88);
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      12. ANIMAÇÃO — Timing, easing, transições (uso universal, não só nav)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  /* Durações semânticas */
-  --duration-fast: 120ms;
-  /* hover, focus ring, toggle */
-  --duration-base: 200ms;
-  /* botões, inputs, switches */
-  --duration-slow: 320ms;
-  /* drawer, modal, accordion */
+   /* Durações semânticas */
+   --duration-fast: 120ms;
+   /* hover, focus ring, toggle */
+   --duration-base: 200ms;
+   /* botões, inputs, switches */
+   --duration-slow: 320ms;
+   /* drawer, modal, accordion */
 
-  /* Curvas de easing */
-  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
-  /* suave padrão */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* elástico leve */
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  /* entrada suave */
+   /* Curvas de easing */
+   --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+   /* suave padrão */
+   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+   /* elástico leve */
+   --ease-out: cubic-bezier(0, 0, 0.2, 1);
+   /* entrada suave */
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      13. SOMBRAS — Elevações compostas (okLCh com alpha para flexibilidade)
      ═════════════════════════════════════════════════════════════════════════ */
 
-  /* Nota: oklch(0 0 0) = preto puro sem matiz → correto para sombras */
-  --shadow-sm: 0 4px 16px oklch(0 0 0 / 8%);
-  /* cards pequenos */
-  --shadow-md: 0 10px 30px oklch(0 0 0 / 14%);
-  /* cards normais */
-  --shadow-lg: 0 20px 60px oklch(0 0 0 / 18%);
-  /* modais, drawers */
-  --shadow-xl: 0 25px 80px oklch(0 0 0 / 20%);
-  /* máxima profundidade */
+   /* Nota: oklch(0 0 0) = preto puro sem matiz → correto para sombras */
+   --shadow-sm: 0 4px 16px oklch(0 0 0 / 8%);
+   /* cards pequenos */
+   --shadow-md: 0 10px 30px oklch(0 0 0 / 14%);
+   /* cards normais */
+   --shadow-lg: 0 20px 60px oklch(0 0 0 / 18%);
+   /* modais, drawers */
+   --shadow-xl: 0 25px 80px oklch(0 0 0 / 20%);
+   /* máxima profundidade */
 
-  /* Sombras compostas (duas camadas) */
-  --shadow-dropdown:
-    0 8px 32px oklch(0 0 0 / 18%),
-    0 2px 8px oklch(0 0 0 / 8%);
+   /* Sombras compostas (duas camadas) */
+   --shadow-dropdown:
+      0 8px 32px oklch(0 0 0 / 18%),
+      0 2px 8px oklch(0 0 0 / 8%);
 
-  /* ═════════════════════════════════════════════════════════════════════════
+   /* ═════════════════════════════════════════════════════════════════════════
      14. FILTROS — Blur, overlay, backdrop
      ═════════════════════════════════════════════════════════════════════════ */
 
-  --backdrop-blur: saturate(140%) blur(10px);
-  /* frosted glass */
-  --overlay-bg: oklch(0 0 0 / 45%);
-  /* overlay escuro */
+   --backdrop-blur: saturate(140%) blur(10px);
+   /* frosted glass */
+   --overlay-bg: oklch(0 0 0 / 45%);
+   /* overlay escuro */
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -404,67 +416,67 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 [data-theme="dark"] {
-  --background: var(--background-dark);
-  --foreground: var(--foreground-dark);
-  --card: var(--card-dark);
-  --card-foreground: var(--card-foreground-dark);
-  --popover: var(--card-dark);
-  --popover-foreground: var(--card-foreground-dark);
+   --background: var(--background-dark);
+   --foreground: var(--foreground-dark);
+   --card: var(--card-dark);
+   --card-foreground: var(--card-foreground-dark);
+   --popover: var(--card-dark);
+   --popover-foreground: var(--card-foreground-dark);
 
-  --primary: var(--primary-dark);
-  --primary-foreground: var(--primary-foreground-dark);
+   --primary: var(--primary-dark);
+   --primary-foreground: var(--primary-foreground-dark);
 
-  --secondary: var(--secondary-dark);
-  --secondary-foreground: var(--secondary-foreground-dark);
+   --secondary: var(--secondary-dark);
+   --secondary-foreground: var(--secondary-foreground-dark);
 
-  --muted: var(--muted-dark);
-  --muted-foreground: var(--muted-foreground-dark);
+   --muted: var(--muted-dark);
+   --muted-foreground: var(--muted-foreground-dark);
 
-  --accent: var(--accent-dark);
-  --accent-foreground: var(--accent-foreground-dark);
+   --accent: var(--accent-dark);
+   --accent-foreground: var(--accent-foreground-dark);
 
-  --destructive: var(--destructive-dark);
+   --destructive: var(--destructive-dark);
 
-  --border: var(--border-dark);
-  --input: var(--input-dark);
-  --ring: var(--ring-dark);
+   --border: var(--border-dark);
+   --input: var(--input-dark);
+   --ring: var(--ring-dark);
 
-  --sidebar: var(--sidebar-dark);
-  --sidebar-foreground: var(--sidebar-foreground-dark);
-  --sidebar-primary: var(--sidebar-primary-dark);
-  --sidebar-primary-foreground: var(--sidebar-primary-foreground-dark);
-  --sidebar-accent: var(--sidebar-accent-dark);
-  --sidebar-accent-foreground: var(--sidebar-accent-foreground-dark);
-  --sidebar-border: var(--sidebar-border-dark);
-  --sidebar-ring: var(--sidebar-ring-dark);
+   --sidebar: var(--sidebar-dark);
+   --sidebar-foreground: var(--sidebar-foreground-dark);
+   --sidebar-primary: var(--sidebar-primary-dark);
+   --sidebar-primary-foreground: var(--sidebar-primary-foreground-dark);
+   --sidebar-accent: var(--sidebar-accent-dark);
+   --sidebar-accent-foreground: var(--sidebar-accent-foreground-dark);
+   --sidebar-border: var(--sidebar-border-dark);
+   --sidebar-ring: var(--sidebar-ring-dark);
 
-  --theme-sun: var(--theme-sun-dark);
-  --theme-moon: var(--theme-moon-dark);
-  --theme-icon: var(--theme-icon-dark);
+   --theme-sun: var(--theme-sun-dark);
+   --theme-moon: var(--theme-moon-dark);
+   --theme-icon: var(--theme-icon-dark);
 
-  --syn-bg: var(--syn-bg-dark);
-  --syn-bg-console: var(--syn-bg-console-dark);
-  --syn-border: var(--syn-border-dark);
-  --syn-text: var(--syn-text-dark);
-  --syn-text-muted: var(--syn-text-muted-dark);
-  --syn-keyword: var(--syn-keyword-dark);
-  --syn-id: var(--syn-id-dark);
-  --syn-fn: var(--syn-fn-dark);
-  --syn-string: var(--syn-string-dark);
-  --syn-number: var(--syn-number-dark);
-  --syn-boolean: var(--syn-boolean-dark);
-  --syn-nullish: var(--syn-nullish-dark);
-  --syn-comment: var(--syn-comment-dark);
-  --syn-operator: var(--syn-operator-dark);
-  --syn-property: var(--syn-property-dark);
-  --syn-output: var(--syn-output-dark);
-  --syn-output-num: var(--syn-output-num-dark);
-  --syn-output-str: var(--syn-output-str-dark);
-  --syn-output-bool: var(--syn-output-bool-dark);
-  --syn-output-null: var(--syn-output-null-dark);
-  --syn-output-undef: var(--syn-output-undef-dark);
-  --syn-output-error: var(--syn-output-error-dark);
-  --syn-output-warn: var(--syn-output-warn-dark);
-  --syn-prompt: var(--syn-prompt-dark);
-  --syn-prompt-bg: var(--syn-prompt-bg-dark);
+   --syn-bg: var(--syn-bg-dark);
+   --syn-bg-console: var(--syn-bg-console-dark);
+   --syn-border: var(--syn-border-dark);
+   --syn-text: var(--syn-text-dark);
+   --syn-text-muted: var(--syn-text-muted-dark);
+   --syn-keyword: var(--syn-keyword-dark);
+   --syn-id: var(--syn-id-dark);
+   --syn-fn: var(--syn-fn-dark);
+   --syn-string: var(--syn-string-dark);
+   --syn-number: var(--syn-number-dark);
+   --syn-boolean: var(--syn-boolean-dark);
+   --syn-nullish: var(--syn-nullish-dark);
+   --syn-comment: var(--syn-comment-dark);
+   --syn-operator: var(--syn-operator-dark);
+   --syn-property: var(--syn-property-dark);
+   --syn-output: var(--syn-output-dark);
+   --syn-output-num: var(--syn-output-num-dark);
+   --syn-output-str: var(--syn-output-str-dark);
+   --syn-output-bool: var(--syn-output-bool-dark);
+   --syn-output-null: var(--syn-output-null-dark);
+   --syn-output-undef: var(--syn-output-undef-dark);
+   --syn-output-error: var(--syn-output-error-dark);
+   --syn-output-warn: var(--syn-output-warn-dark);
+   --syn-prompt: var(--syn-prompt-dark);
+   --syn-prompt-bg: var(--syn-prompt-bg-dark);
 }
