@@ -79,7 +79,7 @@ export function authGuard(from, to, next) {
   // Evolução futura: essa lista poderia vir de uma flag no array de routes:
   //   { path: "/admin", protected: true, component: Admin }
   //   authGuard leria routes.filter(r => r.protected).map(r => r.path)
-  const rotasProtegidas = ["/admin", "/perfil", "/configuracoes"];
+  const rotasProtegidas = ["/admin","/", "/perfil","/fundamentos" ,"/funcoes","/configuracoes"];
 
   // Verifica se a rota de DESTINO está na lista.
   // Array.prototype.includes() → comparação exata de string.

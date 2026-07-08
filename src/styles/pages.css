@@ -8,6 +8,17 @@
   color: var(--foreground);
 }
 
+/* Precisa existir aqui — initLegalPage() procura por essas duas classes.
+   @keyframes anim-fade-up já vem de pages.css (concatenado via @import). */
+.legal__anim-item {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.legal__anim-run {
+  animation: anim-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .legal__topbar {
   margin-bottom: var(--space-lg);
 }
@@ -51,13 +62,16 @@
 }
 
 .legal__title {
-  max-width: 12ch;
   margin: 0;
   color: var(--foreground);
+  font-family: 'Syne', sans-serif;
+  /* FIX: faltava — sem isso caía no Roboto padrão do h1 global */
   font-size: var(--text-3xl);
   line-height: var(--lh-3xl);
-  font-weight: 760;
-  letter-spacing: 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  /* FIX: removido max-width:12ch — era o que estava quebrando o título
+     em várias linhas curtas */
 }
 
 .legal__updated {
@@ -87,14 +101,92 @@
 .legal__section-title {
   margin: 0;
   color: var(--foreground);
+  font-family: 'Syne', sans-serif;
+  /* FIX: mesma correção do título principal */
   font-size: var(--text-xl);
   line-height: var(--lh-xl);
   font-weight: 700;
-  letter-spacing: 0;
 }
 
 .legal__content p {
   margin: 0;
   color: var(--foreground);
   font-size: var(--text-base);
-  line-height: var(--lh-base);}
+  line-height: var(--lh-base);
+}
+
+.legal__section code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.825em;
+  background-color: var(--muted);
+  color: var(--syn-keyword);
+  padding: 0.1em 0.35em;
+  border-radius: calc(var(--radius) * 0.5);
+  border: 1px solid var(--border);
+}
+
+/* FIX: faltava inteira — sem isso as listas ficam sem bolinha
+   (o reset global "ul,li{list-style:none}" do base.css apaga o padrão) */
+.legal__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-left: 1.25rem;
+}
+
+.legal__list li {
+  font-size: var(--text-base);
+  line-height: var(--lh-base);
+  color: var(--foreground);
+  list-style: disc;
+}
+
+.legal__list li strong {
+  font-weight: 700;
+}
+
+/* FIX: faltava inteira — usada quando o slug não existe (LegalPage retorna
+   <div class="legal legal--not-found">) */
+.legal--not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  min-height: 50vh;
+  text-align: center;
+  padding: var(--space-xl);
+}
+
+.legal--not-found p {
+  color: var(--muted-foreground);
+  font-size: var(--text-base);
+}
+
+.legal--not-found a {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--primary);
+  padding: 0.5rem 1.2rem;
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.legal--not-found a:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+@media (min-width: 640px) {
+  .legal {
+    padding: var(--space-xl) var(--space-lg) var(--space-xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .legal__content {
+    gap: calc(var(--space-lg) * 1.5);
+  }
+}

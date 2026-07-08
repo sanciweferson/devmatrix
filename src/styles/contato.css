@@ -1,0 +1,361 @@
+/* =============================================================
+   CONTATO.CSS — Página de Contato (formulário + canais)
+   =============================================================
+   Arquivo separado — importar em main.css junto aos outros:
+     @import "contato.css";
+
+   Reaproveita o @keyframe anim-fade-up já definido em pages.css.
+
+   Organização:
+     01. Container & Topbar
+     02. Header
+     03. Grid (form + canais)
+     04. Formulário
+     05. Status de envio
+     06. Canais externos
+     07. Media Query — Tablet  (≥ 640px)
+     08. Media Query — Desktop (≥ 1024px)
+   ============================================================= */
+
+
+/* =============================================================
+   01. CONTAINER & TOPBAR
+   ============================================================= */
+
+.contato {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-md) 1.5rem var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.contato__anim-item {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.contato__anim-run {
+  animation: anim-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.contato__topbar {
+  padding: var(--space-sm) 0.5rem var(--space-md);
+  border-bottom: 1px solid var(--border);
+}
+
+.contato__breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.contato__breadcrumb a {
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.contato__breadcrumb a:hover {
+  color: var(--foreground);
+  opacity: 1;
+}
+
+.contato__breadcrumb-sep {
+  opacity: 0.4;
+  font-size: 0.7rem;
+}
+
+
+/* =============================================================
+   02. HEADER
+   ============================================================= */
+
+.contato__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.contato__title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.5rem, 5vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+
+.contato__subtitle {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+  max-width: 60ch;
+}
+
+
+/* =============================================================
+   03. GRID (form + canais)
+   ============================================================= */
+
+.contato__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+
+/* =============================================================
+   04. FORMULÁRIO
+   ============================================================= */
+
+.contato__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.contato__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.contato__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.contato__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.contato__input,
+.contato__textarea {
+  width: 100%;
+  padding: 0.7rem var(--space-md);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--card);
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: 0.88rem;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.contato__input::placeholder,
+.contato__textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.contato__input:focus,
+.contato__textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.contato__textarea {
+  resize: vertical;
+  min-height: 8rem;
+  line-height: 1.6;
+}
+
+.contato__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 0.75rem 1.4rem;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  align-self: flex-start;
+  transition:
+    background 0.18s ease,
+    transform 0.12s ease,
+    box-shadow 0.18s ease,
+    opacity 0.15s ease;
+}
+
+.contato__submit:hover:not(:disabled) {
+  background-color: oklch(from var(--primary) calc(l - 0.05) c h);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px oklch(from var(--primary) l c h / 0.3);
+}
+
+.contato__submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.contato__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.contato__submit-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+
+/* =============================================================
+   05. STATUS DE ENVIO
+   ============================================================= */
+
+.contato__status {
+  display: none;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.7rem var(--space-md);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.contato__status:empty {
+  display: none;
+}
+
+.contato__status--success,
+.contato__status--error {
+  display: flex;
+}
+
+.contato__status--success {
+  background-color: oklch(0.52 0.18 145 / 0.10);
+  border: 1.5px solid oklch(0.52 0.18 145);
+  color: oklch(0.40 0.16 145);
+}
+
+[data-theme="dark"] .contato__status--success {
+  background-color: oklch(0.72 0.18 145 / 0.10);
+  border-color: oklch(0.72 0.18 145);
+  color: oklch(0.72 0.18 145);
+}
+
+.contato__status--error {
+  background-color: oklch(0.577 0.245 27.325 / 0.10);
+  border: 1.5px solid oklch(0.577 0.245 27.325);
+  color: oklch(0.50 0.20 27);
+}
+
+[data-theme="dark"] .contato__status--error {
+  color: oklch(0.72 0.19 25);
+}
+
+.contato__status-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+
+/* =============================================================
+   06. CANAIS EXTERNOS
+   ============================================================= */
+
+.contato__channels {
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border);
+}
+
+.contato__channels-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: var(--space-sm);
+}
+
+.contato__channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contato__channel-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.65rem var(--space-md);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.contato__channel-link:hover {
+  border-color: var(--primary);
+  background-color: oklch(from var(--primary) l c h / 0.04);
+  opacity: 1;
+}
+
+.contato__channel-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+
+
+/* =============================================================
+   07. MEDIA QUERY — TABLET (≥ 640px)
+   ============================================================= */
+
+@media (min-width: 640px) {
+  .contato {
+    padding: var(--space-lg) var(--space-lg) var(--space-xl);
+  }
+}
+
+
+/* =============================================================
+   08. MEDIA QUERY — DESKTOP (≥ 1024px)
+   ============================================================= */
+
+@media (min-width: 1024px) {
+  .contato {
+    padding: var(--space-xl) var(--space-xl) calc(var(--space-xl) * 1.5);
+  }
+
+  .contato__grid {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-xl);
+  }
+
+  .contato__form {
+    flex: 2;
+  }
+
+  .contato__channels {
+    flex: 1;
+    padding-top: 0;
+    border-top: none;
+    padding-left: var(--space-xl);
+    border-left: 1px solid var(--border);
+  }
+}

@@ -1,3 +1,5 @@
+// Header.js
+
 import { createLogo } from "@components/logo"
 import { escapeHtml, cx } from "@utils/helpers"
 import { menuItems } from "@components/data/data"
@@ -112,11 +114,6 @@ const createMobileNavItemWithSubmenu = ({
 // ============================================================
 // DISPATCHER — decide qual variação de item renderizar
 // ============================================================
-// navVariant  → "desktop--icons" | "mobile--icons" (define a família)
-// iconVariant → "default" | "noIcon" — default GLOBAL, pode ser
-//               sobrescrito por item via hideIconOn
-// hideOn      → esconde o item INTEIRO numa família (data.js)
-// hideIconOn  → esconde só o ÍCONE numa família (data.js)
 const createNavLink = ({
   id, href, label, sub, className = "", navVariant = "desktop",
   iconVariant = "default", hideOn = [], hideIconOn = [],
@@ -140,6 +137,28 @@ const createNavLink = ({
 
   return createMobileNavItemWithSubmenu({ id, href, label, icon, sub, className, navVariant });
 };
+
+
+// ============================================================
+// LINK DE CONTA — "Perfil", condicional a estar logado
+// ============================================================
+// Não vem de menuItems (não é conteúdo de curso, é conta de usuário).
+// Nasce ESCONDIDO (hidden) — accountUI.js liga/desliga isso depois,
+// toda vez que o estado de login pode ter mudado (boot + toda navegação).
+//
+// Ícone só aparece na versão mobile — mesma convenção dos outros itens:
+// desktop nunca mostra ícone (escondido via CSS na seção 09 do header.css).
+const createAccountLink = ({ navVariant, className }) => /* html */ `
+  <li class="${cx("nav__item", className, "js-account-link")}" hidden>
+    <a data-link href="/perfil" class="nav__link">
+      ${createNavContent({
+  icon: navVariant.startsWith("mobile") ? getIcon("user") : "",
+  label: "Perfil",
+  navVariant,
+})}
+    </a>
+  </li>
+`;
 
 
 // ============================================================
@@ -183,7 +202,7 @@ export const Header = () => {
     createNavLink({
       ...item,
       navVariant: "desktop--icons",
-      className: "nav__item--desktop", // FIX: era "desktop--links" — CSS espera esse nome exato (seção 09)
+      className: "nav__item--desktop",
       iconVariant: "noIcon",
     })
   ).join("")
@@ -192,40 +211,46 @@ export const Header = () => {
     createNavLink({
       ...item,
       navVariant: "mobile--icons",
-      className: "nav__item--mobile", // FIX: era "mobile--links" — CSS espera esse nome exato (seção 08)
+      className: "nav__item--mobile",
       iconVariant: "default",
     })
   ).join("")
-  const year = new Date().getFullYear();
+
   return /* html */ `
     <header class="header">
       <nav class="nav">
         <div class="nav__brand">
           ${createLogo({ href: "/", svgVariant: "logo__svg--lg" })}
         </div>
-        <ul class="nav__list">${desktopNav}</ul>
+        <ul class="nav__list">
+          ${desktopNav}
+      
+        </ul>
+         ${createAccountLink({ navVariant: "desktop--icons", className: "nav__item--desktop" })}
         <div class="nav__actions">
           ${createThemeToggle({ variant: "desktop", className: "nav__btn-toggle-desktop" })}
           ${createHamburgerButton()}
+          
         </div>
+        
       </nav>
 
       <div class="nav__drawer-overlay" id="js-nav-overlay"></div>
 
       <aside class="nav__drawer" id="js-nav-aside">
-    <!-- Header do drawer -->
-  <div class="drawer__header">
-    <span class="drawer__title">Menu</span>
-    ${createThemeToggle({ variant: "mobile", className: "nav__btn-toggle-mobile" })}
-  </div>
-        <ul class="nav__mobile-list">${mobileNav}
-    
+        <div class="drawer__header">
+          <span class="drawer__title">Menu</span>
+          ${createThemeToggle({ variant: "mobile", className: "nav__btn-toggle-mobile" })}
+        </div>
+        
+        <ul class="nav__mobile-list">
+          ${createAccountLink({ navVariant: "mobile--icons", className: "nav__item--mobile" })}
+          ${mobileNav}
+        
         </ul>
-                <!-- Footer do drawer -->
-  <footer class="drawer__footer">
-
- ${Copy()}
-  </footer>
+        <footer class="drawer__footer">
+          ${Copy()}
+        </footer>
       </aside>
 
     </header>

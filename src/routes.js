@@ -1,20 +1,16 @@
 // src/routes.js
 // ─────────────────────────────────────────────────────────────────────────────
 // Tabela de rotas da aplicação.
-//
-// Cada rota tem:
-//   path      → padrão de URL (segmentos com : são parâmetros dinâmicos)
-//   component → função que recebe params e retorna HTML como string
-//
-// Ordem importa: o matchRoute() para na primeira rota que bater.
-// Rotas mais específicas devem vir antes das mais genéricas.
-// O wildcard "*" é tratado como fallback no próprio matchRoute().
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { Home } from "./pages/home";
 import { ModulePage } from "@pages/modulo.js";
 import { Lesson } from "@pages/lesson.js";
 import { LegalPage } from "./pages/legal";
+import { LoginPage } from "./pages/login";
+import { PerfilPage } from "./pages/perfil";
+import { ContatoPage } from "@pages/contato";
+import { FaqPage } from "@pages/faq";
 
 export const routes = [
 
@@ -24,20 +20,19 @@ export const routes = [
     component: Home
   },
 
-  {
-    path: "/privacidade",
-    component: () => LegalPage({ slug: "privacidade" }),
-  },
+  { path: "/login", component: LoginPage },
+
+  // Rota protegida pelo authGuard (src/core/guards.js) — sem token válido
+  // em localStorage, cai em /login?redirect=/perfil antes de chegar aqui.
+  { path: "/perfil", component: PerfilPage },
+
+  { path: "/privacidade", component: () => LegalPage({ slug: "privacidade" }) },
+  { path: "/termos", component: () => LegalPage({ slug: "termos" }) },
+  { path: "/cookies", component: () => LegalPage({ slug: "cookies" }) },
+
+  { path: "/contato", component: () => ContatoPage() },
+  { path: "/faq", component: () => FaqPage() },
   // ── Páginas de módulo ─────────────────────────────────────────────────────
-  //
-  // Cada módulo tem sua própria URL (/fundamentos, /funcoes, etc.).
-  // O componente ModulePage recebe { modulo: "fundamentos" } e encontra
-  // os dados no menuItems pelo id.
-  //
-  // Por que rotas estáticas em vez de uma rota dinâmica /:modulo?
-  //   Uma rota /:modulo bateria em QUALQUER pathname de um segmento,
-  //   incluindo rotas que não existem. Registrar cada módulo explicitamente
-  //   garante que só URLs válidas chegam ao ModulePage.
   {
     path: "/fundamentos",
     component: () => ModulePage({ modulo: "fundamentos" }),
@@ -84,12 +79,6 @@ export const routes = [
   },
 
   // ── Aulas ─────────────────────────────────────────────────────────────────
-  //
-  // Rota dinâmica que cobre TODAS as aulas de todos os módulos.
-  // Exemplo: /fundamentos/01-introducao → params = { modulo: "fundamentos", slug: "01-introducao" }
-  //
-  // Deve vir DEPOIS das rotas de módulo para não interceptá-las.
-  // Ex: sem isso, /fundamentos bateria aqui com modulo="fundamentos" e slug=undefined.
   {
     path: "/:modulo/:slug",
     component: Lesson,
@@ -107,9 +96,4 @@ export const routes = [
     `,
   },
 
-  
-   
-
 ]
-
-

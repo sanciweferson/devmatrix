@@ -34,15 +34,17 @@ const colB = modules.slice(halfway);
 
 // precisa de "id" pra bater com getIcon()
 const legalLinks = [
+  { id: "contato", href: "/contato", label: "Contato" },
+  { id: "faq", href: "/faq", label: "Faq" },
   { id: "privacidade", href: "/privacidade", label: "Privacidade" },
   { id: "termos", href: "/termos", label: "Termos de uso" },
   { id: "cookies", href: "/cookies", label: "Cookies" },
 ];
 // "id" bate com uma chave em icons.js (getIcon) — sem SVG duplicado.
 const socialLinks = [
-  { href: "https://github.com", label: "GitHub", id: "github" },
-  { href: "https://twitter.com", label: "Twitter", id: "twitter" },
-  { href: "https://youtube.com", label: "YouTube", id: "youtube" },
+  { href: "https://github.com/sanciweferson", label: "GitHub", id: "github" },
+  { href: "https://twitter.com/sanciweferson", label: "Twitter", id: "twitter" },
+  { href: "https://youtube.com/@sanciwefersonmendes742?si=BBAIq7vOtYirQOPb", label: "YouTube", id: "youtube" },
   { href: "/rss.xml", label: "RSS", id: "rss" },
   { href: "https://instagram.com/sanciweferson", label: "Instagram", id: "instagram" },
 ];
