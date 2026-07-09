@@ -325,7 +325,7 @@
    07. MEDIA QUERY — TABLET (≥ 640px)
    ============================================================= */
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .contato {
     padding: var(--space-lg) var(--space-lg) var(--space-xl);
   }

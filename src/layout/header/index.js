@@ -236,7 +236,7 @@ export const Header = () => {
           ${createHamburgerButton()}
           
         </div>
-        
+         
       </nav>
 
       <div class="nav__drawer-overlay" id="js-nav-overlay"></div>
@@ -250,8 +250,9 @@ export const Header = () => {
         <ul class="nav__mobile-list">
           ${createAccountLink({ navVariant: "mobile--icons", className: "nav__item--mobile" })}
           ${mobileNav}
-        
+    
         </ul>
+          
         <footer class="drawer__footer">
           ${Copy()}
         </footer>
