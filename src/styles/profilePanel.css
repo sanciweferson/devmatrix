@@ -133,12 +133,12 @@
 
 @media (min-width: 768px) {
   .profile-panel {
-  
+
     justify-content: flex-end;
     padding: 0;
     display: flex;
-  
- 
+
+
   }
 
   .profile-panel__dialog {
@@ -162,8 +162,7 @@
   .profile-panel__body {
     align-items: stretch;
   }
-    .profile--modificadores--mobile {
-      background-color: aqua !important;
-      display: none;
-    }
+
+ 
+  
 }
