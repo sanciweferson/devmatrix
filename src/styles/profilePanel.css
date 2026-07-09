@@ -1,0 +1,158 @@
+/* =========================================================
+   PROFILE PANEL — edição de perfil
+   Mobile (<750px): modal centralizado
+   Desktop (≥750px): sidebar fixa, ancorada à direita
+
+   Breakpoint 750px é diferente do resto do site (640/768/1024) —
+   valor pedido especificamente pra este componente.
+
+   Reaproveita tokens de animação/sombra já existentes em header.css
+   (--nav-ease, --nav-fast, --nav-normal, --nav-slow, --nav-shadow-lg,
+   --nav-overlay-bg) — nada duplicado.
+========================================================= */
+
+.profile-panel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal) - 1);
+  background-color: var(--nav-overlay-bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--nav-slow) var(--nav-ease);
+}
+
+.profile-panel-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.profile-panel {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  pointer-events: none;
+}
+
+.profile-panel__dialog {
+  width: 100%;
+  max-width: 26rem;
+  /* Garante que nada fica cortado: altura máxima com margem de
+     respiro + scroll interno quando o conteúdo não cabe */
+  max-height: calc(100dvh - 2 * var(--space-md));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--nav-shadow-lg);
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  transition:
+    opacity var(--nav-normal) var(--nav-ease),
+    transform var(--nav-normal) var(--nav-ease);
+}
+
+.profile-panel.open {
+  pointer-events: auto;
+}
+
+.profile-panel.open .profile-panel__dialog {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.profile-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.profile-panel__title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.profile-panel__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition:
+    background-color var(--nav-fast) var(--nav-ease),
+    color var(--nav-fast) var(--nav-ease);
+}
+
+.profile-panel__close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.profile-panel__close:hover {
+  background-color: var(--accent);
+  color: var(--foreground);
+}
+
+.profile-panel__close:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Corpo rolável — a segunda parte da garantia de "nada cortado" */
+.profile-panel__body {
+  padding: var(--space-lg);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+
+/* =========================================================
+   DESKTOP (≥750px) — vira sidebar fixa, ancorada à direita
+========================================================= */
+
+@media (min-width: 750px) {
+  .profile-panel {
+    justify-content: flex-end;
+    padding: 0;
+  }
+
+  .profile-panel__dialog {
+    width: min(100%, 24rem);
+    max-width: 24rem;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+    border-left: 1px solid var(--border);
+    /* No desktop a transição é de posição (slide), não de escala —
+       mesma lógica do .nav__drawer, só que entrando pela direita */
+    transform: translate3d(100%, 0, 0);
+  }
+
+  .profile-panel.open .profile-panel__dialog {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .profile-panel__body {
+    align-items: stretch;
+  }
+}

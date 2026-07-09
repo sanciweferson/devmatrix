@@ -1,38 +1,11 @@
 /* =========================================================
-   PERFIL — edição de dados + logout
-   Mesmo padrão visual do login.css.
+   PERFIL — elementos internos reaproveitados pelo painel
+   (profilePanel.js). Moldura/posicionamento do painel em si
+   vivem em profilePanel.css — aqui só ficam avatar, formulário
+   e botões, que não mudam entre modal (mobile) e sidebar
+   (desktop).
 ========================================================= */
 
-.perfil {
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-xl) var(--space-md);
-}
-
-.perfil__card {
-  width: 100%;
-  max-width: 26rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-lg);
-  padding: var(--space-xl) var(--space-lg);
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-}
-
-.perfil__title {
-  font-family: 'Syne', sans-serif;
-  font-size: var(--text-2xl);
-  font-weight: 800;
-  color: var(--foreground);
-}
-
-/* ── Avatar ── */
 .perfil__avatar-wrap {
   display: flex;
   flex-direction: column;
@@ -93,7 +66,6 @@
   height: 0.9rem;
 }
 
-/* ── Formulário ── */
 .perfil__form {
   display: flex;
   flex-direction: column;
@@ -146,17 +118,6 @@
   background-color: oklch(from var(--primary) calc(l - 0.05) c h);
 }
 
-.perfil__saved-msg {
-  text-align: center;
-  font-size: var(--text-xs);
-  color: oklch(0.52 0.18 145);
-}
-
-[data-theme="dark"] .perfil__saved-msg {
-  color: oklch(0.72 0.18 145);
-}
-
-/* ── Logout ── */
 .perfil__btn-logout {
   width: 100%;
   padding: 0.7rem var(--space-md);

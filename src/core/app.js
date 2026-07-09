@@ -7,7 +7,8 @@ import { applyEffectiveTheme } from "@core/theme.core";
 import { buildPortalDropdowns, setupMobileSubmenus } from "@core/buildPortalDropdowns";
 import { initScrollTop } from "@core/scrollTop";
 import { applyChromeVisibility } from "@core/chrome";
-import { applyAccountVisibility } from "@core/accountUI"; // NOVO
+import { applyAccountVisibility } from "@core/accountUI";
+import { initProfilePanel } from "@core/profilePanel"; // NOVO
 
 import { runPipeline } from "@core/pipeline";
 import { authGuard, logGuard } from "@core/guards";
@@ -25,12 +26,18 @@ export function App() {
     if (!headerEl) return;
 
     applyChromeVisibility(window.location.pathname);
-    applyAccountVisibility(); // NOVO — mostra "Perfil" se já tiver token salvo
+    applyAccountVisibility();
 
     buildPortalDropdowns(headerEl);
     setupMobileSubmenus(headerEl);
     initMenu();
     initTheme();
+
+    // Precisa rodar ANTES de initPage() — se a rota inicial for /perfil,
+    // initPage() chama openProfilePanel(), que depende do painel já
+    // estar conectado ao DOM.
+    initProfilePanel();
+
     initPage(window.location.pathname);
     initScrollTop();
   });

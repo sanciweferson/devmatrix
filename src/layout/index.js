@@ -1,7 +1,6 @@
 import { Header } from "@/layout/header";
-
 import { Footer } from "@layout/footer";
-
+import { ProfilePanel } from "@core/profilePanel";
 
 export function Layout({ children }) {
   return /* html */ `
@@ -12,5 +11,7 @@ export function Layout({ children }) {
     </main>
 
     ${Footer()}
+
+    ${ProfilePanel()}
   `;
 }

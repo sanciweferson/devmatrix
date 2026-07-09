@@ -1,19 +1,12 @@
 // src/pages/login.js
 // ─────────────────────────────────────────────────────────────────────────────
 // Tela de login — SÓ FRONT-END. Nenhuma chamada de API real.
-//
-// Fluxo de um login "bem-sucedido":
-//   1. Valida o campo (se for email/WhatsApp) — bloqueia com erro se vazio
-//      ou em formato inválido.
-//   2. Salva um token fake + um perfil inicial (se ainda não existir um).
-//   3. Troca o conteúdo do card por uma mensagem de boas-vindas.
-//   4. Depois de ~1.8s, redireciona — pro "?redirect=" se ele existir
-//      (voltando pra página que o authGuard bloqueou), senão pra Home.
 // ─────────────────────────────────────────────────────────────────────────────
 import { Logo } from "@components/logo";
 import { getIcon } from "@components/data/icons";
 import { navigate } from "@core/router";
 import { setAuthToken, getProfile, saveProfile } from "@core/auth";
+import { formatWhatsapp, isValidWhatsapp } from "@utils/helpers";
 
 export function LoginPage() {
   return /* html */ `
@@ -112,8 +105,8 @@ export function initLoginPage() {
       autocomplete: "tel",
       placeholder: "(11) 91234-5678",
       empty: "Preencha seu WhatsApp para continuar.",
-      invalid: "Digite um número válido (com DDD).",
-      test: (v) => v.replace(/\D/g, "").length >= 10,
+      invalid: "Digite um WhatsApp válido, com DDD. Ex: (11) 91234-5678.",
+      test: isValidWhatsapp,
     },
   };
 
@@ -149,19 +142,31 @@ export function initLoginPage() {
       input.autocomplete = config.autocomplete;
       input.placeholder = config.placeholder;
       input.value = "";
+
+      // maxlength exato de "(XX) XXXXX-XXXX" — só faz sentido no WhatsApp,
+      // que tem tamanho fixo por causa da máscara.
+      if (method === "whatsapp") {
+        input.maxLength = 15;
+      } else {
+        input.removeAttribute("maxlength");
+      }
+
       clearError();
       input.focus();
     });
   });
 
-  // Limpa o erro assim que a pessoa começa a corrigir — não trava o
-  // feedback vermelho até o próximo submit.
-  input?.addEventListener("input", clearError);
+  // Limpa erro E aplica a máscara de WhatsApp em tempo real —
+  // a máscara só roda quando currentMethod é "whatsapp", pra não
+  // interferir na digitação normal de email.
+  input?.addEventListener("input", () => {
+    clearError();
 
-  // ══════════════════════════════════════════════════════════════════════
-  // Estado de sucesso: troca o conteúdo do card por uma mensagem de
-  // boas-vindas por ~1.8s, depois navega.
-  // ══════════════════════════════════════════════════════════════════════
+    if (currentMethod === "whatsapp") {
+      input.value = formatWhatsapp(input.value);
+    }
+  });
+
   function showWelcomeAndRedirect(destination) {
     const card = document.getElementById("js-login-card");
     if (card) {
@@ -177,17 +182,9 @@ export function initLoginPage() {
     setTimeout(() => navigate(destination), 1800);
   }
 
-  // ══════════════════════════════════════════════════════════════════════
-  // PLACEHOLDER DE TESTE — simula um login bem-sucedido sem backend.
-  // Troque pela chamada de API real quando o backend existir; os pontos
-  // de chamada (Google, GitHub, form) continuam iguais, só o "como
-  // autentica" muda aqui dentro.
-  // ══════════════════════════════════════════════════════════════════════
   function simulateLogin({ contact = "", providerLabel = "" } = {}) {
     setAuthToken("fake-token-para-teste");
 
-    // Cria um perfil inicial só na PRIMEIRA vez — logins seguintes não
-    // sobrescrevem nome/foto que a pessoa já tenha editado em /perfil.
     if (!getProfile()) {
       saveProfile({
         name: providerLabel ? `Usuário ${providerLabel}` : "Novo usuário",
@@ -197,8 +194,6 @@ export function initLoginPage() {
     }
 
     const params = new URLSearchParams(window.location.search);
-    // Prioriza voltar pra onde o authGuard bloqueou (?redirect=) —
-    // se não veio de um bloqueio, cai na Home mesmo, como você pediu.
     showWelcomeAndRedirect(params.get("redirect") || "/");
   }
 

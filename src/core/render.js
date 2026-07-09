@@ -6,13 +6,11 @@ import { initLesson } from "@pages/lesson";
 import { initScrollTop } from "@core/scrollTop";
 import { initLoginPage } from "../pages/login";
 import { initLegalPage } from "../pages/legal";
-import { initPerfilPage } from "../pages/perfil";
 import { applyChromeVisibility } from "@core/chrome";
-import { applyAccountVisibility } from "@core/accountUI"; // NOVO
-import { initContatoPage } from "@pages/contato";
-import { initFaqPage } from "@pages/faq";
+import { applyAccountVisibility } from "@core/accountUI";
+import { openProfilePanel } from "@core/profilePanel"; // NOVO
 
-const LEGAL_SLUGS = ["privacidade", "termos", "cookies", ]
+const LEGAL_SLUGS = ["privacidade", "termos", "cookies"];
 
 let currentCleanup = null;
 let cleanupScrollTop = null;
@@ -48,9 +46,15 @@ export function initPage(path) {
 
   if (path === "/") return initHome();
   if (path === "/login") return initLoginPage();
-  if (path === "/perfil") return initPerfilPage();
-  if (path === "/contato") return initContatoPage();
-  if (path === "/faq") return initFaqPage();
+
+  // Perfil não é mais uma página própria — a rota renderiza a Home por
+  // trás (ver routes.js) e o painel abre por cima. Cobre login com
+  // ?redirect=/perfil, links compartilhados e F5 na URL.
+  if (path === "/perfil") {
+    const cleanup = initHome();
+    openProfilePanel();
+    return cleanup;
+  }
 
   if (segments.length === 1 && LEGAL_SLUGS.includes(segments[0])) {
     return initLegalPage();
@@ -97,6 +101,6 @@ export function updatePage() {
     currentCleanup = initPage(window.location.pathname);
     cleanupScrollTop = initScrollTop();
     applyChromeVisibility(window.location.pathname);
-    applyAccountVisibility(); // NOVO
+    applyAccountVisibility();
   });
 }

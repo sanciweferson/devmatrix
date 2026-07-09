@@ -148,9 +148,14 @@ const createNavLink = ({
 //
 // Ícone só aparece na versão mobile — mesma convenção dos outros itens:
 // desktop nunca mostra ícone (escondido via CSS na seção 09 do header.css).
+// FIX: removido "data-link". Esse link não navega mais — abre o painel
+// via JS (profilePanel.js). Manter data-link faria o clique disparar
+// os DOIS sistemas ao mesmo tempo (painel abrindo + SPA navegando pra
+// /perfil), um bug de efeito duplo. href continua por acessibilidade
+// (leitor de tela, "abrir em nova aba").
 const createAccountLink = ({ navVariant, className }) => /* html */ `
   <li class="${cx("nav__item", className, "js-account-link")}" hidden>
-    <a data-link href="/perfil" class="nav__link">
+    <a href="/perfil" class="nav__link">
       ${createNavContent({
   icon: navVariant.startsWith("mobile") ? getIcon("user") : "",
   label: "Perfil",
@@ -159,7 +164,6 @@ const createAccountLink = ({ navVariant, className }) => /* html */ `
     </a>
   </li>
 `;
-
 
 // ============================================================
 // BOTÃO DE TEMA
