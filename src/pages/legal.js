@@ -17,9 +17,19 @@
 //   Como essas rotas têm 1 segmento, initPage() vai chamar initModulePage()
 //   por engano se você não adicionar um guard antes checando o slug.
 //   Veja o snippet sugerido no chat.
+//
+// ATUALIZAÇÃO (autenticação + foto de perfil):
+//   Privacidade e Termos foram revisados para cobrir:
+//     - Conta local criada por e-mail (login social Google/GitHub ainda é
+//       só visual — NÃO estabelece conexão real, por isso não é mencionado
+//       como fonte de dados nesta versão).
+//     - Acesso real à câmera/galeria do dispositivo para foto de perfil.
+//   Tudo continua sendo tratado como armazenamento local (sem backend).
+//   Quando um backend real existir, esta política precisa ser reescrita
+//   de novo — ver nota extensa no chat sobre o que muda nesse momento.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const LAST_UPDATED = "7 de julho de 2026";
+const LAST_UPDATED = "9 de julho de 2026";
 
 // ─── CONTEÚDO DAS PÁGINAS ───────────────────────────────────────────────────
 
@@ -56,19 +66,36 @@ const LEGAL_PAGES = {
       <section class="legal__section">
         <h2 class="legal__section-title">3. Quais dados são tratados</h2>
         <p>
-          O DevMatrix não possui sistema de cadastro, login ou formulário
-          que colete dados pessoais identificáveis (nome, e-mail, CPF, etc.).
-          Os únicos dados armazenados relacionados ao uso da plataforma são:
+          O DevMatrix não possui um servidor de autenticação nem um backend
+          que armazene dados em nuvem. Os dados abaixo existem apenas
+          localmente, no navegador que você está usando:
         </p>
         <ul class="legal__list">
           <li><strong>Progresso das aulas</strong> — quais lições você marcou como concluídas.</li>
           <li><strong>Preferência de tema</strong> — se você usa o modo claro ou escuro.</li>
+          <li><strong>Dados de conta local</strong> — caso você opte por criar uma conta pela tela de login (e-mail ou número de WhatsApp, além do nome, quando informados), esses dados são salvos exclusivamente no <code>localStorage</code> do seu navegador.</li>
+          <li><strong>Foto de perfil</strong> — caso você opte por personalizar seu perfil, a imagem selecionada via câmera ou galeria também é armazenada localmente.</li>
         </ul>
         <p>
-          Esses dados são salvos exclusivamente no <code>localStorage</code>
-          do seu próprio navegador — um espaço de armazenamento local do
-          dispositivo. Eles <strong>não são enviados, transmitidos ou
-          armazenados em nenhum servidor</strong> controlado pelo DevMatrix.
+          Nenhum desses dados é enviado, transmitido ou armazenado em
+          nenhum servidor controlado pelo DevMatrix. A conta criada é
+          apenas local ao dispositivo/navegador: não existe verificação,
+          recuperação de senha ou sincronização entre dispositivos.
+        </p>
+        <p>
+          A tela de login exibe opções de "Entrar com Google" e "Entrar
+          com GitHub". No momento, esses botões fazem parte da interface
+          mas <strong>não estabelecem conexão real</strong> com esses
+          provedores — nenhum dado é trocado com Google ou GitHub ao
+          utilizá-los. Esta política será atualizada assim que essa
+          integração passar a funcionar de fato.
+        </p>
+        <p>
+          Sobre a foto de perfil: o acesso à câmera ou à galeria é
+          solicitado através da permissão padrão do próprio navegador, e
+          apenas no momento em que você inicia o envio da imagem. O
+          DevMatrix não tem acesso contínuo ou em segundo plano à câmera
+          ou à galeria fora desse momento pontual.
         </p>
         <p>
           Adicionalmente, como o site é hospedado na infraestrutura da
@@ -85,10 +112,13 @@ const LEGAL_PAGES = {
         <h2 class="legal__section-title">4. Finalidade do tratamento</h2>
         <p>
           Os dados salvos em <code>localStorage</code> existem unicamente
-          para permitir que a plataforma lembre seu progresso de estudo e
-          sua preferência visual entre uma visita e outra, melhorando a
-          experiência de uso. Não há finalidade de marketing, publicidade,
-          perfilamento comportamental ou venda de dados a terceiros.
+          para permitir que a plataforma lembre seu progresso de estudo,
+          sua preferência visual, e — quando você optar por usar essas
+          funcionalidades — reconheça uma conta local e exiba a foto de
+          perfil escolhida, melhorando a experiência de uso dentro daquele
+          navegador. Não há finalidade de marketing, publicidade, envio de
+          e-mails, perfilamento comportamental ou venda de dados a
+          terceiros.
         </p>
       </section>
 
@@ -98,31 +128,47 @@ const LEGAL_PAGES = {
           O tratamento descrito nesta política se enquadra na hipótese de
           <strong>execução de funcionalidades do próprio serviço</strong>
           solicitadas pelo titular (art. 7º, V, LGPD) — ou seja, o
-          armazenamento local existe apenas porque é tecnicamente necessário
-          para a funcionalidade de "salvar progresso" que o próprio usuário
-          aciona ao usar o site.
+          armazenamento local existe apenas porque é tecnicamente
+          necessário para as funcionalidades ("salvar progresso", "criar
+          conta local", "personalizar foto de perfil") que o próprio
+          usuário aciona voluntariamente ao usar o site.
+        </p>
+        <p>
+          No caso específico do acesso à câmera ou à galeria, o próprio
+          navegador exige uma autorização explícita antes de conceder
+          esse acesso, funcionando como uma camada adicional de
+          consentimento (art. 7º, I, LGPD) — o usuário sempre precisa
+          aprovar o pedido de permissão do navegador antes de qualquer
+          acesso à câmera ou galeria acontecer.
         </p>
       </section>
 
       <section class="legal__section">
         <h2 class="legal__section-title">6. Compartilhamento de dados</h2>
         <p>
-          O DevMatrix não compartilha, vende ou transfere dados a terceiros,
-          pelo simples fato de que não coleta dados pessoais em servidor
-          próprio. Os dados de progresso e tema permanecem exclusivamente
-          no dispositivo do usuário.
+          O DevMatrix não compartilha, vende ou transfere dados a
+          terceiros. Isso vale tanto para progresso e tema quanto para os
+          dados de conta local e a foto de perfil: por estarem
+          armazenados apenas no seu navegador, não há transmissão a
+          nenhum servidor ou terceiro.
         </p>
       </section>
 
       <section class="legal__section">
         <h2 class="legal__section-title">7. Armazenamento e segurança</h2>
         <p>
-          Por serem mantidos localmente no navegador, os dados de progresso
-          e tema estão sujeitos às mesmas proteções de segurança do seu
-          próprio dispositivo e navegador. Limpar o cache/dados de
-          navegação do site, trocar de navegador ou usar modo anônimo
-          apaga esses dados permanentemente — não há cópia de backup em
-          nenhum servidor.
+          Por serem mantidos localmente no navegador, os dados de
+          progresso, tema, conta local e foto de perfil estão sujeitos às
+          mesmas proteções de segurança do seu próprio dispositivo e
+          navegador. Limpar o cache/dados de navegação do site, trocar de
+          navegador ou usar modo anônimo apaga esses dados
+          permanentemente — não há cópia de backup em nenhum servidor.
+        </p>
+        <p>
+          Como a conta e a foto de perfil ficam salvas localmente,
+          recomenda-se cautela ao usar essas funcionalidades em
+          computadores compartilhados ou públicos: qualquer pessoa com
+          acesso ao mesmo navegador pode visualizar esses dados.
         </p>
       </section>
 
@@ -144,11 +190,13 @@ const LEGAL_PAGES = {
           <li>Revogação do consentimento a qualquer momento.</li>
         </ul>
         <p>
-          Na prática, como os dados de progresso e tema ficam apenas no seu
-          navegador, você já detém controle total sobre eles: basta limpar
-          os dados do site nas configurações do seu navegador para
-          exercer o direito de eliminação a qualquer momento, sem
-          necessidade de solicitação.
+          Na prática, como todos esses dados ficam apenas no seu
+          navegador, você já detém controle total sobre eles. Você pode
+          editar o nome e os dados de contato, trocar a foto de perfil, ou
+          sair da conta a qualquer momento pelo painel "Meu perfil" da
+          plataforma — ou, alternativamente, limpando diretamente os
+          dados de navegação do site nas configurações do seu navegador,
+          o que apaga tudo de uma vez.
         </p>
       </section>
 
@@ -165,7 +213,9 @@ const LEGAL_PAGES = {
         <h2 class="legal__section-title">10. Alterações nesta política</h2>
         <p>
           Esta política pode ser atualizada a qualquer momento para
-          refletir mudanças na plataforma ou na legislação aplicável.
+          refletir mudanças na plataforma ou na legislação aplicável —
+          por exemplo, caso a integração real com Google/GitHub passe a
+          funcionar, ou caso um backend real seja adicionado no futuro.
           A data da última atualização está sempre indicada no topo
           desta página.
         </p>
@@ -213,7 +263,47 @@ const LEGAL_PAGES = {
       </section>
 
       <section class="legal__section">
-        <h2 class="legal__section-title">4. Propriedade intelectual</h2>
+        <h2 class="legal__section-title">4. Conta de usuário (funcionalidade experimental)</h2>
+        <p>
+          O DevMatrix oferece uma tela de criação de conta e login,
+          incluindo a opção de personalizar o perfil com uma foto. Essa
+          funcionalidade está em fase experimental: as informações de
+          conta e a foto de perfil são armazenadas apenas localmente, no
+          navegador utilizado, sem sincronização entre dispositivos e sem
+          garantia de persistência a longo prazo.
+        </p>
+        <p>
+          O conteúdo educacional das aulas exige que você crie uma conta
+          para acessá-lo. Páginas institucionais — como esta, Termos de
+          Uso, Política de Privacidade, Política de Cookies, Contato e
+          Perguntas Frequentes — continuam abertas, sem necessidade de
+          login. As opções de login com Google e GitHub, quando
+          exibidas, podem não estar funcionalmente conectadas a esses
+          provedores, conforme detalhado na Política de Privacidade.
+        </p>
+      </section>
+
+      <section class="legal__section">
+        <h2 class="legal__section-title">5. Uso da câmera e da galeria de fotos</h2>
+        <p>
+          Ao optar por adicionar uma foto de perfil, você pode ser
+          solicitado a conceder permissão de acesso à câmera ou à galeria
+          do seu dispositivo, através dos controles nativos do seu
+          navegador. Essa permissão é solicitada apenas no momento do
+          envio da imagem.
+        </p>
+        <p>
+          Você é o único responsável pelo conteúdo das imagens que optar
+          por enviar. É proibido o envio de imagens ilegais, ofensivas, ou
+          que violem direitos de terceiros. Dado o caráter experimental
+          dessa funcionalidade, o DevMatrix reserva-se o direito de
+          modificar ou remover recursos relacionados a perfil a qualquer
+          momento, sem aviso prévio.
+        </p>
+      </section>
+
+      <section class="legal__section">
+        <h2 class="legal__section-title">6. Propriedade intelectual</h2>
         <p>
           Todo o conteúdo textual, exemplos de código, estrutura das aulas e
           identidade visual do DevMatrix são de autoria de Sanciweferson,
@@ -223,7 +313,7 @@ const LEGAL_PAGES = {
       </section>
 
       <section class="legal__section">
-        <h2 class="legal__section-title">5. Isenção de responsabilidade</h2>
+        <h2 class="legal__section-title">7. Isenção de responsabilidade</h2>
         <p>
           O conteúdo do DevMatrix tem finalidade exclusivamente educacional.
           Embora produzido com cuidado técnico, não há garantia de que as
@@ -236,7 +326,7 @@ const LEGAL_PAGES = {
       </section>
 
       <section class="legal__section">
-        <h2 class="legal__section-title">6. Disponibilidade do serviço</h2>
+        <h2 class="legal__section-title">8. Disponibilidade do serviço</h2>
         <p>
           Por ser um projeto pessoal, o DevMatrix não possui garantia de
           disponibilidade contínua (SLA). O acesso pode ser interrompido,
@@ -246,7 +336,7 @@ const LEGAL_PAGES = {
       </section>
 
       <section class="legal__section">
-        <h2 class="legal__section-title">7. Links externos</h2>
+        <h2 class="legal__section-title">9. Links externos</h2>
         <p>
           O DevMatrix pode conter links para sites, ferramentas ou
           documentações de terceiros (como MDN, especificações ECMAScript,
@@ -256,7 +346,7 @@ const LEGAL_PAGES = {
       </section>
 
       <section class="legal__section">
-        <h2 class="legal__section-title">8. Alterações nestes termos</h2>
+        <h2 class="legal__section-title">10. Alterações nestes termos</h2>
         <p>
           Estes termos podem ser atualizados a qualquer momento. O uso
           continuado da plataforma após alterações implica concordância
@@ -266,7 +356,7 @@ const LEGAL_PAGES = {
       </section>
 
       <section class="legal__section">
-        <h2 class="legal__section-title">9. Lei aplicável e foro</h2>
+        <h2 class="legal__section-title">11. Lei aplicável e foro</h2>
         <p>
           Estes termos são regidos pelas leis da República Federativa do
           Brasil. Eventuais controvérsias serão submetidas ao foro do
@@ -276,7 +366,7 @@ const LEGAL_PAGES = {
       </section>
 
       <section class="legal__section">
-        <h2 class="legal__section-title">10. Contato</h2>
+        <h2 class="legal__section-title">12. Contato</h2>
         <p>
           Dúvidas sobre estes termos podem ser enviadas através dos canais
           de contato indicados no rodapé do site.
@@ -327,7 +417,9 @@ const LEGAL_PAGES = {
         <ul class="legal__list">
           <li><strong>Progresso das aulas</strong> — quais lições foram marcadas como concluídas;</li>
           <li><strong>Preferência de tema</strong> — modo claro ou escuro selecionado;</li>
-          <li><strong>Última aula acessada</strong> — usada para retomar de onde você parou.</li>
+          <li><strong>Última aula acessada</strong> — usada para retomar de onde você parou;</li>
+          <li><strong>Dados de conta local</strong> — e-mail ou número de WhatsApp, além do nome, caso você crie uma conta ou edite o painel de perfil;</li>
+          <li><strong>Foto de perfil</strong> — caso você opte por personalizar seu perfil via câmera ou galeria do dispositivo.</li>
         </ul>
         <p>
           Nenhum desses dados é transmitido a servidores do DevMatrix ou de
@@ -359,8 +451,9 @@ const LEGAL_PAGES = {
           <li>Localize o domínio do DevMatrix e remova os dados armazenados.</li>
         </ul>
         <p>
-          Isso apaga permanentemente seu progresso salvo e preferência de
-          tema, sem afetar sua navegação em outros sites.
+          Isso apaga permanentemente seu progresso salvo, preferência de
+          tema, dados de conta local e foto de perfil, sem afetar sua
+          navegação em outros sites.
         </p>
       </section>
 

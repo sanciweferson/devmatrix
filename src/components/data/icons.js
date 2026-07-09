@@ -247,6 +247,22 @@ export function getIcon(id, variant = "default") {
     <circle cx="9" cy="15.5" r="0.8" fill="currentColor"/>
   </svg>`},
 
+    // NOVO: mesmo estilo visual do grupo acima (sem width/height fixo,
+    // stroke-width 1.5) — pra Contato() e FaqPage() ficarem visualmente
+    // coerentes com Privacidade/Termos/Cookies no footer.
+    "contato": {
+      default: /* html */ `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="3" y="5" width="18" height="14" rx="2"/>
+    <path d="m4 7 8 6 8-6"/>
+  </svg>`},
+
+    "faq": {
+      default: /* html */ `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M9.3 9.3a2.7 2.7 0 0 1 5.1-1.2c.4.9.2 1.9-.6 2.6l-.7.6a2 2 0 0 0-.7 1.5"/>
+    <circle cx="12" cy="16.3" r="0.75" fill="currentColor" stroke="none"/>
+  </svg>`},
+
     // ── Login (tela de autenticação) ────────────────────────────────────────
     "google": {
       default: /* html */ `<svg viewBox="0 0 24 24" aria-hidden="true">
@@ -254,11 +270,6 @@ export function getIcon(id, variant = "default") {
     <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.86l-3.86-3.01c-1.07.72-2.44 1.15-4.07 1.15-3.13 0-5.78-2.12-6.73-4.96H1.28v3.11C3.25 21.3 7.31 24 12 24z"/>
     <path fill="#FBBC05" d="M5.27 14.32c-.25-.72-.38-1.5-.38-2.32s.14-1.6.38-2.32V6.57H1.28A11.95 11.95 0 0 0 0 12c0 1.93.46 3.76 1.28 5.43z"/>
     <path fill="#EA4335" d="M12 4.75c1.76 0 3.34.61 4.58 1.8l3.43-3.43C17.94 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.28 6.57l3.99 3.11C6.22 6.87 8.87 4.75 12 4.75z"/>
-  </svg>`},
-
-    "github": {
-      default: /* html */ `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55v-2.14c-3.17.69-3.84-1.36-3.84-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.53-2.53-.29-5.19-1.27-5.19-5.63 0-1.24.44-2.26 1.17-3.06-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.17a10.9 10.9 0 0 1 5.72 0c2.18-1.48 3.14-1.17 3.14-1.17.62 1.57.23 2.73.11 3.02.73.8 1.17 1.82 1.17 3.06 0 4.37-2.66 5.34-5.2 5.62.41.35.77 1.04.77 2.1v3.11c0 .3.21.66.79.55 4.51-1.5 7.77-5.76 7.77-10.78C23.25 5.48 18.27.5 12 .5z"/>
   </svg>`},
 
     "mail": {
@@ -307,6 +318,3 @@ export function getIcon(id, variant = "default") {
   }
   return icon[variant] ?? icon.default ?? ""
 }
-
-
-

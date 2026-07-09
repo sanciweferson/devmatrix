@@ -21,9 +21,17 @@
 //   Eles não navegam, não renderizam, não sabem quantos outros guards existem.
 //   Só decidem e delegam. Quem executa a consequência é a pipeline.
 //
-// NENHUMA MUDANÇA em relação ao projeto antigo.
-// O arquivo é idêntico — só os comentários foram expandidos.
+// ⚠️ IMPORTANTE — natureza dessa proteção:
+//   O DevMatrix não tem backend. Este guard roda 100% no navegador, DEPOIS
+//   que o site inteiro (HTML/JS/conteúdo das aulas) já foi baixado. Ou seja:
+//   isso é um funil de experiência (mostra a Home, convida a criar conta,
+//   só então libera o conteúdo) — NÃO é proteção de dados real. Alguém com
+//   DevTools, "Ver código-fonte" ou JS desabilitado ainda acessa o conteúdo.
+//   Pra proteção de verdade, seria necessário um backend controlando o que
+//   é de fato entregue ao navegador.
 // ─────────────────────────────────────────────────────────────────────────────
+
+import { menuItems } from "@components/data/data";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,29 +39,9 @@
 //
 // Guard de observabilidade: registra cada tentativa de navegação no console.
 // Nunca bloqueia, nunca redireciona.
-//
-// Por que ter um guard só para log?
-//   Separa responsabilidades: o authGuard não precisa saber sobre logs.
-//   Se você quiser desabilitar logs em produção, remove logGuard do array
-//   em router.js — sem tocar em nenhum outro arquivo.
-//
-// Útil para:
-//   - Debugar o fluxo de navegação durante desenvolvimento
-//   - Confirmar que a pipeline está sendo disparada corretamente
-//   - Base para um futuro analyticsGuard
 // ─────────────────────────────────────────────────────────────────────────────
 export function logGuard(from, to, next) {
-
-  // `from || "entrada"`:
-  //   Operador OR lógico — se `from` for falsy (null, undefined, ""),
-  //   usa "entrada" como fallback.
-  //   Na primeira navegação da SPA, `from` pode ser string vazia.
-  //   "entrada" torna o log legível: "[router] navegando: entrada → /"
-  //   Em vez de:                     "[router] navegando:  → /"
   console.log(`[router] navegando: ${from || "entrada"} → ${to}`);
-
-  // Sempre chama next() sem argumento: "aprovado, continue a pipeline".
-  // logGuard é um guard de passagem — jamais deve bloquear.
   next();
 }
 
@@ -72,53 +60,56 @@ export function authGuard(from, to, next) {
 
   // Lista de pathnames que exigem autenticação.
   //
-  // Por que declarar dentro da função e não fora como constante do módulo?
-  //   É uma decisão de escopo intencional — a lista é privada deste guard.
-  //   Nenhum outro módulo precisa saber quais rotas são protegidas.
+  // Gerada dinamicamente a partir de menuItems (data.js) — cobre a Home
+  // ("/") e todos os 11 módulos automaticamente. Criar um módulo novo em
+  // data.js já nasce protegido, sem precisar lembrar de atualizar essa
+  // lista aqui também.
   //
-  // Evolução futura: essa lista poderia vir de uma flag no array de routes:
-  //   { path: "/admin", protected: true, component: Admin }
-  //   authGuard leria routes.filter(r => r.protected).map(r => r.path)
-  const rotasProtegidas = ["/admin","/", "/perfil","/fundamentos" ,"/funcoes","/configuracoes"];
+  // Páginas institucionais (Termos, Privacidade, Cookies, Contato, FAQ)
+  // ficam de fora de propósito — continuam acessíveis sem login.
+  //
+  // ── PRA REABRIR O SITE INTEIRO (sem exigir login em lugar nenhum) ──
+  // Comente a linha de baixo com o array cheio e descomente a linha
+  // `const rotasProtegidas = [];` logo em seguida.
+  const rotasProtegidas = [
+    "/admin",
+    "/perfil",
+    "/configuracoes",
+    ...menuItems.map((item) => item.href),
+  ];
+  // const rotasProtegidas = []; // ← descomente esta linha pra reabrir tudo
 
-  // Verifica se a rota de DESTINO está na lista.
-  // Array.prototype.includes() → comparação exata de string.
-  // O `!` inverte: "se a rota NÃO é protegida, deixa passar".
-  if (!rotasProtegidas.includes(to)) {
+  // Verifica se a rota de destino está protegida.
+  //
+  // Duas formas de bater:
+  //   1. Match exato: to === rota (ex: "/fundamentos" === "/fundamentos")
+  //   2. Match de prefixo: to começa com "rota/" (ex: "/fundamentos/01-x"
+  //      começa com "/fundamentos/") — isso é o que garante que as AULAS
+  //      dentro de um módulo protegido também fiquem protegidas, mesmo
+  //      sem estarem listadas uma por uma (seriam 94 entradas!).
+  //
+  // "/" recebe tratamento especial: só bate em match EXATO. Sem essa
+  // exceção, "/".startsWith the prefix check faria literalmente toda
+  // rota do site bater como "protegida" (tudo começa com "/").
+  const isProtected = rotasProtegidas.some((rota) => {
+    if (rota === "/") return to === "/";
+    return to === rota || to.startsWith(`${rota}/`);
+  });
+
+  if (!isProtected) {
     next();
-
-    // return explícito: garante que o código abaixo não execute
-    // mesmo que next() retorne (o que normalmente não acontece,
-    // mas o return torna a intenção explícita).
     return;
   }
 
   // Rota protegida — verifica se o usuário tem token.
-  //
-  // localStorage.getItem("user_token"):
-  //   Retorna a string salva, ou null se a chave não existir.
-  //
-  // !! (double negation):
-  //   Converte qualquer valor para boolean explicitamente.
-  //   !!null           → false  (não autenticado)
-  //   !!"eyJhbGci..." → true   (autenticado)
-  //   !!""             → false  (token vazio = não autenticado)
   const estaAutenticado = !!localStorage.getItem("user_token");
 
   if (estaAutenticado) {
-    // Token existe: aprovado para acessar a rota protegida.
     next();
   } else {
-
-    // Sem token: redireciona para login com o destino original como parâmetro.
-    //
-    // `?redirect=${to}` permite que a página de login, após autenticação,
-    // envie o usuário diretamente para onde ele tentou ir.
-    // Ex: tentou "/perfil" → vai para "/login?redirect=/perfil"
-    //     Após login → app lê ?redirect=/perfil → navega para "/perfil"
-    //
-    // next() com argumento = "redireciona e interrompe a pipeline".
-    // Guards subsequentes não executam. onComplete não é chamado.
+    // Sem token: redireciona para login com o destino original como
+    // parâmetro, pra login.js poder mandar de volta pra onde a pessoa
+    // tentou ir originalmente.
     next(`/login?redirect=${to}`);
   }
 }
