@@ -32,7 +32,7 @@
 }
 
 .faq__anim-item {
-  opacity: 0;
+  /* opacity: 0; */
   transform: translateY(14px);
 }
 
