@@ -4,10 +4,6 @@
 // nav__drawer (overlay + painel deslizante via transform), mas:
 //   • Mobile (<750px): modal centralizado
 //   • Desktop (≥750px): sidebar fixa, ancorada à direita
-//
-// Diferente do nav__drawer (reconstruído a cada Header()), este painel é
-// montado UMA vez em Layout() e vive fora do fluxo de rotas — abrir/fechar
-// é só toggle de classe, nunca troca o <main> nem muda a URL.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { escapeHtml } from "@utils/helpers";
@@ -40,17 +36,30 @@ export function ProfilePanel() {
       : `<span class="perfil__avatar-fallback">${getIcon("user")}</span>`}
             </div>
 
-            <label class="perfil__avatar-btn" for="js-avatar-input">
-              ${getIcon("camera")}
-              Trocar foto
-            </label>
+            <div class="perfil__avatar-actions">
+              <label class="perfil__avatar-btn" for="js-avatar-camera-input">
+                ${getIcon("camera")}
+                Tirar foto
+              </label>
+              <label class="perfil__avatar-btn" for="js-avatar-gallery-input">
+                ${getIcon("image")}
+                Da galeria
+              </label>
+            </div>
+
             <!--
-              accept="image/*" SEM o atributo "capture": é isso que faz o
-              picker nativo do celular oferecer Câmera E Galeria. Adicionar
-              capture="environment"/"user" restringe só à câmera e some
-              com a opção de galeria — por isso está fora de propósito.
+              Dois inputs separados de propósito:
+              - camera-input tem capture="user" → abre a câmera frontal
+                direto, sem passar pela galeria.
+              - gallery-input não tem capture → abre o seletor de
+                arquivos/galeria normal do sistema.
+              Manter os dois explícitos, em vez de um único input sem
+              capture (que deixava a critério do navegador mostrar ou
+              não um atalho de câmera), garante o comportamento em
+              qualquer aparelho.
             -->
-            <input type="file" accept="image/*" id="js-avatar-input" class="perfil__avatar-input" hidden />
+            <input type="file" accept="image/*" capture="user" id="js-avatar-camera-input" class="perfil__avatar-input" hidden />
+            <input type="file" accept="image/*" id="js-avatar-gallery-input" class="perfil__avatar-input" hidden />
           </div>
 
           <form class="perfil__form" id="js-perfil-form">
@@ -99,7 +108,7 @@ export function openProfilePanel() {
   panelEl.classList.add("open");
   overlayEl.classList.add("open");
   panelEl.inert = false;
-  document.body.style.overflow = "hidden"; // trava scroll do fundo
+  document.body.style.overflow = "hidden";
 
   requestAnimationFrame(() => {
     document.getElementById("js-profile-close")?.focus();
@@ -118,23 +127,43 @@ export function closeProfilePanel() {
   previouslyFocused = null;
 }
 
+// Lê o arquivo escolhido (câmera ou galeria, tanto faz a origem) e
+// aplica no avatar + salva no perfil. Função compartilhada pelos dois
+// inputs — evita duplicar a mesma lógica de FileReader duas vezes.
+function handleAvatarFile(file, avatarBox) {
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    const dataUrl = reader.result;
+
+    avatarBox.innerHTML = /* html */ `
+      <img src="${dataUrl}" alt="Foto de perfil" class="perfil__avatar-img" />
+    `;
+
+    const profile = getProfile() ?? { name: "", contact: "", avatar: null };
+    saveProfile({ ...profile, avatar: dataUrl });
+  };
+
+  reader.readAsDataURL(file);
+}
+
 export function initProfilePanel() {
   panelEl = document.getElementById("js-profile-panel");
   overlayEl = document.getElementById("js-profile-overlay");
 
   if (!panelEl || !overlayEl) return;
 
-  panelEl.inert = true; // fechado por padrão — nada dentro é focável/clicável
+  panelEl.inert = true;
 
   const closeBtn = document.getElementById("js-profile-close");
-  const avatarInput = document.getElementById("js-avatar-input");
+  const cameraInput = document.getElementById("js-avatar-camera-input");
+  const galleryInput = document.getElementById("js-avatar-gallery-input");
   const avatarBox = document.getElementById("js-perfil-avatar");
   const form = document.getElementById("js-perfil-form");
   const logoutBtn = document.getElementById("js-logout-btn");
 
-  // Abre o painel a partir de qualquer link "Perfil" do header (desktop
-  // e mobile). Sem navegação nenhuma — por isso o header não tem mais
-  // data-link nesse link (ver Header.js).
   document.querySelectorAll(".js-account-link").forEach((link) => {
     link.addEventListener("click", (event) => {
       event.preventDefault();
@@ -151,28 +180,14 @@ export function initProfilePanel() {
     }
   });
 
-  avatarInput?.addEventListener("change", () => {
-    const file = avatarInput.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const dataUrl = reader.result;
-
-      avatarBox.innerHTML = /* html */ `
-        <img src="${dataUrl}" alt="Foto de perfil" class="perfil__avatar-img" />
-      `;
-
-      const profile = getProfile() ?? { name: "", contact: "", avatar: null };
-      saveProfile({ ...profile, avatar: dataUrl });
-    };
-
-    reader.readAsDataURL(file);
+  cameraInput?.addEventListener("change", () => {
+    handleAvatarFile(cameraInput.files?.[0], avatarBox);
   });
 
-  // FIX pedido: salvar processa E fecha automaticamente — antes ficava
-  // aberto mostrando "Alterações salvas!".
+  galleryInput?.addEventListener("change", () => {
+    handleAvatarFile(galleryInput.files?.[0], avatarBox);
+  });
+
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -184,7 +199,6 @@ export function initProfilePanel() {
     closeProfilePanel();
   });
 
-  // "Sair" desloga de propósito — diferente do X, que só fecha.
   logoutBtn?.addEventListener("click", () => {
     clearAuthToken();
     window.location.href = "/";
