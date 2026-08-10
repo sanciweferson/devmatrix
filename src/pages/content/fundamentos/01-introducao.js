@@ -5,10 +5,12 @@
 const mensagem = "JavaScript é interpretado"
 
 const nome = "Sanciweferson"
-function saudar(n) { return "Olá, " + n }
+function saudar(n) {
+  return "Olá, " + n
+}
 
 const nome1 = "Sanciweferson"
-const saudar1 = n1 => `Olá, ${n1}`
+const saudar1 = (n1) => `Olá, ${n1}`
 
 // Saída simulada de Node.js (não roda no browser — valores conhecidos)
 const _node = {
@@ -16,7 +18,6 @@ const _node = {
   document: '"undefined"',
   process: '"object"',
 }
-
 
 // ── Conteúdo HTML ─────────────────────────────────────────────────────────────
 
@@ -48,9 +49,10 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">Uma linguagem interpretada</h2>
       <p>
-        Diferente de linguagens como C ou Go, JavaScript não é compilado antes de
-        rodar. O código é lido e executado diretamente pelo ambiente — browser ou
-        Node.js — em tempo real.
+        Diferente de linguagens como C ou Go, JavaScript não passa por uma etapa de
+        compilação manual e separada antes de rodar. O código é lido e executado
+        pelo ambiente — browser ou Node.js — e a "compilação" acontece de forma
+        automática e invisível, durante a própria execução.
       </p>
       <p>
         Engines modernas como o V8 usam uma técnica chamada <strong>JIT
@@ -140,6 +142,13 @@ export function content() {
         Essa distinção é essencial: <em>document</em> e <em>window</em> existem
         no browser. <em>fs</em> e <em>process</em> existem no Node.js. Nenhum
         dos dois existe no outro ambiente.
+      </p>
+      <p>
+        No Node.js, <em>process</em> é uma variável <strong>global</strong>,
+        disponível automaticamente em qualquer arquivo. Já módulos como
+        <em>fs</em> (sistema de arquivos) precisam ser importados explicitamente,
+        por exemplo: <code>const fs = require('fs')</code> ou
+        <code>import fs from 'fs'</code>.
       </p>
 
       <div class="code-block">
@@ -283,11 +292,14 @@ export function content() {
       <h2 class="lesson__section-title">JavaScript é single-threaded</h2>
       <p>
         Uma característica fundamental do JavaScript é que ele roda em uma única
-        thread. Isso significa que só uma coisa acontece por vez.
+        thread <strong>principal</strong> (main thread). Isso significa que só uma
+        coisa acontece por vez <em>nessa thread</em> — embora existam ferramentas
+        como Web Workers que permitem rodar código em threads paralelas separadas,
+        para tarefas específicas.
       </p>
       <p>
-        Enquanto um trecho de código está rodando, nada mais roda —
-        nenhum evento, nenhuma animação, nenhuma resposta do usuário.
+        Enquanto um trecho de código está rodando na thread principal, nada mais
+        roda nela — nenhum evento, nenhuma animação, nenhuma resposta do usuário.
         Se você travar essa thread, trava o browser inteiro.
       </p>
 
@@ -369,11 +381,17 @@ export function content() {
         Cada aula constrói sobre a anterior. Os fundamentos que você solidificar
         aqui vão aparecer em todo o resto do curso.
       </p>
+
+      <p>
+        <strong>Resumo da aula:</strong> JavaScript é interpretado (com compilação
+        JIT interna), roda em múltiplos ambientes com APIs diferentes, é regido
+        pela especificação ECMAScript, e opera numa única thread principal —
+        daí a importância de entender concorrência mais adiante.
+      </p>
     </section>
 
   `
 }
-
 
 // ── Injeção de outputs via DOM ────────────────────────────────────────────────
 
@@ -384,19 +402,19 @@ export function init() {
   }
 
   // Console 1 — exemplo.js
-  injetar('out-mensagem', `"${mensagem}"`)
+  injetar("out-mensagem", `"${mensagem}"`)
 
   // Console 2 — ambientes.js (valores reais do browser atual)
-  injetar('out-browser-window', `"${typeof window}"`)
-  injetar('out-browser-document', `"${typeof document}"`)
-  injetar('out-browser-process', `"${typeof process}"`)
+  injetar("out-browser-window", `"${typeof window}"`)
+  injetar("out-browser-document", `"${typeof document}"`)
+  injetar("out-browser-process", `"${typeof process}"`)
 
   // Console 2 — ambientes.js (simulação Node.js — valores estáticos conhecidos)
-  injetar('out-node-window', _node.window)
-  injetar('out-node-document', _node.document)
-  injetar('out-node-process', _node.process)
+  injetar("out-node-window", _node.window)
+  injetar("out-node-document", _node.document)
+  injetar("out-node-process", _node.process)
 
   // Console 3 — es6-exemplos.js
-  injetar('out-saudar', `"${saudar(nome)}"`)
-  injetar('out-saudar1', `"${saudar1(nome1)}"`)
+  injetar("out-saudar", `"${saudar(nome)}"`)
+  injetar("out-saudar1", `"${saudar1(nome1)}"`)
 }
