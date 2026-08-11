@@ -8,16 +8,16 @@ export function content() {
       <h2 class="lesson__section-title">O que é o Execution Context?</h2>
       <p>
         Toda vez que o JavaScript executa código, ele cria um
-        <strong>Execution Context</strong> — um ambiente que contém tudo
-        que o motor precisa para rodar aquele trecho: as variáveis
-        disponíveis, o valor de <code>this</code>, e uma referência ao
-        escopo externo.
+        <strong>Execution Context</strong> — um ambiente que reúne as
+        informações necessárias para executar aquele código, incluindo os
+        ambientes léxicos usados para resolver variáveis e, quando
+        aplicável, o valor de <code>this</code>.
       </p>
       <p>
         Entender o Execution Context é entender como o JavaScript realmente
         funciona por dentro. Hoisting, escopo, closures e
         <code>this</code> — todos esses conceitos são consequências diretas
-        de como o motor cria e gerencia esses contextos.
+        de como o motor estabelece e gerencia esses contextos.
       </p>
     </section>
 
@@ -32,8 +32,11 @@ export function content() {
           <h3>Global</h3>
           <p>
             Criado quando o script começa a rodar. Existe um único contexto
-            global. No browser, <code>this</code> aponta para
-            <code>window</code>. No Node.js, para <code>global</code>.
+            global. No contexto global de um script clássico no browser,
+            <code>this</code> corresponde a <code>window</code>. Em módulos
+            ES, <code>this</code> no topo é <code>undefined</code>. No
+            Node.js, o comportamento depende do tipo de módulo e do
+            ambiente de execução.
           </p>
         </div>
         <div class="lesson__card">
@@ -61,8 +64,8 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">O que compõe um Execution Context</h2>
       <p>
-        Cada Execution Context tem três componentes principais que o motor
-        monta antes de executar qualquer linha do código:
+        Para entender o conceito de forma didática, podemos pensar no
+        Execution Context como tendo três informações importantes:
       </p>
 
       <div class="code-block">
@@ -75,17 +78,20 @@ export function content() {
             <span class="code-block__copy-label">Copiar</span>
           </button>
         </div>
-        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// Representação conceitual de um Execution Context</span>
-<span class="syn-comment">// (não é código real — é como o motor pensa internamente)</span>
+        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// Representação conceitual e didática de um Execution Context</span>
+<span class="syn-comment">// (não é código real, nem a estrutura formal da especificação —</span>
+<span class="syn-comment">// é um modelo para entender o comportamento do motor)</span>
 
 <span class="syn-keyword">const</span> <span class="syn-id">ExecutionContext</span> <span class="syn-operator">=</span> {
 
   <span class="syn-comment">// 1. Variable Environment
-  //    Onde ficam as declarações de variáveis e funções
-  //    É aqui que o hoisting acontece</span>
+  //    Onde ficam as declarações de variáveis e funções.
+  //    É durante a criação/instanciação do contexto que essas
+  //    declarações são registradas e inicializadas de acordo
+  //    com suas regras.</span>
   <span class="syn-property">variableEnvironment</span>: {
-    <span class="syn-property">nome</span>: <span class="syn-nullish">undefined</span>,      <span class="syn-comment">// var — içada com undefined</span>
-    <span class="syn-property">saudar</span>: <span class="syn-keyword">function</span>() {},  <span class="syn-comment">// function — içada completa</span>
+    <span class="syn-property">nome</span>: <span class="syn-nullish">undefined</span>,      <span class="syn-comment">// var — registrada com undefined</span>
+    <span class="syn-property">saudar</span>: <span class="syn-keyword">function</span>() {},  <span class="syn-comment">// function — registrada completa</span>
   },
 
   <span class="syn-comment">// 2. Lexical Environment
@@ -94,8 +100,8 @@ export function content() {
   <span class="syn-property">lexicalEnvironment</span>: <span class="syn-id">escopoExterno</span>,
 
   <span class="syn-comment">// 3. This Binding
-  //    O valor de  dentro deste contexto</span>
-  <span class="syn-property">thisBinding</span>: <span class="syn-id">window</span>,  <span class="syn-comment">// no contexto global do browser</span>
+  //    O valor de this dentro deste contexto</span>
+  <span class="syn-property">thisBinding</span>: <span class="syn-id">window</span>,  <span class="syn-comment">// em um script clássico no contexto global do browser</span>
 }</code></pre>
       </div>
     </section>
@@ -111,9 +117,9 @@ export function content() {
       </p>
       <p>
         Quando o script começa, o Global Execution Context vai para a pilha.
-        Cada chamada de função empilha um novo contexto. Quando a função
-        retorna, seu contexto é desempilhado e o controle volta para o contexto
-        anterior.
+        Cada chamada de função normalmente cria e empilha um novo Function
+        Execution Context. Quando a função retorna, seu contexto é
+        desempilhado e o controle volta para o contexto anterior.
       </p>
 
       <div class="code-block">
@@ -204,7 +210,7 @@ export function content() {
             <span class="code-block__copy-label">Copiar</span>
           </button>
         </div>
-        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// ⚠️ Não rode isso — vai travar o browser</span>
+        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// ⚠️ Não rode isso — a recursão infinita vai causar um Stack Overflow</span>
 <span class="syn-keyword">function</span> <span class="syn-fn">infinita</span>() {
   <span class="syn-keyword">return</span> <span class="syn-fn">infinita</span>()  <span class="syn-comment">// chama a si mesma sem parar</span>
 }
@@ -212,7 +218,7 @@ export function content() {
 
 <span class="syn-comment">// ✓ Recursão correta — sempre tem condição de parada</span>
 <span class="syn-keyword">function</span> <span class="syn-fn">fatorial</span>(<span class="syn-id">n</span>) {
-  <span class="syn-keyword">if</span> (<span class="syn-id">n</span> <span class="syn-operator">===</span> <span class="syn-number">1</span>) <span class="syn-keyword">return</span> <span class="syn-number">1</span>       <span class="syn-comment">// ← condição de parada</span>
+  <span class="syn-keyword">if</span> (<span class="syn-id">n</span> <span class="syn-operator">&lt;=</span> <span class="syn-number">1</span>) <span class="syn-keyword">return</span> <span class="syn-number">1</span>      <span class="syn-comment">// ← condição de parada (cobre 0 e 1)</span>
   <span class="syn-keyword">return</span> <span class="syn-id">n</span> <span class="syn-operator">*</span> <span class="syn-fn">fatorial</span>(<span class="syn-id">n</span> <span class="syn-operator">-</span> <span class="syn-number">1</span>)  <span class="syn-comment">// ← se aproxima da parada a cada chamada</span>
 }
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">fatorial</span>(<span class="syn-number">5</span>))</code></pre>
@@ -243,8 +249,9 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">As duas fases de cada contexto</h2>
       <p>
-        Cada Execution Context passa por duas fases antes e durante a execução.
-        Isso explica por que o hoisting acontece — e por que ele se comporta
+        Para entender hoisting, podemos usar um modelo didático em duas
+        fases: criação do contexto e execução do código. Isso ajuda a
+        explicar por que o hoisting acontece — e por que ele se comporta
         diferente para <code>var</code>, <code>let</code>/<code>const</code>
         e funções.
       </p>
@@ -266,15 +273,18 @@ export function content() {
 <span class="syn-keyword">var</span> <span class="syn-id">cidade</span> <span class="syn-operator">=</span> <span class="syn-string">"São Paulo"</span>
 <span class="syn-keyword">function</span> <span class="syn-fn">saudar</span>(<span class="syn-id">nome</span>) { <span class="syn-keyword">return</span> <span class="syn-string">\`Olá, \${<span class="syn-id">nome</span>}!\`</span> }
 
-<span class="syn-comment">// FASE 1 — Criação (o motor varre o código antes de executar):
-//   cidade → registrado com valor undefined (var)
-//   saudar → registrado com a função completa
+<span class="syn-comment">// FASE 1 — Criação/instanciação (modelo didático):
+//   as declarações são registradas e inicializadas de acordo
+//   com as regras da linguagem, antes da execução das instruções.
+//   cidade → registrada com valor undefined (var)
+//   saudar → registrada com a função completa
 
 // FASE 2 — Execução (linha por linha):
 //   console.log(cidade) → undefined (ainda não foi atribuída)
 //   saudar("Ana")       → funciona (já foi registrada na fase 1)
 //   cidade = "São Paulo" → agora recebe o valor
-//   function saudar()    → já foi processada, ignorada aqui</span></code></pre>
+//   a declaração de saudar já foi registrada durante a criação/
+//   instanciação; por isso, a chamada anterior à declaração funciona</span></code></pre>
         <div class="code-console">
           <div class="code-console__header">
             <span class="code-console__label">Console</span>
@@ -295,6 +305,13 @@ export function content() {
           </div>
         </div>
       </div>
+
+      <p>
+        Esse comportamento não significa que o código foi literalmente
+        executado fora de ordem. As declarações foram tratadas durante a
+        criação/instanciação do contexto; as instruções continuam sendo
+        executadas na ordem do fluxo do programa.
+      </p>
     </section>
 
 
@@ -303,12 +320,13 @@ export function content() {
       <h2 class="lesson__section-title">O que vem a seguir</h2>
       <p>
         Agora você sabe o que é um Execution Context, como a Call Stack
-        gerencia múltiplos contextos e por que as duas fases de criação
-        explicam o hoisting. Na próxima aula vamos aprofundar o
-        <strong>Lexical Environment</strong> — a estrutura que define como
-        o motor resolve nomes de variáveis e como os escopos se encadeiam.
+        organiza os Execution Contexts ativos durante a execução, e por que
+        as duas fases de criação explicam o hoisting. Na próxima aula vamos
+        aprofundar o <strong>Lexical Environment</strong> — a estrutura que
+        define como o motor resolve nomes de variáveis e como os escopos
+        se encadeiam.
       </p>
     </section>
 
-  `;
+  `
 }

@@ -7,10 +7,11 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">O que é um comentário?</h2>
       <p>
-        Comentários são trechos de texto ignorados pelo motor JavaScript.
-        Eles existem apenas para quem lê o código — você no futuro, um
-        colega de equipe, ou qualquer pessoa que precise entender o que
-        aquele trecho faz.
+        Comentários são trechos de texto que não são executados pelo motor
+        JavaScript. Eles existem principalmente para documentar o código e
+        comunicar informações a quem o lê — você no futuro, um colega de
+        equipe, ou qualquer pessoa que precise entender o que aquele trecho
+        faz.
       </p>
       <p>
         Em JavaScript existem dois tipos: comentário de linha e comentário
@@ -60,8 +61,9 @@ export function content() {
       <p>
         A maior armadilha com comentários é usá-los para descrever
         <em>o que</em> o código faz — quando o próprio código já deveria
-        deixar isso claro. Um comentário útil explica o <em>porquê</em>:
-        a intenção, a restrição, a decisão que não está óbvia no código.
+        deixar isso claro. Um comentário útil geralmente explica o
+        <em>porquê</em>: a intenção, a restrição ou a decisão que não está
+        óbvia no código.
       </p>
 
       <div class="code-block">
@@ -98,9 +100,9 @@ export function content() {
         </div>
         <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// ✓ Comentários que explicam o porquê — valor real</span>
 
-<span class="syn-comment">// Multiplicamos por 100 e arredondamos para evitar erros
-// de ponto flutuante em cálculos financeiros.
-// Ex: 0.1 + 0.2 === 0.30000000000000004 em JS</span>
+<span class="syn-comment">// Convertendo o valor para centavos inteiros, evitamos
+// trabalhar com valores monetários decimais durante os
+// cálculos. Ex: 0.1 + 0.2 === 0.30000000000000004 em JS</span>
 <span class="syn-keyword">const</span> <span class="syn-id">totalCentavos</span> <span class="syn-operator">=</span> <span class="syn-id">Math</span>.<span class="syn-fn">round</span>(<span class="syn-id">preco</span> <span class="syn-operator">*</span> <span class="syn-number">100</span>)
 
 <span class="syn-comment">// A API retorna datas em UTC — convertemos para o fuso
@@ -124,8 +126,9 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">Quando comentários são essenciais</h2>
       <p>
-        Existem situações onde o comentário não é opcional — é parte da
-        documentação do código e não pode ser substituído por um nome melhor.
+        Existem situações em que um comentário é especialmente importante —
+        porque documenta uma decisão, restrição ou comportamento que não pode
+        ser deduzido facilmente a partir do código.
       </p>
 
       <div class="code-block">
@@ -144,11 +147,13 @@ export function content() {
 // for maior que 9, subtrai 9. A soma total deve ser múltiplo de 10.</span>
 <span class="syn-keyword">function</span> <span class="syn-fn">validarCartao</span>(<span class="syn-id">numero</span>) { <span class="syn-comment">/* ... */</span> }
 
-<span class="syn-comment">// 2. Workarounds e bugs conhecidos</span>
-<span class="syn-comment">// Bug do Safari 15: Date() não aceita formato "YYYY-MM-DD" corretamente.
-// Substituímos hífens por barras como workaround temporário.
-// Remover quando suporte ao Safari 15 for descontinuado.</span>
-<span class="syn-keyword">const</span> <span class="syn-id">data</span> <span class="syn-operator">=</span> <span class="syn-keyword">new</span> <span class="syn-fn">Date</span>(<span class="syn-id">str</span>.<span class="syn-fn">replace</span>(<span class="syn-string">/-/g</span>, <span class="syn-string">"/"</span>))
+<span class="syn-comment">// 2. Compatibilidade com sistemas legados</span>
+<span class="syn-comment">// Este campo precisa continuar sendo enviado neste formato
+// específico até que todos os consumidores da API sejam
+// migrados para o novo contrato. Ver ticket API-482.</span>
+<span class="syn-keyword">const</span> <span class="syn-id">payload</span> <span class="syn-operator">=</span> {
+  <span class="syn-property">data</span>: <span class="syn-fn">formatarDataParaApi</span>(<span class="syn-id">data</span>)
+}
 
 <span class="syn-comment">// 3. Números mágicos</span>
 <span class="syn-keyword">const</span> <span class="syn-id">TIMEOUT_MS</span> <span class="syn-operator">=</span> <span class="syn-number">3000</span>  <span class="syn-comment">// 3s — limite definido pelo contrato de SLA</span>
@@ -167,13 +172,14 @@ export function content() {
       <p>
         Durante o desenvolvimento é comum comentar um trecho para testá-lo
         ou desativá-lo temporariamente. Isso é válido como ferramenta de
-        trabalho — mas código comentado não deve entrar em produção nem
-        ficar no repositório por muito tempo.
+        trabalho — mas código comentado usado apenas para desativar um trecho
+        temporariamente deve ser removido antes do commit, sempre que possível.
       </p>
       <p>
-        Código comentado cria dúvida: isso ainda vai ser usado? Foi removido
-        de propósito? Para isso existe o controle de versão — o Git guarda
-        o histórico. Se você removeu algo, remova de verdade. O Git lembra.
+        Código comentado sem contexto cria dúvida: isso ainda vai ser usado?
+        Foi removido de propósito? Para isso existe o controle de versão — o
+        Git guarda o histórico. Se você removeu algo, remova de verdade. O
+        Git lembra.
       </p>
 
       <div class="code-block">
@@ -210,10 +216,11 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">JSDoc — comentários que documentam funções</h2>
       <p>
-        O padrão <strong>JSDoc</strong> é uma convenção de comentários de bloco
-        que editores como o VS Code entendem. Com ele, você documenta parâmetros,
-        tipos e o retorno de uma função — e o editor exibe essas informações
-        ao passar o mouse sobre a chamada.
+        <strong>JSDoc</strong> é uma convenção de documentação baseada em
+        comentários de bloco especiais que ferramentas de desenvolvimento
+        podem interpretar — editores como o VS Code, por exemplo. Com ele,
+        você documenta parâmetros, tipos e o retorno de uma função — e o
+        editor exibe essas informações ao passar o mouse sobre a chamada.
       </p>
 
       <div class="code-block">
@@ -269,10 +276,11 @@ export function content() {
       <p>
         Na próxima aula vamos falar sobre <strong>strict mode</strong> — uma
         diretiva que muda o comportamento do JavaScript, elimina armadilhas
-        silenciosas e é ativada automaticamente em módulos ES6. Entender o
-        que ele faz te ajuda a escrever código mais previsível desde o início.
+        silenciosas e é ativada automaticamente em módulos ES6 e no corpo de
+        classes. Entender o que ele faz te ajuda a escrever código mais
+        previsível desde o início.
       </p>
     </section>
 
-  `;
+  `
 }

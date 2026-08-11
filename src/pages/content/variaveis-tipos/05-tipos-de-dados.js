@@ -1,105 +1,61 @@
 // src/content/variaveis-tipos/05-tipos-de-dados.js
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════════
-
-const _h = {
-  btn_copy: /* html */ `
-    <button class="code-block__copy" type="button">
-      <span class="code-block__copy-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="14" height="14" x="8" y="8" rx="2"/>
-          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-        </svg>
-      </span>
-      <span class="code-block__copy-label">Copiar</span>
-    </button>`,
-
-  header: (filename) => /* html */ `
-    <div class="code-block__header">
-      <span class="code-block__filename">${filename}</span>
-      ${_h.btn_copy}
-    </div>`,
-
-  console: (label, linhas) => /* html */ `
-    <div class="code-console">
-      <div class="code-console__header">
-        <span class="code-console__label">${label}</span>
-      </div>
-      <div class="code-console__body">
-        ${linhas.map(({ expr, key, cls = '' }) => /* html */ `
-        <div class="code-console__line${cls ? ` ${cls}` : ''}">
-          <span class="code-console__prompt">›</span>
-          <span class="code-console__expr">${expr}</span>
-          <span class="code-console__arrow">→</span>
-          <span data-out="${key}"></span>
-        </div>`).join('')}
-      </div>
-    </div>`,
-
-  block: (filename, code, consoles = []) => /* html */ `
-    <div class="code-block">
-      ${_h.header(filename)}
-      <pre class="code-block__pre"><code class="code-block__code">${code}</code></pre>
-      ${consoles.map(c => _h.console(c.label, c.linhas)).join('')}
-    </div>`,
-}
-
+import { _h } from "@content/_shared/code-block"
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // DADOS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _dados = (() => {
-  const str = (v) => ({ text: `"${v}"`, cls: 'syn-output-str' })
-  const num = (v) => ({ text: String(v), cls: 'syn-output-num' })
-  const bool = (v) => ({ text: String(v), cls: 'syn-output-bool' })
-  const nil = (v) => ({ text: v ?? 'undefined', cls: 'syn-output-null' })
-  const err = (v) => ({ text: v, cls: 'syn-output-error' })
+  const str = (v) => ({ text: `"${v}"`, cls: "syn-output-str" })
+  const num = (v) => ({ text: String(v), cls: "syn-output-num" })
+  const bool = (v) => ({ text: String(v), cls: "syn-output-bool" })
+  const nil = (v) => ({ text: v ?? "undefined", cls: "syn-output-null" })
+  const err = (v) => ({ text: v, cls: "syn-output-error" })
 
   // ── 1. typeof nos 8 tipos ─────────────────────────────────────────────────
-  const t_undefined = typeof undefined        // "undefined"
-  const t_null = typeof null             // "object" — o bug famoso
-  const t_boolean = typeof true             // "boolean"
-  const t_number = typeof 42               // "number"
-  const t_string = typeof "texto"          // "string"
-  const t_bigint = typeof 9007199254740991n // "bigint"
-  const t_symbol = typeof Symbol("id")     // "symbol"
-  const t_object = typeof {}               // "object"
-  const t_function = typeof function () { }     // "function"
-  const t_array = typeof []               // "object" — array é objeto
+  const t_undefined = typeof undefined
+  const t_null = typeof null
+  const t_boolean = typeof true
+  const t_number = typeof 42
+  const t_string = typeof "texto"
+  const t_bigint = typeof 9007199254740991n
+  const t_symbol = typeof Symbol("id")
+  const t_object = typeof {}
+  const t_function = typeof function () {}
+  const t_array = typeof []
 
   // ── 2. typeof null — o bug histórico ─────────────────────────────────────
-  const null_typeof = typeof null            // "object"
-  const null_is_null = null === null          // true — forma correta de testar
+  const null_typeof = typeof null
+  const null_is_null = null === null
 
-  // ── 3. Tipagem dinâmica — mesma variável, tipos diferentes ───────────────
+  // ── 3. Tipagem dinâmica ───────────────────────────────────────────────────
   let _din = 42
-  const din_num = typeof _din               // "number"
+  const din_num = typeof _din
   _din = "agora sou string"
-  const din_str = typeof _din               // "string"
+  const din_str = typeof _din
   _din = true
-  const din_bool = typeof _din               // "boolean"
+  const din_bool = typeof _din
 
   // ── 4. Primitivo vs referência ────────────────────────────────────────────
-  // Primitivos passados por valor — cópia independente
-  let _pa = 10; let _pb = _pa; _pb = 99
-  const prim_a = _pa   // 10 — não foi afetado
-  const prim_b = _pb   // 99
+  let _pa = 10
+  let _pb = _pa
+  _pb = 99
+  const prim_a = _pa
+  const prim_b = _pb
 
-  // Referências — apontam para o mesmo objeto
-  const _ra = { x: 10 }; const _rb = _ra; _rb.x = 99
-  const ref_a_x = _ra.x   // 99 — foi afetado
-  const ref_b_x = _rb.x   // 99
+  const _ra = { x: 10 }
+  const _rb = _ra
+  _rb.x = 99
+  const ref_a_x = _ra.x
+  const ref_b_x = _rb.x
 
   // ── 5. undefined vs null ─────────────────────────────────────────────────
   let _undef
-  const undef_val = typeof _undef         // "undefined"
-  const null_val = typeof null           // "object"
-  const undef_eq = (undefined == null)   // true  — igualdade fraca
-  const undef_strict = (undefined === null)  // false — igualdade estrita
+  const undef_val = typeof _undef
+  const null_val = typeof null
+  const undef_eq = undefined == null
+  const undef_strict = undefined === null
 
   return {
     typeof: {
@@ -140,13 +96,11 @@ const _dados = (() => {
   }
 })()
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // SEÇÕES
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _secoes = {
-
   introducao: () => /* html */ `
     <section class="lesson__section">
       <h2 class="lesson__section-title">O que é um tipo de dado?</h2>
@@ -177,7 +131,9 @@ const _secoes = {
         Ele é a ferramenta básica de inspeção de tipos em runtime.
       </p>
 
-      ${_h.block('typeof.js', /* html */ `
+      ${_h.block(
+        "typeof.js",
+        /* html */ `
 <span class="syn-comment">// ── 7 tipos primitivos ─────────────────────────────────────────</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">undefined</span>)         <span class="syn-comment">// "undefined"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-boolean">true</span>)              <span class="syn-comment">// "boolean"</span>
@@ -190,22 +146,25 @@ const _secoes = {
 <span class="syn-comment">// ── 1 tipo de referência ────────────────────────────────────────</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> {})               <span class="syn-comment">// "object"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> [])               <span class="syn-comment">// "object" — array é objeto</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-keyword">function</span>(){})     <span class="syn-comment">// "function" — exceção especial</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof undefined', key: 'typeof.undefined' },
-        { expr: 'typeof true', key: 'typeof.boolean' },
-        { expr: 'typeof 42', key: 'typeof.number' },
-        { expr: 'typeof "texto"', key: 'typeof.string' },
-        { expr: 'typeof 9007199254740991n', key: 'typeof.bigint' },
-        { expr: 'typeof Symbol("id")', key: 'typeof.symbol' },
-        { expr: 'typeof null', key: 'typeof.null' },
-        { expr: 'typeof {}', key: 'typeof.object' },
-        { expr: 'typeof []', key: 'typeof.array' },
-        { expr: 'typeof function(){}', key: 'typeof.function' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-keyword">function</span>(){})     <span class="syn-comment">// "function" — exceção especial</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof undefined", key: "typeof.undefined" },
+              { expr: "typeof true", key: "typeof.boolean" },
+              { expr: "typeof 42", key: "typeof.number" },
+              { expr: 'typeof "texto"', key: "typeof.string" },
+              { expr: "typeof 9007199254740991n", key: "typeof.bigint" },
+              { expr: 'typeof Symbol("id")', key: "typeof.symbol" },
+              { expr: "typeof null", key: "typeof.null" },
+              { expr: "typeof {}", key: "typeof.object" },
+              { expr: "typeof []", key: "typeof.array" },
+              { expr: "typeof function(){}", key: "typeof.function" },
+            ],
+          },
+        ],
+      )}
 
       <p>
         Repare nos dois resultados inesperados: <code>typeof null</code> retorna
@@ -230,19 +189,24 @@ const _secoes = {
         <code>=== null</code>.
       </p>
 
-      ${_h.block('null-bug.js', /* html */ `
+      ${_h.block(
+        "null-bug.js",
+        /* html */ `
 <span class="syn-comment">// ⚠️ typeof null é um bug — não confie nele para testar null</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-keyword">null</span>)        <span class="syn-comment">// "object" — BUG histórico</span>
 
 <span class="syn-comment">// ✓ forma correta de verificar null</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">null</span> <span class="syn-operator">===</span> <span class="syn-keyword">null</span>)   <span class="syn-comment">// true</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof null', key: 'null_bug.typeof' },
-        { expr: 'null === null', key: 'null_bug.is_null' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">null</span> <span class="syn-operator">===</span> <span class="syn-keyword">null</span>)   <span class="syn-comment">// true</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof null", key: "null_bug.typeof" },
+              { expr: "null === null", key: "null_bug.is_null" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   tipagem_dinamica: () => /* html */ `
@@ -259,7 +223,9 @@ const _secoes = {
         Em JavaScript, não existe essa garantia em runtime.
       </p>
 
-      ${_h.block('tipagem-dinamica.js', /* html */ `
+      ${_h.block(
+        "tipagem-dinamica.js",
+        /* html */ `
 <span class="syn-keyword">let</span> <span class="syn-id">valor</span> <span class="syn-operator">=</span> <span class="syn-number">42</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">valor</span>)   <span class="syn-comment">// "number"</span>
 
@@ -267,15 +233,27 @@ const _secoes = {
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">valor</span>)   <span class="syn-comment">// "string"</span>
 
 <span class="syn-id">valor</span> <span class="syn-operator">=</span> <span class="syn-boolean">true</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">valor</span>)   <span class="syn-comment">// "boolean"</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof valor <span class="syn-comment">// 42</span>', key: 'dinamico.num' },
-        { expr: 'typeof valor <span class="syn-comment">// "agora sou string"</span>', key: 'dinamico.str' },
-        { expr: 'typeof valor <span class="syn-comment">// true</span>', key: 'dinamico.bool' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">valor</span>)   <span class="syn-comment">// "boolean"</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              {
+                expr: 'typeof valor <span class="syn-comment">// 42</span>',
+                key: "dinamico.num",
+              },
+              {
+                expr: 'typeof valor <span class="syn-comment">// "agora sou string"</span>',
+                key: "dinamico.str",
+              },
+              {
+                expr: 'typeof valor <span class="syn-comment">// true</span>',
+                key: "dinamico.bool",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   primitivo_vs_referencia: () => /* html */ `
@@ -294,7 +272,9 @@ const _secoes = {
         cria outro apontador para o mesmo objeto.
       </p>
 
-      ${_h.block('primitivo-vs-referencia.js', /* html */ `
+      ${_h.block(
+        "primitivo-vs-referencia.js",
+        /* html */ `
 <span class="syn-comment">// ── primitivo — cópia independente ────────────────────────────</span>
 <span class="syn-keyword">let</span> <span class="syn-id">a</span> <span class="syn-operator">=</span> <span class="syn-number">10</span>
 <span class="syn-keyword">let</span> <span class="syn-id">b</span> <span class="syn-operator">=</span> <span class="syn-id">a</span>     <span class="syn-comment">// b recebe uma CÓPIA do valor 10</span>
@@ -309,20 +289,30 @@ const _secoes = {
 <span class="syn-id">obj2</span>.<span class="syn-property">x</span> <span class="syn-operator">=</span> <span class="syn-number">99</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">obj1</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 99 — obj1 também foi afetado!</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">obj2</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 99</span>`, [
-    {
-      label: 'Console — primitivo (por valor)', linhas: [
-        { expr: 'a <span class="syn-comment">// não foi afetado</span>', key: 'primitivo.a' },
-        { expr: 'b', key: 'primitivo.b' },
-      ]
-    },
-    {
-      label: 'Console — referência (por referência)', linhas: [
-        { expr: 'obj1.x <span class="syn-comment">// afetado via obj2!</span>', key: 'referencia.a_x' },
-        { expr: 'obj2.x', key: 'referencia.b_x' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">obj2</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 99</span>`,
+        [
+          {
+            label: "Console — primitivo (por valor)",
+            linhas: [
+              {
+                expr: 'a <span class="syn-comment">// não foi afetado</span>',
+                key: "primitivo.a",
+              },
+              { expr: "b", key: "primitivo.b" },
+            ],
+          },
+          {
+            label: "Console — referência (por referência)",
+            linhas: [
+              {
+                expr: 'obj1.x <span class="syn-comment">// afetado via obj2!</span>',
+                key: "referencia.a_x",
+              },
+              { expr: "obj2.x", key: "referencia.b_x" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   undef_vs_null: () => /* html */ `
@@ -336,7 +326,9 @@ const _secoes = {
         colocada pelo programador para indicar "sem valor de propósito".
       </p>
 
-      ${_h.block('undef-null.js', /* html */ `
+      ${_h.block(
+        "undef-null.js",
+        /* html */ `
 <span class="syn-keyword">let</span> <span class="syn-id">a</span>                          <span class="syn-comment">// undefined — motor inicializou</span>
 <span class="syn-keyword">const</span> <span class="syn-id">b</span> <span class="syn-operator">=</span> <span class="syn-keyword">null</span>               <span class="syn-comment">// null — programador colocou</span>
 
@@ -344,16 +336,19 @@ const _secoes = {
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">b</span>)          <span class="syn-comment">// "object" — bug do typeof null</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">a</span> <span class="syn-operator">==</span>  <span class="syn-keyword">null</span>)       <span class="syn-comment">// true  — igualdade fraca: trata como iguais</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">a</span> <span class="syn-operator">===</span> <span class="syn-keyword">null</span>)       <span class="syn-comment">// false — igualdade estrita: tipos diferentes</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof a', key: 'undef_null.undef_type' },
-        { expr: 'typeof b', key: 'undef_null.null_type' },
-        { expr: 'a == null', key: 'undef_null.eq_fraca' },
-        { expr: 'a === null', key: 'undef_null.eq_estrita' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">a</span> <span class="syn-operator">===</span> <span class="syn-keyword">null</span>)       <span class="syn-comment">// false — igualdade estrita: tipos diferentes</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof a", key: "undef_null.undef_type" },
+              { expr: "typeof b", key: "undef_null.null_type" },
+              { expr: "a == null", key: "undef_null.eq_fraca" },
+              { expr: "a === null", key: "undef_null.eq_estrita" },
+            ],
+          },
+        ],
+      )}
 
       <p>
         A igualdade fraca <code>==</code> considera <code>undefined</code> e
@@ -444,15 +439,15 @@ const _secoes = {
     </section>`,
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONTENT
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export function content() {
-  return Object.values(_secoes).map(s => s()).join('\n')
+  return Object.values(_secoes)
+    .map((s) => s())
+    .join("\n")
 }
-
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // INIT
@@ -460,9 +455,9 @@ export function content() {
 
 export function initTiposDeDados() {
   const resolver = (caminho) =>
-    caminho.split('.').reduce((obj, k) => obj?.[k], _dados)
+    caminho.split(".").reduce((obj, k) => obj?.[k], _dados)
 
-  document.querySelectorAll('[data-out]').forEach(el => {
+  document.querySelectorAll("[data-out]").forEach((el) => {
     const val = resolver(el.dataset.out)
     if (val == null) return
     el.textContent = val.text

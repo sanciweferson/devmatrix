@@ -2,7 +2,7 @@
 
 // ── Valores usados nos exemplos ──────────────────────────────────────────────
 
-const mensagem = "JavaScript é interpretado"
+const mensagem = "JavaScript roda sem compilação manual"
 
 const nome = "Sanciweferson"
 function saudar(n) {
@@ -34,9 +34,9 @@ export function content() {
         página inteira.
       </p>
       <p>
-        O que começou como um script criado em dez dias se tornou a linguagem mais
-        usada do mundo. Hoje ela roda em browsers, servidores, dispositivos móveis,
-        televisões e microcontroladores.
+        O que começou como um script criado em dez dias se tornou uma das linguagens
+        de programação mais utilizadas do mundo. Hoje ela roda em browsers, servidores,
+        dispositivos móveis, televisões e microcontroladores.
       </p>
       <p>
         Entender onde ela nasceu ajuda a entender por que ela funciona do jeito que
@@ -45,20 +45,23 @@ export function content() {
     </section>
 
 
-    <!-- ── 2. Interpretada vs compilada ── -->
+    <!-- ── 2. Como JavaScript é executado ── -->
     <section class="lesson__section">
-      <h2 class="lesson__section-title">Uma linguagem interpretada</h2>
+      <h2 class="lesson__section-title">Como JavaScript é executado?</h2>
       <p>
-        Diferente de linguagens como C ou Go, JavaScript não passa por uma etapa de
-        compilação manual e separada antes de rodar. O código é lido e executado
-        pelo ambiente — browser ou Node.js — e a "compilação" acontece de forma
-        automática e invisível, durante a própria execução.
+        JavaScript não exige uma etapa de compilação manual e separada antes de rodar.
+        O código é analisado, preparado e executado pelo ambiente — browser ou Node.js.
       </p>
       <p>
-        Engines modernas como o V8 usam uma técnica chamada <strong>JIT
-        (Just-In-Time compilation)</strong>: o código é compilado durante a execução
-        para melhorar performance. Mas do ponto de vista do programador, você escreve
-        e o código roda — sem etapa de compilação manual.
+        Engines modernas como o V8 utilizam diferentes técnicas para executar e
+        otimizar o código. Entre elas está a <strong>compilação JIT
+        (Just-In-Time compilation)</strong>, que pode compilar e otimizar partes
+        do código durante a execução para melhorar a performance.
+      </p>
+      <p>
+        Do ponto de vista do programador, a diferença é simples: você escreve o código
+        e o ambiente se encarrega das etapas internas necessárias para executá-lo,
+        sem que você precise realizar uma compilação manual.
       </p>
       <p>
         Isso tem uma consequência importante: muitos erros só aparecem em tempo de
@@ -70,13 +73,13 @@ export function content() {
           <span class="code-block__filename">exemplo.js</span>
           <button class="code-block__copy" type="button">
             <span class="code-block__copy-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1 0-2 2-2h10c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2"/></svg>
             </span>
             <span class="code-block__copy-label">Copiar</span>
           </button>
         </div>
-        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// Este código roda direto — sem compilar antes</span>
-<span class="syn-keyword">const</span> <span class="syn-id">mensagem</span> <span class="syn-operator">=</span> <span class="syn-string">"JavaScript é interpretado"</span>
+        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// JavaScript roda sem compilação manual</span>
+<span class="syn-keyword">const</span> <span class="syn-id">mensagem</span> <span class="syn-operator">=</span> <span class="syn-string">"JavaScript roda sem compilação manual"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">mensagem</span>)</code></pre>
         <div class="code-console">
           <div class="code-console__header">
@@ -99,8 +102,9 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">Onde JavaScript roda?</h2>
       <p>
-        A linguagem é a mesma em todo lugar. O que muda é o <strong>ambiente</strong>
-        — e com ele, quais APIs estão disponíveis.
+        A linguagem JavaScript é essencialmente a mesma em diferentes ambientes.
+        O que muda é o <strong>ambiente</strong> — e com ele, quais APIs e recursos
+        estão disponíveis.
       </p>
 
       <div class="lesson__cards">
@@ -139,9 +143,9 @@ export function content() {
       </div>
 
       <p>
-        Essa distinção é essencial: <em>document</em> e <em>window</em> existem
-        no browser. <em>fs</em> e <em>process</em> existem no Node.js. Nenhum
-        dos dois existe no outro ambiente.
+        Essa distinção é essencial: <em>document</em> e <em>window</em> são
+        APIs globais típicas do browser. No Node.js, <em>process</em> é global
+        e módulos como <em>fs</em> fornecem acesso ao sistema de arquivos.
       </p>
       <p>
         No Node.js, <em>process</em> é uma variável <strong>global</strong>,
@@ -166,7 +170,7 @@ export function content() {
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">document</span>)
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">process</span>)
 
-<span class="syn-comment">// No Node.js — process existe, window não</span>
+<span class="syn-comment">// No Node.js — process existe, window e document não são globais</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">window</span>)
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">document</span>)
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">process</span>)</code></pre>
@@ -230,8 +234,9 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">JavaScript e ECMAScript</h2>
       <p>
-        ECMAScript é a <strong>especificação</strong> que define como JavaScript
-        funciona. Ela é mantida pela ECMA International e revisada anualmente.
+        ECMAScript é a <strong>especificação</strong> que define a linguagem.
+        Ela é desenvolvida pelo <strong>TC39</strong>, um comitê técnico da
+        Ecma International, e recebe novas edições regularmente.
       </p>
       <p>
         Quando você vê termos como <strong>ES6</strong> ou <strong>ES2015</strong>,
@@ -240,8 +245,9 @@ export function content() {
         classes, módulos e muito mais.
       </p>
       <p>
-        O nome JavaScript é uma marca registrada da Oracle — por isso a especificação
-        usa o nome ECMAScript. Na prática, os dois termos se referem à mesma linguagem.
+        <strong>ECMAScript</strong> é o nome da especificação; <strong>JavaScript</strong>
+        é o nome pelo qual conhecemos a linguagem e suas implementações baseadas
+        nessa especificação. O nome JavaScript é uma marca registrada da Oracle.
       </p>
 
       <div class="code-block">
@@ -258,12 +264,13 @@ export function content() {
 <span class="syn-keyword">var</span> <span class="syn-id">nome</span> <span class="syn-operator">=</span> <span class="syn-string">"Sanciweferson"</span>
 <span class="syn-keyword">function</span> <span class="syn-fn">saudar</span>(<span class="syn-id">n</span>) { <span class="syn-keyword">return</span> <span class="syn-string">"Olá, "</span> <span class="syn-operator">+</span> <span class="syn-id">n</span> }
 
-<span class="syn-comment es">// Com ES6 (ES2015) — mesma coisa, sintaxe moderna</span>
+<span class="syn-comment">// Com ES6 (ES2015) — sintaxe moderna</span>
 <span class="syn-keyword">const</span> <span class="syn-id">nome1</span> <span class="syn-operator">=</span> <span class="syn-string">"Sanciweferson"</span>
-<span class="syn-keyword">const</span> <span class="syn-id">saudar1</span> <span class="syn-operator">=</span> <span class="syn-id">n1</span> <span class="syn-operator">=></span> <span class="syn-string">\`Olá, \${n1}\`</span>
+<span class="syn-keyword">const</span> <span class="syn-id">saudar1</span> <span class="syn-operator">=</span> <span class="syn-id">n1</span> <span class="syn-operator">=></span> <span class="syn-string">${"`Olá, ${n1}`"}</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">saudar</span>(<span class="syn-id">nome</span>))
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">saudar1</span>(<span class="syn-id">nome1</span>))</code></pre>
+
         <div class="code-console">
           <div class="code-console__header">
             <span class="code-console__label">Console</span>
@@ -291,16 +298,19 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">JavaScript é single-threaded</h2>
       <p>
-        Uma característica fundamental do JavaScript é que ele roda em uma única
-        thread <strong>principal</strong> (main thread). Isso significa que só uma
-        coisa acontece por vez <em>nessa thread</em> — embora existam ferramentas
-        como Web Workers que permitem rodar código em threads paralelas separadas,
+        Uma característica fundamental do JavaScript no browser é que o código
+        da página normalmente é executado em uma única thread
+        <strong>principal</strong> (main thread). Isso significa que só uma
+        tarefa de JavaScript é executada por vez nessa thread. Existem ferramentas
+        como Web Workers que permitem executar JavaScript em threads separadas,
         para tarefas específicas.
       </p>
       <p>
-        Enquanto um trecho de código está rodando na thread principal, nada mais
-        roda nela — nenhum evento, nenhuma animação, nenhuma resposta do usuário.
-        Se você travar essa thread, trava o browser inteiro.
+        Enquanto um trecho de código está rodando na thread principal, outras tarefas
+        que dependem dela precisam esperar — eventos de interação, atualizações da
+        interface e outras operações de JavaScript na mesma thread.
+        Se você bloquear essa thread, a página deixa de responder normalmente
+        enquanto o código estiver executando.
       </p>
 
       <div class="code-block">
@@ -313,14 +323,15 @@ export function content() {
             <span class="code-block__copy-label">Copiar</span>
           </button>
         </div>
-        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// ⚠️ Não faça isso em produção — trava o browser por 5s</span>
+        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// ⚠️ Não faça isso em produção — bloqueia a página por 5s</span>
 <span class="syn-keyword">const</span> <span class="syn-id">inicio</span> <span class="syn-operator">=</span> <span class="syn-fn">Date</span>.<span class="syn-fn">now</span>()
 
 <span class="syn-keyword">while</span> (<span class="syn-fn">Date</span>.<span class="syn-fn">now</span>() <span class="syn-operator">-</span> <span class="syn-id">inicio</span> <span class="syn-operator">&lt;</span> <span class="syn-number">5000</span>) {
-  <span class="syn-comment">// loop vazio bloqueando a thread</span>
+  <span class="syn-comment">// loop vazio bloqueando a thread principal</span>
 }
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-string">"Desbloqueado após 5 segundos"</span>)</code></pre>
+
         <div class="code-console">
           <div class="code-console__header">
             <span class="code-console__label">Console</span>
@@ -341,10 +352,11 @@ export function content() {
       </div>
 
       <p>
-        Por isso o JavaScript tem um modelo de concorrência baseado em
-        <strong>event loop</strong> e operações assíncronas. Vamos entender
+        Por isso o JavaScript no browser tem um modelo de concorrência baseado
+        em <strong>event loop</strong> e operações assíncronas. Vamos entender
         isso em detalhes no módulo de Async — mas é bom saber desde agora
-        que bloquear a thread é sempre um problema.
+        que bloquear a thread principal é sempre um problema para a responsividade
+        da página.
       </p>
     </section>
 
@@ -383,10 +395,12 @@ export function content() {
       </p>
 
       <p>
-        <strong>Resumo da aula:</strong> JavaScript é interpretado (com compilação
-        JIT interna), roda em múltiplos ambientes com APIs diferentes, é regido
-        pela especificação ECMAScript, e opera numa única thread principal —
-        daí a importância de entender concorrência mais adiante.
+        <strong>Resumo da aula:</strong> JavaScript não exige compilação manual:
+        o engine analisa, prepara e executa o código, podendo usar compilação JIT
+        e outras otimizações. A linguagem roda em múltiplos ambientes com APIs
+        diferentes, é baseada na especificação ECMAScript e, no browser, o código
+        da página normalmente é executado na thread principal — daí a importância
+        de entender concorrência mais adiante.
       </p>
     </section>
 

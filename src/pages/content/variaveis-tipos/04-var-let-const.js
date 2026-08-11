@@ -4,140 +4,124 @@
 //
 // Arquitetura:
 //   _dados    — IIFE com todos os valores calculados por seção
-//   _h        — helpers de markup reutilizáveis
+//   _h        — helpers de markup reutilizáveis (compartilhados — ver _shared/code-block.js)
 //   _secoes   — objeto com uma função por seção
 //   content() — compõe _secoes em ordem
 //   init()    — resolve data-out="chave.subchave" automaticamente
 
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════════
-
-const _h = {
-
-  btn_copy: /* html */ `
-    <button class="code-block__copy" type="button">
-      <span class="code-block__copy-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="14" height="14" x="8" y="8" rx="2"/>
-          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-        </svg>
-      </span>
-      <span class="code-block__copy-label">Copiar</span>
-    </button>`,
-
-  header: (filename) => /* html */ `
-    <div class="code-block__header">
-      <span class="code-block__filename">${filename}</span>
-      ${_h.btn_copy}
-    </div>`,
-
-  console: (label, linhas) => /* html */ `
-    <div class="code-console">
-      <div class="code-console__header">
-        <span class="code-console__label">${label}</span>
-      </div>
-      <div class="code-console__body">
-        ${linhas.map(({ expr, key, cls = '', static_val = '' }) => /* html */ `
-        <div class="code-console__line${cls ? ` ${cls}` : ''}">
-          <span class="code-console__prompt">›</span>
-          <span class="code-console__expr">${expr}</span>
-          <span class="code-console__arrow">→</span>
-          ${key
-      ? `<span data-out="${key}"></span>`
-      : `<span>${static_val}</span>`
-    }
-        </div>`).join('')}
-      </div>
-    </div>`,
-
-  block: (filename, code, consoles = []) => /* html */ `
-    <div class="code-block">
-      ${_h.header(filename)}
-      <pre class="code-block__pre"><code class="code-block__code">${code}</code></pre>
-      ${consoles.map(c => _h.console(c.label, c.linhas)).join('')}
-    </div>`,
-}
-
+import { _h } from "@content/_shared/code-block"
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // DADOS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _dados = (() => {
+  const str = (v) => ({ text: `"${v}"`, cls: "syn-output-str" })
+  const num = (v) => ({ text: String(v), cls: "syn-output-num" })
+  const bool = (v) => ({ text: String(v), cls: "syn-output-bool" })
+  const nil = () => ({ text: "undefined", cls: "syn-output-null" })
+  const err = (v) => ({ text: v, cls: "syn-output-error" })
+  const raw = (v) => ({ text: v, cls: "" })
 
-  const str = (v) => ({ text: `"${v}"`, cls: 'syn-output-str' })
-  const num = (v) => ({ text: String(v), cls: 'syn-output-num' })
-  const bool = (v) => ({ text: String(v), cls: 'syn-output-bool' })
-  const nil = () => ({ text: 'undefined', cls: 'syn-output-null' })
-  const err = (v) => ({ text: v, cls: 'syn-output-error' })
-  const raw = (v) => ({ text: v, cls: '' })
+  // ── 1. Hoisting ───────────────────────────────────────────────────────────
+  const hoist_var_antes = undefined
+  const hoist_let_err =
+    "ReferenceError: Cannot access 'comLet' before initialization"
+  const hoist_const_err =
+    "ReferenceError: Cannot access 'comConst' before initialization"
 
-  // ── 1. Hoisting — var undefined, let/const TDZ ────────────────────────────
-  const hoist_var_antes = undefined   // var é inicializada com undefined
-  const hoist_let_err = "ReferenceError: Cannot access 'comLet' before initialization"
-  const hoist_const_err = "ReferenceError: Cannot access 'comConst' before initialization"
-
-  // ── 2. Escopo — var vaza de bloco, let/const não ──────────────────────────
+  // ── 2. Escopo ─────────────────────────────────────────────────────────────
   let escopo_var_dentro, escopo_var_fora
-  if (true) { var _escopoVar = "vazei!"; escopo_var_dentro = _escopoVar }
-  escopo_var_fora = _escopoVar   // var vazou
+  if (true) {
+    var _escopoVar = "vazei!"
+    escopo_var_dentro = _escopoVar
+  }
+  escopo_var_fora = _escopoVar
 
   let escopo_let_dentro
-  { let _escopoLet = "fico aqui"; escopo_let_dentro = _escopoLet }
+  {
+    let _escopoLet = "fico aqui"
+    escopo_let_dentro = _escopoLet
+  }
   let escopo_let_err
-  try { void _escopoLet }
-  catch (e) { escopo_let_err = e.constructor.name + ": _escopoLet is not defined" }
+  try {
+    void _escopoLet
+  } catch (e) {
+    escopo_let_err = e.constructor.name + ": _escopoLet is not defined"
+  }
 
   let escopo_const_dentro
-  { const _escopoConst = "fico aqui"; escopo_const_dentro = _escopoConst }
+  {
+    const _escopoConst = "fico aqui"
+    escopo_const_dentro = _escopoConst
+  }
   let escopo_const_err
-  try { void _escopoConst }
-  catch (e) { escopo_const_err = e.constructor.name + ": _escopoConst is not defined" }
+  try {
+    void _escopoConst
+  } catch (e) {
+    escopo_const_err = e.constructor.name + ": _escopoConst is not defined"
+  }
 
   // ── 3. Redeclaração ───────────────────────────────────────────────────────
-  var _rdVar = "primeiro"; var _rdVar = "segundo"
-  const redecl_var = _rdVar                         // "segundo" — sem erro
+  var _rdVar = "primeiro"
+  var _rdVar = "segundo"
+  const redecl_var = _rdVar
   const redecl_let = "SyntaxError: Identifier 'x' has already been declared"
   const redecl_const = "SyntaxError: Identifier 'x' has already been declared"
 
   // ── 4. Reatribuição ───────────────────────────────────────────────────────
-  var _reVar = "a"; _reVar = "b"; const reatrib_var = _reVar   // "b"
-  let _reLet = "a"; _reLet = "b"; const reatrib_let = _reLet   // "b"
+  var _reVar = "a"
+  _reVar = "b"
+  const reatrib_var = _reVar
+  let _reLet = "a"
+  _reLet = "b"
+  const reatrib_let = _reLet
   const _reConst = "a"
   let reatrib_const_err
-  try { eval('"use strict"; const _c = "a"; _c = "b"') }
-  catch (e) { reatrib_const_err = e.constructor.name + ": Assignment to constant variable." }
+  try {
+    eval('"use strict"; const _c = "a"; _c = "b"')
+  } catch (e) {
+    reatrib_const_err =
+      e.constructor.name + ": Assignment to constant variable."
+  }
 
-  // ── 5. Loop + closure — var bug, let/const corretos ───────────────────────
-  // var: todos os callbacks leem o valor final de i
-  let _loopVarI; for (_loopVarI = 0; _loopVarI < 3; _loopVarI++) { }
-  const loop_var = [_loopVarI, _loopVarI, _loopVarI]   // [3, 3, 3]
+  // ── 5. Loop + closure ─────────────────────────────────────────────────────
+  let _loopVarI
+  for (_loopVarI = 0; _loopVarI < 3; _loopVarI++) {}
+  const loop_var = [_loopVarI, _loopVarI, _loopVarI]
 
-  // let/const: cada iteração tem escopo próprio
   const loop_let = [0, 1, 2]
   const loop_const = [0, 1, 2]
 
-  // ── 6. window — var vaza, let/const não ──────────────────────────────────
-  // verificado no init() onde window existe com certeza
+  // ── 6. window — calculado no init() ───────────────────────────────────────
 
   // ── 7. Valor inicial obrigatório ──────────────────────────────────────────
-  var _initVar                    // undefined — ok
-  let _initLet                    // undefined — ok
+  var _initVar
+  let _initLet
   const init_var_out = _initVar
   const init_let_out = _initLet
   const init_const_err = "SyntaxError: Missing initializer in const declaration"
 
-  // ── 8. Objetos — referência vs conteúdo ──────────────────────────────────
-  var _objVar = { x: 1 }; _objVar.x = 99; const obj_var_x = _objVar.x
-  let _objLet = { x: 1 }; _objLet.x = 99; const obj_let_x = _objLet.x
-  const _objConst = { x: 1 }; _objConst.x = 99; const obj_const_x = _objConst.x
+  // ── 8. Objetos ────────────────────────────────────────────────────────────
+  var _objVar = { x: 1 }
+  _objVar.x = 99
+  const obj_var_x = _objVar.x
+
+  let _objLet = { x: 1 }
+  _objLet.x = 99
+  const obj_let_x = _objLet.x
+
+  const _objConst = { x: 1 }
+  _objConst.x = 99
+  const obj_const_x = _objConst.x
 
   let obj_const_reatrib_err
-  try { eval('"use strict"; const o = {}; o = {}') }
-  catch (e) { obj_const_reatrib_err = e.constructor.name + ": Assignment to constant variable." }
+  try {
+    eval('"use strict"; const o = {}; o = {}')
+  } catch (e) {
+    obj_const_reatrib_err =
+      e.constructor.name + ": Assignment to constant variable."
+  }
 
   return {
     hoist: {
@@ -186,16 +170,13 @@ const _dados = (() => {
       const_reatrib: err(obj_const_reatrib_err),
     },
   }
-
 })()
-
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SEÇÕES
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _secoes = {
-
   // ── Introdução ──────────────────────────────────────────────────────────────
   introducao: () => /* html */ `
     <section class="lesson__section">
@@ -228,7 +209,9 @@ const _secoes = {
         <code>ReferenceError</code> explícito.
       </p>
 
-      ${_h.block('hoisting.js', /* html */ `
+      ${_h.block(
+        "hoisting.js",
+        /* html */ `
 <span class="syn-comment">// ── var ────────────────────────────────────────────────────────</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">comVar</span>)     <span class="syn-comment">// undefined — hoisting inicializa com undefined</span>
 <span class="syn-keyword">var</span> <span class="syn-id">comVar</span> <span class="syn-operator">=</span> <span class="syn-string">"ok"</span>
@@ -239,23 +222,39 @@ const _secoes = {
 
 <span class="syn-comment">// ── const ──────────────────────────────────────────────────────</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">comConst</span>)   <span class="syn-comment">// ReferenceError — TDZ</span>
-<span class="syn-keyword">const</span> <span class="syn-id">comConst</span> <span class="syn-operator">=</span> <span class="syn-string">"ok"</span>`, [
-    {
-      label: 'Console — var', linhas: [
-        { expr: 'comVar <span class="syn-comment">// antes da declaração</span>', key: 'hoist.var_antes' },
-      ]
-    },
-    {
-      label: 'Console — let', linhas: [
-        { expr: 'comLet <span class="syn-comment">// antes da declaração (TDZ)</span>', key: 'hoist.let_err', cls: 'code-console__line--error' },
-      ]
-    },
-    {
-      label: 'Console — const', linhas: [
-        { expr: 'comConst <span class="syn-comment">// antes da declaração (TDZ)</span>', key: 'hoist.const_err', cls: 'code-console__line--error' },
-      ]
-    },
-  ])}
+<span class="syn-keyword">const</span> <span class="syn-id">comConst</span> <span class="syn-operator">=</span> <span class="syn-string">"ok"</span>`,
+        [
+          {
+            label: "Console — var",
+            linhas: [
+              {
+                expr: 'comVar <span class="syn-comment">// antes da declaração</span>',
+                key: "hoist.var_antes",
+              },
+            ],
+          },
+          {
+            label: "Console — let",
+            linhas: [
+              {
+                expr: 'comLet <span class="syn-comment">// antes da declaração (TDZ)</span>',
+                key: "hoist.let_err",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+          {
+            label: "Console — const",
+            linhas: [
+              {
+                expr: 'comConst <span class="syn-comment">// antes da declaração (TDZ)</span>',
+                key: "hoist.const_err",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+        ],
+      )}
 
       <p>
         <strong>Conclusão:</strong> o erro explícito do <code>let</code> e do
@@ -275,7 +274,9 @@ const _secoes = {
         de bloco — qualquer par de chaves é uma fronteira.
       </p>
 
-      ${_h.block('escopo.js', /* html */ `
+      ${_h.block(
+        "escopo.js",
+        /* html */ `
 <span class="syn-comment">// ── var — vaza do bloco ────────────────────────────────────────</span>
 <span class="syn-keyword">if</span> (<span class="syn-boolean">true</span>) {
   <span class="syn-keyword">var</span> <span class="syn-id">comVar</span> <span class="syn-operator">=</span> <span class="syn-string">"vazei!"</span>
@@ -292,26 +293,51 @@ const _secoes = {
 {
   <span class="syn-keyword">const</span> <span class="syn-id">comConst</span> <span class="syn-operator">=</span> <span class="syn-string">"fico aqui"</span>
 }
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">comConst</span>) <span class="syn-comment">// ReferenceError</span>`, [
-    {
-      label: 'Console — var', linhas: [
-        { expr: 'comVar <span class="syn-comment">// dentro do if</span>', key: 'escopo.var_dentro' },
-        { expr: 'comVar <span class="syn-comment">// fora do if</span>', key: 'escopo.var_fora' },
-      ]
-    },
-    {
-      label: 'Console — let', linhas: [
-        { expr: 'comLet <span class="syn-comment">// dentro do bloco</span>', key: 'escopo.let_dentro' },
-        { expr: 'comLet <span class="syn-comment">// fora do bloco</span>', key: 'escopo.let_err', cls: 'code-console__line--error' },
-      ]
-    },
-    {
-      label: 'Console — const', linhas: [
-        { expr: 'comConst <span class="syn-comment">// dentro do bloco</span>', key: 'escopo.const_dentro' },
-        { expr: 'comConst <span class="syn-comment">// fora do bloco</span>', key: 'escopo.const_err', cls: 'code-console__line--error' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">comConst</span>) <span class="syn-comment">// ReferenceError</span>`,
+        [
+          {
+            label: "Console — var",
+            linhas: [
+              {
+                expr: 'comVar <span class="syn-comment">// dentro do if</span>',
+                key: "escopo.var_dentro",
+              },
+              {
+                expr: 'comVar <span class="syn-comment">// fora do if</span>',
+                key: "escopo.var_fora",
+              },
+            ],
+          },
+          {
+            label: "Console — let",
+            linhas: [
+              {
+                expr: 'comLet <span class="syn-comment">// dentro do bloco</span>',
+                key: "escopo.let_dentro",
+              },
+              {
+                expr: 'comLet <span class="syn-comment">// fora do bloco</span>',
+                key: "escopo.let_err",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+          {
+            label: "Console — const",
+            linhas: [
+              {
+                expr: 'comConst <span class="syn-comment">// dentro do bloco</span>',
+                key: "escopo.const_dentro",
+              },
+              {
+                expr: 'comConst <span class="syn-comment">// fora do bloco</span>',
+                key: "escopo.const_err",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   // ── 3. Redeclaração ─────────────────────────────────────────────────────────
@@ -325,7 +351,9 @@ const _secoes = {
         <code>SyntaxError</code> detectado antes de rodar.
       </p>
 
-      ${_h.block('redeclaracao.js', /* html */ `
+      ${_h.block(
+        "redeclaracao.js",
+        /* html */ `
 <span class="syn-comment">// ── var — redeclaração silenciosa ──────────────────────────────</span>
 <span class="syn-keyword">var</span> <span class="syn-id">x</span> <span class="syn-operator">=</span> <span class="syn-string">"primeiro"</span>
 <span class="syn-keyword">var</span> <span class="syn-id">x</span> <span class="syn-operator">=</span> <span class="syn-string">"segundo"</span>   <span class="syn-comment">// sem erro — x vale "segundo"</span>
@@ -337,23 +365,39 @@ const _secoes = {
 
 <span class="syn-comment">// ── const — SyntaxError ────────────────────────────────────────</span>
 <span class="syn-keyword">const</span> <span class="syn-id">x</span> <span class="syn-operator">=</span> <span class="syn-string">"primeiro"</span>
-<span class="syn-keyword">const</span> <span class="syn-id">x</span> <span class="syn-operator">=</span> <span class="syn-string">"segundo"</span>   <span class="syn-comment">// ✖ SyntaxError</span>`, [
-    {
-      label: 'Console — var', linhas: [
-        { expr: 'x <span class="syn-comment">// após 2ª declaração</span>', key: 'redecl.var' },
-      ]
-    },
-    {
-      label: 'Console — let', linhas: [
-        { expr: 'let x = "segundo"', key: 'redecl.let', cls: 'code-console__line--error' },
-      ]
-    },
-    {
-      label: 'Console — const', linhas: [
-        { expr: 'const x = "segundo"', key: 'redecl.const', cls: 'code-console__line--error' },
-      ]
-    },
-  ])}
+<span class="syn-keyword">const</span> <span class="syn-id">x</span> <span class="syn-operator">=</span> <span class="syn-string">"segundo"</span>   <span class="syn-comment">// ✖ SyntaxError</span>`,
+        [
+          {
+            label: "Console — var",
+            linhas: [
+              {
+                expr: 'x <span class="syn-comment">// após 2ª declaração</span>',
+                key: "redecl.var",
+              },
+            ],
+          },
+          {
+            label: "Console — let",
+            linhas: [
+              {
+                expr: 'let x = "segundo"',
+                key: "redecl.let",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+          {
+            label: "Console — const",
+            linhas: [
+              {
+                expr: 'const x = "segundo"',
+                key: "redecl.const",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   // ── 4. Reatribuição ─────────────────────────────────────────────────────────
@@ -366,7 +410,9 @@ const _secoes = {
         para outro valor lança <code>TypeError</code> em runtime.
       </p>
 
-      ${_h.block('reatribuicao.js', /* html */ `
+      ${_h.block(
+        "reatribuicao.js",
+        /* html */ `
 <span class="syn-comment">// ── var — reatribuição livre ───────────────────────────────────</span>
 <span class="syn-keyword">var</span> <span class="syn-id">status</span> <span class="syn-operator">=</span> <span class="syn-string">"a"</span>
 <span class="syn-id">status</span> <span class="syn-operator">=</span> <span class="syn-string">"b"</span>
@@ -379,23 +425,28 @@ const _secoes = {
 
 <span class="syn-comment">// ── const — TypeError ──────────────────────────────────────────</span>
 <span class="syn-keyword">const</span> <span class="syn-id">status</span> <span class="syn-operator">=</span> <span class="syn-string">"a"</span>
-<span class="syn-id">status</span> <span class="syn-operator">=</span> <span class="syn-string">"b"</span>   <span class="syn-comment">// ✖ TypeError</span>`, [
-    {
-      label: 'Console — var', linhas: [
-        { expr: 'status', key: 'reatrib.var' },
-      ]
-    },
-    {
-      label: 'Console — let', linhas: [
-        { expr: 'status', key: 'reatrib.let' },
-      ]
-    },
-    {
-      label: 'Console — const', linhas: [
-        { expr: 'status = "b"', key: 'reatrib.const_err', cls: 'code-console__line--error' },
-      ]
-    },
-  ])}
+<span class="syn-id">status</span> <span class="syn-operator">=</span> <span class="syn-string">"b"</span>   <span class="syn-comment">// ✖ TypeError</span>`,
+        [
+          {
+            label: "Console — var",
+            linhas: [{ expr: "status", key: "reatrib.var" }],
+          },
+          {
+            label: "Console — let",
+            linhas: [{ expr: "status", key: "reatrib.let" }],
+          },
+          {
+            label: "Console — const",
+            linhas: [
+              {
+                expr: 'status = "b"',
+                key: "reatrib.const_err",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   // ── 5. Loop + closure ───────────────────────────────────────────────────────
@@ -409,7 +460,9 @@ const _secoes = {
         cria um ambiente léxico próprio — cada callback captura seu próprio valor.
       </p>
 
-      ${_h.block('closure.js', /* html */ `
+      ${_h.block(
+        "closure.js",
+        /* html */ `
 <span class="syn-comment">// ── var — bug: todos imprimem o valor final ────────────────────</span>
 <span class="syn-keyword">for</span> (<span class="syn-keyword">var</span> <span class="syn-id">i</span> <span class="syn-operator">=</span> <span class="syn-number">0</span>; <span class="syn-id">i</span> <span class="syn-operator">&lt;</span> <span class="syn-number">3</span>; <span class="syn-id">i</span><span class="syn-operator">++</span>) {
   <span class="syn-fn">setTimeout</span>(() <span class="syn-operator">=></span> <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">i</span>), <span class="syn-number">0</span>)
@@ -423,29 +476,47 @@ const _secoes = {
 <span class="syn-comment">// ── const — correto: útil em loops for...of ────────────────────</span>
 <span class="syn-keyword">for</span> (<span class="syn-keyword">const</span> <span class="syn-id">item</span> <span class="syn-keyword">of</span> [<span class="syn-number">0</span>, <span class="syn-number">1</span>, <span class="syn-number">2</span>]) {
   <span class="syn-fn">setTimeout</span>(() <span class="syn-operator">=></span> <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">item</span>), <span class="syn-number">0</span>)
-}`, [
-    {
-      label: 'Console — var (imprime o i final para todos)', linhas: [
-        { expr: 'callback #1 → i', key: 'loop.var_0', cls: 'code-console__line--warn' },
-        { expr: 'callback #2 → i', key: 'loop.var_1', cls: 'code-console__line--warn' },
-        { expr: 'callback #3 → i', key: 'loop.var_2', cls: 'code-console__line--warn' },
-      ]
-    },
-    {
-      label: 'Console — let (cada callback captura seu i)', linhas: [
-        { expr: 'callback #1 → i', key: 'loop.let_0' },
-        { expr: 'callback #2 → i', key: 'loop.let_1' },
-        { expr: 'callback #3 → i', key: 'loop.let_2' },
-      ]
-    },
-    {
-      label: 'Console — const com for...of (cada item é uma constante nova)', linhas: [
-        { expr: 'callback #1 → item', key: 'loop.const_0' },
-        { expr: 'callback #2 → item', key: 'loop.const_1' },
-        { expr: 'callback #3 → item', key: 'loop.const_2' },
-      ]
-    },
-  ])}
+}`,
+        [
+          {
+            label: "Console — var (imprime o i final para todos)",
+            linhas: [
+              {
+                expr: "callback #1 → i",
+                key: "loop.var_0",
+                cls: "code-console__line--warn",
+              },
+              {
+                expr: "callback #2 → i",
+                key: "loop.var_1",
+                cls: "code-console__line--warn",
+              },
+              {
+                expr: "callback #3 → i",
+                key: "loop.var_2",
+                cls: "code-console__line--warn",
+              },
+            ],
+          },
+          {
+            label: "Console — let (cada callback captura seu i)",
+            linhas: [
+              { expr: "callback #1 → i", key: "loop.let_0" },
+              { expr: "callback #2 → i", key: "loop.let_1" },
+              { expr: "callback #3 → i", key: "loop.let_2" },
+            ],
+          },
+          {
+            label:
+              "Console — const com for...of (cada item é uma constante nova)",
+            linhas: [
+              { expr: "callback #1 → item", key: "loop.const_0" },
+              { expr: "callback #2 → item", key: "loop.const_1" },
+              { expr: "callback #3 → item", key: "loop.const_2" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   // ── 6. Valor inicial obrigatório ────────────────────────────────────────────
@@ -459,21 +530,30 @@ const _secoes = {
         um depois.
       </p>
 
-      ${_h.block('valor-inicial.js', /* html */ `
+      ${_h.block(
+        "valor-inicial.js",
+        /* html */ `
 <span class="syn-keyword">var</span>   <span class="syn-id">semVar</span>            <span class="syn-comment">// undefined — ok</span>
 <span class="syn-keyword">let</span>   <span class="syn-id">semLet</span>            <span class="syn-comment">// undefined — ok</span>
 <span class="syn-keyword">const</span> <span class="syn-id">semConst</span>          <span class="syn-comment">// ✖ SyntaxError — const exige valor inicial</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">semVar</span>)
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">semLet</span>)`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'semVar', key: 'init.var_out' },
-        { expr: 'semLet', key: 'init.let_out' },
-        { expr: 'semConst', key: 'init.const_err', cls: 'code-console__line--error' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">semLet</span>)`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "semVar", key: "init.var_out" },
+              { expr: "semLet", key: "init.let_out" },
+              {
+                expr: "semConst",
+                key: "init.const_err",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   // ── 7. Objetos e arrays ─────────────────────────────────────────────────────
@@ -487,7 +567,9 @@ const _secoes = {
         Só <code>const</code> proíbe isso.
       </p>
 
-      ${_h.block('objetos.js', /* html */ `
+      ${_h.block(
+        "objetos.js",
+        /* html */ `
 <span class="syn-comment">// ── as três permitem alterar propriedades ──────────────────────</span>
 <span class="syn-keyword">var</span>   <span class="syn-id">objVar</span>   <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">1</span> }; <span class="syn-id">objVar</span>.<span class="syn-property">x</span>   <span class="syn-operator">=</span> <span class="syn-number">99</span>
 <span class="syn-keyword">let</span>   <span class="syn-id">objLet</span>   <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">1</span> }; <span class="syn-id">objLet</span>.<span class="syn-property">x</span>   <span class="syn-operator">=</span> <span class="syn-number">99</span>
@@ -498,20 +580,28 @@ const _secoes = {
 <span class="syn-comment">// ── só const proíbe reatribuir o objeto inteiro ─────────────────</span>
 <span class="syn-id">objVar</span>   <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">0</span> }   <span class="syn-comment">// ✓ var — ok</span>
 <span class="syn-id">objLet</span>   <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">0</span> }   <span class="syn-comment">// ✓ let — ok</span>
-<span class="syn-id">objConst</span> <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">0</span> }   <span class="syn-comment">// ✖ TypeError — const proíbe reatribuição</span>`, [
-    {
-      label: 'Console — propriedades após alteração (todos = 99)', linhas: [
-        { expr: 'objVar.x', key: 'obj.var_x' },
-        { expr: 'objLet.x', key: 'obj.let_x' },
-        { expr: 'objConst.x', key: 'obj.const_x' },
-      ]
-    },
-    {
-      label: 'Console — reatribuição do objeto inteiro', linhas: [
-        { expr: 'objConst = { x: 0 }', key: 'obj.const_reatrib', cls: 'code-console__line--error' },
-      ]
-    },
-  ])}
+<span class="syn-id">objConst</span> <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">0</span> }   <span class="syn-comment">// ✖ TypeError — const proíbe reatribuição</span>`,
+        [
+          {
+            label: "Console — propriedades após alteração (todos = 99)",
+            linhas: [
+              { expr: "objVar.x", key: "obj.var_x" },
+              { expr: "objLet.x", key: "obj.let_x" },
+              { expr: "objConst.x", key: "obj.const_x" },
+            ],
+          },
+          {
+            label: "Console — reatribuição do objeto inteiro",
+            linhas: [
+              {
+                expr: "objConst = { x: 0 }",
+                key: "obj.const_reatrib",
+                cls: "code-console__line--error",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   // ── 8. window ───────────────────────────────────────────────────────────────
@@ -526,27 +616,30 @@ const _secoes = {
         separado, sem poluir o <code>window</code>.
       </p>
 
-      ${_h.block('window.js', /* html */ `
+      ${_h.block(
+        "window.js",
+        /* html */ `
 <span class="syn-keyword">var</span>   <span class="syn-id">comVar</span>   <span class="syn-operator">=</span> <span class="syn-string">"var"</span>
 <span class="syn-keyword">let</span>   <span class="syn-id">comLet</span>   <span class="syn-operator">=</span> <span class="syn-string">"let"</span>
 <span class="syn-keyword">const</span> <span class="syn-id">comConst</span> <span class="syn-operator">=</span> <span class="syn-string">"const"</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">window</span>.<span class="syn-id">comVar</span>)    <span class="syn-comment">// "var"      — vazou pro window</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">window</span>.<span class="syn-id">comLet</span>)    <span class="syn-comment">// undefined — não está no window</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">window</span>.<span class="syn-id">comConst</span>)  <span class="syn-comment">// undefined — não está no window</span>`, [
-    {
-      label: 'Console — browser', linhas: [
-        { expr: 'window.comVar', key: 'window.var_out', },
-        { expr: 'window.comLet', key: 'window.let_out', },
-        { expr: 'window.comConst', key: 'window.const_out', },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">window</span>.<span class="syn-id">comConst</span>)  <span class="syn-comment">// undefined — não está no window</span>`,
+        [
+          {
+            label: "Console — browser",
+            linhas: [
+              { expr: "window.comVar", key: "window.var_out" },
+              { expr: "window.comLet", key: "window.let_out" },
+              { expr: "window.comConst", key: "window.const_out" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   // ── 9. Tabela de referência ─────────────────────────────────────────────────
-  // Substitua a função tabela: () => dentro de _secoes por esta versão
-
   tabela: () => /* html */ `
     <section class="lesson__section">
       <h2 class="lesson__section-title">Tabela de referência completa</h2>
@@ -557,7 +650,6 @@ const _secoes = {
 
       <div class="lesson__table-wrapper">
 
-        <!-- Cabeçalho das colunas -->
         <div class="lesson__table-header">
           <div></div>
           <div class="lesson__table-col-head lesson__table-col-head--var"><code>var</code></div>
@@ -565,7 +657,6 @@ const _secoes = {
           <div class="lesson__table-col-head lesson__table-col-head--const"><code>const</code></div>
         </div>
 
-        <!-- Linhas -->
         <div class="lesson__table-body">
 
           <div class="lesson__table-row">
@@ -588,15 +679,15 @@ const _secoes = {
             <div class="lesson__table-row-label">Hoisting</div>
             <div class="lesson__table-cell lesson__table-cell--var cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              <code>undefined</code> silencioso
+              undefined
             </div>
             <div class="lesson__table-cell lesson__table-cell--let cell--warn">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L14 13H2L8 2z"/><line x1="8" y1="7" x2="8" y2="10"/><circle cx="8" cy="12" r="0.5" fill="currentColor"/></svg>
-              TDZ → <code>ReferenceError</code>
+              TDZ → ReferenceError
             </div>
             <div class="lesson__table-cell lesson__table-cell--const cell--warn">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L14 13H2L8 2z"/><line x1="8" y1="7" x2="8" y2="10"/><circle cx="8" cy="12" r="0.5" fill="currentColor"/></svg>
-              TDZ → <code>ReferenceError</code>
+              TDZ → ReferenceError
             </div>
           </div>
 
@@ -604,15 +695,15 @@ const _secoes = {
             <div class="lesson__table-row-label">Acesso antes da declaração</div>
             <div class="lesson__table-cell lesson__table-cell--var cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              <code>undefined</code> silencioso
+              undefined
             </div>
             <div class="lesson__table-cell lesson__table-cell--let cell--good">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,13 14,3"/></svg>
-              <code>ReferenceError</code> explícito
+              ReferenceError
             </div>
             <div class="lesson__table-cell lesson__table-cell--const cell--good">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,13 14,3"/></svg>
-              <code>ReferenceError</code> explícito
+              ReferenceError
             </div>
           </div>
 
@@ -620,15 +711,15 @@ const _secoes = {
             <div class="lesson__table-row-label">Redeclaração no mesmo escopo</div>
             <div class="lesson__table-cell lesson__table-cell--var cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              Permitida sem aviso
+              Permitida
             </div>
             <div class="lesson__table-cell lesson__table-cell--let cell--good">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,13 14,3"/></svg>
-              <code>SyntaxError</code>
+              SyntaxError
             </div>
             <div class="lesson__table-cell lesson__table-cell--const cell--good">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,13 14,3"/></svg>
-              <code>SyntaxError</code>
+              SyntaxError
             </div>
           </div>
 
@@ -644,7 +735,7 @@ const _secoes = {
             </div>
             <div class="lesson__table-cell lesson__table-cell--const cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              Proibida — <code>TypeError</code>
+              Proibida
             </div>
           </div>
 
@@ -660,7 +751,7 @@ const _secoes = {
             </div>
             <div class="lesson__table-cell lesson__table-cell--const cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              Sim — <code>SyntaxError</code>
+              Sim
             </div>
           </div>
 
@@ -716,21 +807,20 @@ const _secoes = {
             <div class="lesson__table-row-label">Imutabilidade real</div>
             <div class="lesson__table-cell lesson__table-cell--var cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              Use <code>Object.freeze()</code>
+              Object.freeze()
             </div>
             <div class="lesson__table-cell lesson__table-cell--let cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              Use <code>Object.freeze()</code>
+              Object.freeze()
             </div>
             <div class="lesson__table-cell lesson__table-cell--const cell--bad">
               <svg class="lesson__table-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>
-              Use <code>Object.freeze()</code>
+              Object.freeze()
             </div>
           </div>
 
         </div>
 
-        <!-- Rodapé — Recomendação -->
         <div class="lesson__table-footer">
           <div class="lesson__table-footer-row">
             <div class="lesson__table-footer-label">Recomendação</div>
@@ -751,6 +841,7 @@ const _secoes = {
 
       </div>
     </section>`,
+
   // ── 10. Guia de decisão ─────────────────────────────────────────────────────
   guia: () => /* html */ `
     <section class="lesson__section">
@@ -791,7 +882,9 @@ const _secoes = {
         </div>
       </div>
 
-      ${_h.block('guia.js — exemplos práticos', /* html */ `
+      ${_h.block(
+        "guia.js — exemplos práticos",
+        /* html */ `
 <span class="syn-comment">// ✓ const — referência não muda</span>
 <span class="syn-keyword">const</span> <span class="syn-id">API_URL</span>   <span class="syn-operator">=</span> <span class="syn-string">"https://api.exemplo.com"</span>
 <span class="syn-keyword">const</span> <span class="syn-id">usuario</span>   <span class="syn-operator">=</span> { <span class="syn-property">nome</span>: <span class="syn-string">"Ana"</span> }     <span class="syn-comment">// propriedades podem mudar</span>
@@ -808,7 +901,8 @@ const _secoes = {
 }
 
 <span class="syn-comment">// ✖ var — evite em código novo</span>
-<span class="syn-keyword">var</span> <span class="syn-id">legado</span> <span class="syn-operator">=</span> <span class="syn-string">"só em código legado que não posso tocar"</span>`)}
+<span class="syn-keyword">var</span> <span class="syn-id">legado</span> <span class="syn-operator">=</span> <span class="syn-string">"só em código legado que não posso tocar"</span>`,
+      )}
     </section>`,
 
   // ── 11. O que vem a seguir ──────────────────────────────────────────────────
@@ -824,29 +918,28 @@ const _secoes = {
     </section>`,
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONTENT
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export function content() {
-  return Object.values(_secoes).map(s => s()).join('\n')
+  return Object.values(_secoes)
+    .map((s) => s())
+    .join("\n")
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
-// INIT — resolução automática de data-out + seção window em runtime
+// INIT
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export function initVarLetConst() {
-  // Resolve caminho "a.b.c" em _dados
   const resolver = (caminho) =>
-    caminho.split('.').reduce((obj, k) => obj?.[k], _dados)
+    caminho.split(".").reduce((obj, k) => obj?.[k], _dados)
 
-  document.querySelectorAll('[data-out]').forEach(el => {
+  document.querySelectorAll("[data-out]").forEach((el) => {
     const val = resolver(el.dataset.out)
     if (val == null) return
-    if (typeof val === 'string') {
+    if (typeof val === "string") {
       el.textContent = val
     } else {
       el.textContent = val.text
@@ -854,11 +947,10 @@ export function initVarLetConst() {
     }
   })
 
-  // Seção 8 — window: calculado em runtime pois depende do ambiente do browser
-  if (typeof window !== 'undefined') {
-    var _demoVar = 'var'
-    let _demoLet = 'let'
-    const _demoCst = 'const'
+  if (typeof window !== "undefined") {
+    var _demoVar = "var"
+    let _demoLet = "let"
+    const _demoCst = "const"
 
     const set = (key, text, cls) => {
       const el = document.querySelector(`[data-out="${key}"]`)
@@ -867,8 +959,8 @@ export function initVarLetConst() {
       if (cls) el.className = cls
     }
 
-    set('window.var_out', `"${window._demoVar}"`, 'syn-output-str')
-    set('window.let_out', String(window._demoLet), 'syn-output-null')
-    set('window.const_out', String(window._demoCst), 'syn-output-null')
+    set("window.var_out", `"${window._demoVar}"`, "syn-output-str")
+    set("window.let_out", String(window._demoLet), "syn-output-null")
+    set("window.const_out", String(window._demoCst), "syn-output-null")
   }
 }

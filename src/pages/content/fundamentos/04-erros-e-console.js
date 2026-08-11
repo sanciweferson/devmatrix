@@ -8,8 +8,9 @@ export function content() {
       <h2 class="lesson__section-title">Erros são informação, não falha</h2>
       <p>
         Todo desenvolvedor experiente aprendeu a ler erros com atenção — não
-        a ignorá-los. Um erro bem lido te diz exatamente o que quebrou, em qual
-        arquivo e em qual linha. É o motor te ajudando a depurar.
+        a ignorá-los. Um erro bem lido geralmente indica o que aconteceu e
+        fornece pistas sobre o arquivo, a linha e a sequência de chamadas
+        envolvidas. É o motor te ajudando a depurar.
       </p>
       <p>
         O problema é que no início a mensagem parece intimidadora. Nessa aula
@@ -19,12 +20,15 @@ export function content() {
     </section>
 
 
-    <!-- ── 2. Os três tipos de erro ── -->
+    <!-- ── 2. Quatro tipos de erro comuns ── -->
     <section class="lesson__section">
-      <h2 class="lesson__section-title">Os quatros tipos de erro</h2>
+      <h2 class="lesson__section-title">Quatro tipos de erro comuns</h2>
       <p>
-        No JavaScript existem quatros categorias de erro. Entender a diferença
-        entre eles acelera muito o processo de depuração.
+        No JavaScript existem vários tipos de erro nativos. Nesta aula vamos
+        estudar quatro dos mais comuns: <code>SyntaxError</code>,
+        <code>ReferenceError</code>, <code>TypeError</code> e
+        <code>RangeError</code>. Entender a diferença entre eles acelera muito
+        o processo de depuração.
       </p>
 
       <div class="lesson__cards">
@@ -32,23 +36,24 @@ export function content() {
           <div class="lesson__card-icon">🔴</div>
           <h3>SyntaxError</h3>
           <p>
-            O código está escrito de forma inválida. O motor detecta na fase
-            de parsing — antes de executar qualquer linha.
+            O código está escrito de forma inválida. O motor detecta isso na
+            fase de parsing, o que impede a execução daquele script.
           </p>
         </div>
         <div class="lesson__card">
           <div class="lesson__card-icon">🟠</div>
           <h3>ReferenceError</h3>
           <p>
-            Você tentou usar uma variável que não existe no escopo atual.
-            Acontece em tempo de execução.
+            Você tentou acessar um identificador que não existe no escopo
+            atual — ou que ainda está na Temporal Dead Zone (TDZ). Acontece
+            em tempo de execução.
           </p>
         </div>
         <div class="lesson__card">
           <div class="lesson__card-icon">🟡</div>
           <h3>TypeError</h3>
           <p>
-            Você tentou fazer uma operação em um valor do tipo errado —
+            Você tentou fazer uma operação que o tipo do valor não suporta —
             como chamar algo que não é função, ou acessar propriedade de
             <code>null</code>.
           </p>
@@ -57,8 +62,9 @@ export function content() {
           <div class="lesson__card-icon">🔵</div>
           <h3>RangeError</h3>
           <p>
-            Um valor está fora do intervalo permitido — como criar um array
-            com tamanho negativo ou causar recursão infinita.
+            Um valor está fora de um intervalo permitido — como criar um
+            array com tamanho negativo — ou uma operação excede um limite,
+            como uma recursão que ultrapassa a capacidade da Call Stack.
           </p>
         </div>
       </div>
@@ -84,12 +90,11 @@ export function content() {
             <span class="code-block__copy-label">Copiar</span>
           </button>
         </div>
-        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// Parêntese sem fechar</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-string">"olá")</span>
+        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// Vírgula final (trailing comma) — válida em JavaScript moderno</span>
+<span class="syn-keyword">const</span> <span class="syn-id">user</span> <span class="syn-operator">=</span> { <span class="syn-property">nome</span>: <span class="syn-string">"Ana"</span>, }
 
-<span class="syn-comment">// Vírgula sobrando no objeto</span>
-<span class="syn-keyword">const</span> <span class="syn-id">user</span> <span class="syn-operator">=</span> { <span class="syn-property">nome</span>: <span class="syn-string">"Ana"</span>, }  <span class="syn-comment">// ← isso é válido em JS moderno</span>
-<span class="syn-keyword">const</span> <span class="syn-id">ok</span>   <span class="syn-operator">=</span> { <span class="syn-property">nome</span>: <span class="syn-string">"Ana"</span> <span class="syn-property">idade</span>: <span class="syn-number">30</span> }  <span class="syn-comment">// ← isso não — falta vírgula</span></code></pre>
+<span class="syn-comment">// Falta uma vírgula entre as propriedades</span>
+<span class="syn-keyword">const</span> <span class="syn-id">ok</span> <span class="syn-operator">=</span> { <span class="syn-property">nome</span>: <span class="syn-string">"Ana"</span> <span class="syn-property">idade</span>: <span class="syn-number">30</span> }</code></pre>
         <div class="code-console">
           <div class="code-console__header">
             <span class="code-console__label">Console</span>
@@ -120,9 +125,11 @@ export function content() {
       <h2 class="lesson__section-title">ReferenceError — variável inexistente</h2>
       <p>
         Um <code>ReferenceError</code> acontece quando você tenta usar um
-        identificador que o motor não consegue encontrar no escopo atual.
+        identificador que o motor não consegue resolver no escopo atual.
         Causas mais comuns: typo no nome, variável fora do escopo, ou
         uso antes da declaração com <code>let</code>/<code>const</code>.
+        Nesse último caso, a variável já existe como binding, mas está na
+        Temporal Dead Zone (TDZ) e ainda não pode ser acessada.
       </p>
 
       <div class="code-block">
@@ -169,7 +176,7 @@ export function content() {
 
     <!-- ── 5. TypeError ── -->
     <section class="lesson__section">
-      <h2 class="lesson__section-title">TypeError — operação no tipo errado</h2>
+      <h2 class="lesson__section-title">TypeError — operação inválida para o valor</h2>
       <p>
         O <code>TypeError</code> é o mais comum no dia a dia. Acontece quando
         você tenta fazer algo que o tipo do valor não suporta — chamar
@@ -216,11 +223,10 @@ export function content() {
       </div>
 
       <p>
-        O <code>TypeError: Cannot read properties of null</code> é provavelmente
-        o erro mais visto por qualquer dev JavaScript. Quase sempre significa que
-        um <code>getElementById</code>, <code>querySelector</code> ou fetch
-        retornou <code>null</code> porque o elemento não existe ou o dado
-        ainda não chegou.
+        O <code>TypeError: Cannot read properties of null</code> é muito comum
+        em JavaScript. Em código de DOM, quase sempre significa que um
+        <code>getElementById</code> ou <code>querySelector</code> não encontrou
+        o elemento esperado e retornou <code>null</code>.
       </p>
     </section>
 
@@ -230,8 +236,12 @@ export function content() {
       <h2 class="lesson__section-title">Lendo o stack trace</h2>
       <p>
         Quando um erro acontece, o browser exibe o <strong>stack trace</strong> —
-        a pilha de chamadas que levou até o erro. Leia de baixo para cima:
-        a linha de baixo é onde tudo começou, a de cima é onde quebrou.
+        a pilha de chamadas que levou até o erro. Ele normalmente começa pelo
+        ponto onde o erro aconteceu e segue mostrando as funções que estavam
+        na pilha até chegar à chamada inicial. Comece pela primeira entrada
+        para localizar onde o erro ocorreu, depois acompanhe as chamadas
+        seguintes para entender como o código chegou até ali. Veja um exemplo
+        simplificado — a formatação exata varia entre browsers:
       </p>
 
       <div class="code-block">
@@ -256,7 +266,7 @@ export function content() {
 <span class="syn-fn">carregarUser</span>()</code></pre>
         <div class="code-console">
           <div class="code-console__header">
-            <span class="code-console__label">Console — stack trace completo</span>
+            <span class="code-console__label">Console — exemplo simplificado de stack trace</span>
           </div>
           <div class="code-console__body">
             <div class="code-console__line code-console__line--error">
@@ -267,7 +277,7 @@ export function content() {
               <span class="code-console__prompt"> </span>
               <span class="code-console__expr">at renderizarPerfil (app.js:2)</span>
               <span class="code-console__arrow">←</span>
-              <span class="syn-output">onde quebrou</span>
+              <span class="syn-output">onde quebrou (leia daqui)</span>
             </div>
             <div class="code-console__line">
               <span class="code-console__prompt"> </span>
@@ -279,7 +289,7 @@ export function content() {
               <span class="code-console__prompt"> </span>
               <span class="code-console__expr">at app.js:10</span>
               <span class="code-console__arrow">←</span>
-              <span class="syn-output">onde tudo começou</span>
+              <span class="syn-output">chamado pelo código global</span>
             </div>
           </div>
         </div>
@@ -288,8 +298,8 @@ export function content() {
       <p>
         O stack trace te diz: o erro aconteceu em <code>renderizarPerfil</code>
         na linha 2, que foi chamado por <code>carregarUser</code> na linha 7,
-        que foi chamado globalmente na linha 10. Com essa informação você vai
-        direto ao ponto — sem adivinhar.
+        que por sua vez foi chamado pelo código global na linha 10. Com essa
+        informação você vai direto ao ponto — sem adivinhar.
       </p>
     </section>
 
@@ -322,7 +332,8 @@ export function content() {
 <span class="syn-comment">// log simples — imprime o objeto</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">pedido</span>)
 
-<span class="syn-comment">// table — muito melhor para arrays de objetos</span>
+<span class="syn-comment">// table — melhor para visualizar coleções de objetos como colunas</span>
+<span class="syn-comment">// colocamos pedido dentro de um array para que suas propriedades virem colunas</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">table</span>([<span class="syn-id">pedido</span>])
 
 <span class="syn-comment">// group — agrupa logs relacionados</span>
@@ -331,7 +342,7 @@ export function content() {
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-string">"total:"</span>, <span class="syn-id">pedido</span>.<span class="syn-property">total</span>)
 <span class="syn-fn">console</span>.<span class="syn-fn">groupEnd</span>()
 
-<span class="syn-comment">// time — mede quanto tempo um trecho leva</span>
+<span class="syn-comment">// time — mede quanto tempo um trecho leva (o valor varia por máquina)</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">time</span>(<span class="syn-string">"processamento"</span>)
 <span class="syn-comment">// ... código a medir ...</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">timeEnd</span>(<span class="syn-string">"processamento"</span>)</code></pre>
@@ -368,7 +379,7 @@ export function content() {
               <span class="code-console__prompt">›</span>
               <span class="code-console__expr">processamento</span>
               <span class="code-console__arrow">→</span>
-              <span class="syn-output">0.42ms</span>
+              <span class="syn-output">~0.42ms (tempo varia conforme o computador e o código)</span>
             </div>
           </div>
         </div>
@@ -387,5 +398,5 @@ export function content() {
       </p>
     </section>
 
-  `;
+  `
 }

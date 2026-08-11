@@ -8,31 +8,41 @@ export function content() {
       <h2 class="lesson__section-title">O que acontece antes do seu código rodar?</h2>
       <p>
         Quando o browser encontra um arquivo <code>.js</code>, ele não sai
-        executando linha por linha imediatamente. Antes disso, o motor JavaScript
-        passa pelo arquivo inteiro em duas fases distintas: <strong>compilação</strong>
-        e <strong>execução</strong>.
+        executando linha por linha imediatamente. Antes disso, e também durante
+        a execução, o motor JavaScript analisa, prepara e otimiza o código —
+        um processo com várias etapas internas, não só duas fases estanques.
       </p>
       <p>
-        Entender essas duas fases explica comportamentos que parecem mágica —
+        Entender esse processo explica comportamentos que parecem mágica —
         como variáveis que existem antes de serem declaradas, ou funções que
         você pode chamar antes de defini-las.
       </p>
     </section>
 
 
-    <!-- ── 2. Fase 1: Compilação ── -->
+    <!-- ── 2. Fase 1: Parsing ── -->
     <section class="lesson__section">
-      <h2 class="lesson__section-title">Fase 1 — Compilação (parsing)</h2>
+      <h2 class="lesson__section-title">Parsing — análise e preparação do código</h2>
       <p>
-        Na primeira fase, o motor lê o arquivo inteiro e constrói uma representação
-        interna do código chamada <strong>AST</strong> (Abstract Syntax Tree —
-        Árvore Sintática Abstrata). Pense nisso como o motor "entendendo a estrutura"
-        do código antes de rodar qualquer coisa.
+        Durante o <strong>parsing</strong>, o motor analisa a estrutura do
+        código e constrói representações internas, como a <strong>AST</strong>
+        (Abstract Syntax Tree — Árvore Sintática Abstrata), para poder executar
+        o programa. É assim que o motor "entende a estrutura" do código antes
+        de rodar qualquer coisa.
       </p>
       <p>
-        Durante essa fase, o motor também registra todas as declarações de variáveis
-        e funções — esse processo se chama <strong>hoisting</strong>. As declarações
-        são "içadas" para o topo do escopo antes da execução começar.
+        <em>Parsing</em> e <em>compilação</em> não são exatamente a mesma coisa
+        — compilação é um termo mais amplo, que pode incluir várias etapas
+        internas do engine (incluindo otimizações que acontecem depois, durante
+        a execução, como o JIT que vamos ver adiante).
+      </p>
+      <p>
+        Antes da execução do código, o ambiente de execução é preparado com os
+        <em>bindings</em> das declarações de variáveis e funções. É esse
+        comportamento — que faz algumas declarações estarem disponíveis antes
+        da posição em que aparecem no código — que chamamos, de forma didática,
+        de <strong>hoisting</strong>. Não é uma etapa formal separada do engine,
+        mas uma forma prática de descrever esse comportamento.
       </p>
 
       <div class="code-block">
@@ -46,7 +56,7 @@ export function content() {
           </button>
         </div>
         <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// Chamamos saudar() antes de declará-la — e funciona</span>
-<span class="syn-comment">// Por quê? O motor já registrou a função na fase de compilação</span>
+<span class="syn-comment">// Por quê? O ambiente de execução já registrou a função antes da execução começar</span>
 <span class="syn-fn">saudar</span>(<span class="syn-string">"Ana"</span>)
 
 <span class="syn-keyword">function</span> <span class="syn-fn">saudar</span>(<span class="syn-id">nome</span>) {
@@ -70,7 +80,10 @@ export function content() {
       <p>
         Isso só funciona com <code>function</code> declarations. Arrow functions
         e expressões de função armazenadas em variáveis <strong>não</strong>
-        são içadas da mesma forma — vamos explorar isso no módulo de Funções.
+        são içadas da mesma forma: a variável pode existir no ambiente antes da
+        linha da atribuição, mas a função em si não está disponível para ser
+        chamada antes dessa atribuição acontecer — vamos explorar isso em
+        detalhes no módulo de Funções.
       </p>
 
       <div class="code-block">
@@ -83,9 +96,8 @@ export function content() {
             <span class="code-block__copy-label">Copiar</span>
           </button>
         </div>
-        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// var é içada, mas o valor não</span>
-<span class="syn-comment">// O motor registra "existe uma variável chamada x"</span>
-<span class="syn-comment">// mas ainda não sabe o valor — inicializa com undefined</span>
+        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// var é declarada e inicializada com undefined antes da execução</span>
+<span class="syn-comment">// A atribuição com 10 só acontece quando esta linha é executada</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">x</span>)   <span class="syn-comment">// undefined — não é ReferenceError</span>
 <span class="syn-keyword">var</span> <span class="syn-id">x</span> <span class="syn-operator">=</span> <span class="syn-number">10</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">x</span>)   <span class="syn-comment">// 10</span>
@@ -120,22 +132,39 @@ export function content() {
           </div>
         </div>
       </div>
+
+      <p>
+        Esse período entre o início do escopo e a linha onde <code>let</code> ou
+        <code>const</code> são de fato declaradas é chamado de
+        <strong>Temporal Dead Zone (TDZ)</strong>. É durante esse período que
+        tentar acessar a variável lança o <code>ReferenceError</code> que você
+        viu acima. Vamos aprofundar isso mais à frente — por enquanto, basta
+        conhecer o nome, porque ele vai aparecer bastante daqui pra frente.
+      </p>
     </section>
 
 
     <!-- ── 3. Fase 2: Execução ── -->
     <section class="lesson__section">
-      <h2 class="lesson__section-title">Fase 2 — Execução</h2>
+      <h2 class="lesson__section-title">Execução</h2>
       <p>
-        Depois da compilação, o motor executa o código linha por linha, de cima
-        para baixo. É nessa fase que os valores são atribuídos, as funções são
-        chamadas e o programa realmente "roda".
+        Depois que o código necessário foi analisado e o ambiente de execução
+        preparado, o motor começa a executar as instruções na ordem determinada
+        pelo fluxo do programa. É nessa fase que os valores são atribuídos, as
+        funções são chamadas e o programa realmente "roda".
+      </p>
+      <p>
+        Essa ordem não é simplesmente "de cima para baixo, linha por linha":
+        estruturas como funções, condicionais, loops e callbacks alteram o
+        caminho que o código percorre. O que se mantém é a lógica do fluxo —
+        o motor sempre segue a sequência que o próprio programa determina.
       </p>
       <p>
         O motor mantém uma estrutura chamada <strong>Call Stack</strong> (pilha de
         chamadas) para controlar o que está sendo executado em cada momento.
-        Cada vez que uma função é chamada, ela é empilhada. Quando termina,
-        é desempilhada.
+        A execução começa em um contexto global e, quando uma função é chamada,
+        seu contexto é colocado no topo da Call Stack. Quando a função termina,
+        esse contexto é removido.
       </p>
 
       <div class="code-block">
@@ -204,14 +233,17 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">Erros de sintaxe param tudo</h2>
       <p>
-        Se o motor encontrar um erro de sintaxe durante a fase de compilação,
-        ele para <strong>antes</strong> de executar qualquer linha. O arquivo
-        inteiro é descartado.
+        Se o motor encontrar um erro de sintaxe durante o parsing, ele para
+        <strong>antes</strong> de executar qualquer linha. O script não é
+        executado.
       </p>
       <p>
-        Isso é diferente de um erro em tempo de execução, que para o código
-        apenas naquele ponto. Um <code>SyntaxError</code> impede qualquer
-        execução.
+        Isso é diferente de um erro em tempo de execução (<em>runtime</em>).
+        Um erro em tempo de execução interrompe o fluxo síncrono atual a partir
+        do ponto em que ocorreu. Se houver tratamento com <code>try/catch</code>,
+        o programa pode continuar a partir do tratamento definido. Um
+        <code>SyntaxError</code>, por outro lado, impede qualquer execução
+        do arquivo inteiro — mesmo o código antes do erro nunca chega a rodar.
       </p>
 
       <div class="code-block">
@@ -254,41 +286,41 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">O ciclo completo</h2>
       <p>
-        Toda vez que o browser carrega um arquivo <code>.js</code>, esse ciclo
-        acontece:
+        Quando o browser precisa executar um arquivo JavaScript, esse processo
+        envolve etapas como carregamento, análise e execução:
       </p>
 
       <div class="lesson__cards">
         <div class="lesson__card">
           <div class="lesson__card-icon">📥</div>
-          <h3>1. Download</h3>
+          <h3>1. Obtenção do arquivo</h3>
           <p>
-            O browser baixa o arquivo <code>.js</code> via rede.
-            Com <code>defer</code>, isso acontece em paralelo com o HTML.
+            O browser obtém o arquivo <code>.js</code> — normalmente por uma
+            requisição de rede, mas podendo também vir de cache ou outras
+            fontes. Com <code>defer</code>, isso acontece em paralelo com o
+            HTML.
           </p>
         </div>
         <div class="lesson__card">
           <div class="lesson__card-icon">🔍</div>
           <h3>2. Parsing</h3>
           <p>
-            O motor lê o código inteiro, verifica a sintaxe e constrói a AST.
-            Hoisting acontece aqui. Erros de sintaxe param tudo.
-          </p>
-        </div>
-        <div class="lesson__card">
-          <div class="lesson__card-icon">⚡</div>
-          <h3>3. Compilação JIT</h3>
-          <p>
-            O V8 compila partes do código para código de máquina durante
-            a execução, otimizando trechos que rodam com frequência.
+            O motor analisa a estrutura do código, verifica a sintaxe e
+            constrói representações internas como a AST. Hoisting é um efeito
+            desse processo. Erros de sintaxe param tudo.
           </p>
         </div>
         <div class="lesson__card">
           <div class="lesson__card-icon">▶️</div>
-          <h3>4. Execução</h3>
+          <h3>3. Execução (com otimização JIT)</h3>
           <p>
-            O código roda linha por linha. A Call Stack controla o que
-            está ativo. Erros de runtime param apenas naquele ponto.
+            O código roda na ordem determinada pelo programa, e a Call Stack
+            controla o que está ativo. Durante a execução, o motor (ex: V8)
+            pode compilar e recompilar trechos que executam com frequência
+            para melhorar o desempenho — esse processo faz parte das
+            otimizações JIT e não é uma etapa fixa que acontece antes da
+            execução. Erros de runtime não tratados interrompem o trecho
+            síncrono em que ocorrem.
           </p>
         </div>
       </div>
@@ -299,12 +331,13 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">O que vem a seguir</h2>
       <p>
-        Agora você sabe que o motor passa pelo código duas vezes antes de
-        qualquer coisa aparecer na tela. Na próxima aula vamos focar em
+        Agora você sabe que, antes e durante a execução, o motor precisa
+        analisar, preparar e executar o código — um processo contínuo, não
+        duas passagens rígidas e separadas. Na próxima aula vamos focar em
         erros — como lê-los, o que cada tipo significa, e como o console
         do browser te ajuda a depurar.
       </p>
     </section>
 
-  `;
+  `
 }

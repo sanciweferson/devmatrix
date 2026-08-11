@@ -1,119 +1,72 @@
 // src/content/variaveis-tipos/06-primitivos.js
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════════
-
-const _h = {
-  btn_copy: /* html */ `
-    <button class="code-block__copy" type="button">
-      <span class="code-block__copy-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="14" height="14" x="8" y="8" rx="2"/>
-          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-        </svg>
-      </span>
-      <span class="code-block__copy-label">Copiar</span>
-    </button>`,
-
-  header: (filename) => /* html */ `
-    <div class="code-block__header">
-      <span class="code-block__filename">${filename}</span>
-      ${_h.btn_copy}
-    </div>`,
-
-  console: (label, linhas) => /* html */ `
-    <div class="code-console">
-      <div class="code-console__header">
-        <span class="code-console__label">${label}</span>
-      </div>
-      <div class="code-console__body">
-        ${linhas.map(({ expr, key, cls = '' }) => /* html */ `
-        <div class="code-console__line${cls ? ` ${cls}` : ''}">
-          <span class="code-console__prompt">›</span>
-          <span class="code-console__expr">${expr}</span>
-          <span class="code-console__arrow">→</span>
-          <span data-out="${key}"></span>
-        </div>`).join('')}
-      </div>
-    </div>`,
-
-  block: (filename, code, consoles = []) => /* html */ `
-    <div class="code-block">
-      ${_h.header(filename)}
-      <pre class="code-block__pre"><code class="code-block__code">${code}</code></pre>
-      ${consoles.map(c => _h.console(c.label, c.linhas)).join('')}
-    </div>`,
-}
-
+import { _h } from "@content/_shared/code-block"
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // DADOS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _dados = (() => {
-  const str = (v) => ({ text: `"${v}"`, cls: 'syn-output-str' })
-  const num = (v) => ({ text: String(v), cls: 'syn-output-num' })
-  const bool = (v) => ({ text: String(v), cls: 'syn-output-bool' })
-  const nil = () => ({ text: 'undefined', cls: 'syn-output-null' })
-  const err = (v) => ({ text: v, cls: 'syn-output-error' })
+  const str = (v) => ({ text: `"${v}"`, cls: "syn-output-str" })
+  const num = (v) => ({ text: String(v), cls: "syn-output-num" })
+  const bool = (v) => ({ text: String(v), cls: "syn-output-bool" })
+  const nil = () => ({ text: "undefined", cls: "syn-output-null" })
+  const err = (v) => ({ text: v, cls: "syn-output-error" })
 
   // ── String ────────────────────────────────────────────────────────────────
-  const s_tipo = typeof "oi"                    // "string"
-  const s_len = "JavaScript".length            // 10
-  const s_upper = "javascript".toUpperCase()     // "JAVASCRIPT"
-  const s_includes = "JavaScript".includes("Script") // true
-  const s_index = "JavaScript".indexOf("S")      // 4
-  const s_slice = "JavaScript".slice(0, 4)        // "Java"
+  const s_tipo = typeof "oi"
+  const s_len = "JavaScript".length
+  const s_upper = "javascript".toUpperCase()
+  const s_includes = "JavaScript".includes("Script")
+  const s_index = "JavaScript".indexOf("S")
+  const s_slice = "JavaScript".slice(0, 4)
   const s_imut_antes = "texto"
-  // strings são imutáveis — s_imut_antes[0] = "X" não funciona
-  const s_imut_depois = "texto"                         // continua "texto"
+  const s_imut_depois = "texto"
 
   // ── Number ────────────────────────────────────────────────────────────────
-  const n_tipo = typeof 42                      // "number"
-  const n_float = 0.1 + 0.2                      // 0.30000000000000004 — IEEE 754
-  const n_nan = NaN                             // NaN
-  const n_nan_tipo = typeof NaN                      // "number" — NaN é número!
-  const n_nan_isnan = isNaN(NaN)                      // true
-  const n_nan_self = NaN === NaN                     // false — NaN não é igual a si mesmo
-  const n_inf_pos = Infinity                        // Infinity
-  const n_inf_neg = -Infinity                       // -Infinity
-  const n_inf_tipo = typeof Infinity                 // "number"
-  const n_zero_neg = -0                              // -0
-  const n_zero_eq = (-0 === 0)                      // true — == trata como iguais
-  const n_max = Number.MAX_SAFE_INTEGER         // 9007199254740991
-  const n_to_fixed = (3.14159).toFixed(2)            // "3.14"
-  const n_parse_int = parseInt("42px")                // 42
-  const n_parse_float = parseFloat("3.14abc")           // 3.14
+  const n_tipo = typeof 42
+  const n_float = 0.1 + 0.2
+  const n_nan = NaN
+  const n_nan_tipo = typeof NaN
+  const n_nan_isnan = isNaN(NaN)
+  const n_nan_self = NaN === NaN
+  const n_inf_pos = Infinity
+  const n_inf_neg = -Infinity
+  const n_inf_tipo = typeof Infinity
+  const n_zero_neg = -0
+  const n_zero_eq = -0 === 0
+  const n_max = Number.MAX_SAFE_INTEGER
+  const n_to_fixed = (3.14159).toFixed(2)
+  const n_parse_int = parseInt("42px")
+  const n_parse_float = parseFloat("3.14abc")
 
   // ── Boolean ───────────────────────────────────────────────────────────────
-  const b_tipo = typeof true                          // "boolean"
-  const b_not = !true                                // false
-  const b_and = true && false                        // false
-  const b_or = false || true                        // true
+  const b_tipo = typeof true
+  const b_not = !true
+  const b_and = true && false
+  const b_or = false || true
 
   // ── undefined ─────────────────────────────────────────────────────────────
   let _u
-  const u_tipo = typeof _u                            // "undefined"
-  const u_val = _u                                   // undefined
-  function _fn_sem_return() { }
-  const u_fn_ret = _fn_sem_return()                     // undefined — sem return
+  const u_tipo = typeof _u
+  const u_val = _u
+  function _fn_sem_return() {}
+  const u_fn_ret = _fn_sem_return()
 
   // ── null ──────────────────────────────────────────────────────────────────
-  const null_tipo = typeof null                       // "object" — bug
-  const null_strict = null === null                     // true
+  const null_tipo = typeof null
+  const null_strict = null === null
 
   // ── BigInt ────────────────────────────────────────────────────────────────
-  const bi_tipo = typeof 9007199254740991n            // "bigint"
-  const bi_max_js = Number.MAX_SAFE_INTEGER             // 9007199254740991
-  const bi_safe = Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2  // true — perda de precisão!
-  const bi_bigint = 9007199254740993n === 9007199254740994n  // false — BigInt mantém precisão
+  const bi_tipo = typeof 9007199254740991n
+  const bi_max_js = Number.MAX_SAFE_INTEGER
+  const bi_safe = Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2
+  const bi_bigint = 9007199254740993n === 9007199254740994n
 
   // ── Symbol ────────────────────────────────────────────────────────────────
-  const sym_tipo = typeof Symbol("id")             // "symbol"
-  const sym_unico = Symbol("id") === Symbol("id")   // false — cada Symbol é único
-  const sym_descricao = Symbol("meu-id").description    // "meu-id"
+  const sym_tipo = typeof Symbol("id")
+  const sym_unico = Symbol("id") === Symbol("id")
+  const sym_descricao = Symbol("meu-id").description
 
   return {
     string: {
@@ -172,13 +125,11 @@ const _dados = (() => {
   }
 })()
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // SEÇÕES
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _secoes = {
-
   introducao: () => /* html */ `
     <section class="lesson__section">
       <h2 class="lesson__section-title">Os 7 tipos primitivos em detalhe</h2>
@@ -212,7 +163,9 @@ const _secoes = {
         Esse objeto existe só durante o acesso e é descartado imediatamente.
       </p>
 
-      ${_h.block('string.js', /* html */ `
+      ${_h.block(
+        "string.js",
+        /* html */ `
 <span class="syn-keyword">const</span> <span class="syn-id">texto</span> <span class="syn-operator">=</span> <span class="syn-string">"JavaScript"</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">texto</span>)           <span class="syn-comment">// "string"</span>
@@ -225,19 +178,25 @@ const _secoes = {
 <span class="syn-comment">// imutabilidade — atribuição em índice não funciona (modo silencioso)</span>
 <span class="syn-keyword">let</span> <span class="syn-id">s</span> <span class="syn-operator">=</span> <span class="syn-string">"texto"</span>
 <span class="syn-id">s</span>[<span class="syn-number">0</span>] <span class="syn-operator">=</span> <span class="syn-string">"X"</span>             <span class="syn-comment">// ignorado silenciosamente</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">s</span>)            <span class="syn-comment">// "texto" — não mudou</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof texto', key: 'string.tipo' },
-        { expr: 'texto.length', key: 'string.len' },
-        { expr: 'texto.toUpperCase()', key: 'string.upper' },
-        { expr: 'texto.includes("Script")', key: 'string.includes' },
-        { expr: 'texto.indexOf("S")', key: 'string.index' },
-        { expr: 'texto.slice(0, 4)', key: 'string.slice' },
-        { expr: 's <span class="syn-comment">// após s[0] = "X"</span>', key: 'string.imut_depois' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">s</span>)            <span class="syn-comment">// "texto" — não mudou</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof texto", key: "string.tipo" },
+              { expr: "texto.length", key: "string.len" },
+              { expr: "texto.toUpperCase()", key: "string.upper" },
+              { expr: 'texto.includes("Script")', key: "string.includes" },
+              { expr: 'texto.indexOf("S")', key: "string.index" },
+              { expr: "texto.slice(0, 4)", key: "string.slice" },
+              {
+                expr: 's <span class="syn-comment">// após s[0] = "X"</span>',
+                key: "string.imut_depois",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   number: () => /* html */ `
@@ -254,7 +213,9 @@ const _secoes = {
         <code>NaN</code>, <code>Infinity</code> e <code>-0</code>.
       </p>
 
-      ${_h.block('number.js', /* html */ `
+      ${_h.block(
+        "number.js",
+        /* html */ `
 <span class="syn-comment">// ── IEEE 754 — imprecisão em decimais ─────────────────────────</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-number">0.1</span> <span class="syn-operator">+</span> <span class="syn-number">0.2</span>)              <span class="syn-comment">// 0.30000000000000004</span>
 
@@ -277,24 +238,27 @@ const _secoes = {
 <span class="syn-comment">// ── Métodos úteis ─────────────────────────────────────────────</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>((<span class="syn-number">3.14159</span>).<span class="syn-fn">toFixed</span>(<span class="syn-number">2</span>))  <span class="syn-comment">// "3.14"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">parseInt</span>(<span class="syn-string">"42px"</span>))      <span class="syn-comment">// 42</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">parseFloat</span>(<span class="syn-string">"3.14abc"</span>)) <span class="syn-comment">// 3.14</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: '0.1 + 0.2', key: 'number.float' },
-        { expr: 'typeof NaN', key: 'number.nan_tipo' },
-        { expr: 'isNaN(NaN)', key: 'number.nan_isnan' },
-        { expr: 'NaN === NaN', key: 'number.nan_self' },
-        { expr: '1 / 0', key: 'number.inf_pos' },
-        { expr: '-1 / 0', key: 'number.inf_neg' },
-        { expr: 'typeof Infinity', key: 'number.inf_tipo' },
-        { expr: '-0 === 0', key: 'number.zero_eq' },
-        { expr: 'Number.MAX_SAFE_INTEGER', key: 'number.max' },
-        { expr: '(3.14159).toFixed(2)', key: 'number.to_fixed' },
-        { expr: 'parseInt("42px")', key: 'number.parse_int' },
-        { expr: 'parseFloat("3.14abc")', key: 'number.parse_float' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">parseFloat</span>(<span class="syn-string">"3.14abc"</span>)) <span class="syn-comment">// 3.14</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "0.1 + 0.2", key: "number.float" },
+              { expr: "typeof NaN", key: "number.nan_tipo" },
+              { expr: "isNaN(NaN)", key: "number.nan_isnan" },
+              { expr: "NaN === NaN", key: "number.nan_self" },
+              { expr: "1 / 0", key: "number.inf_pos" },
+              { expr: "-1 / 0", key: "number.inf_neg" },
+              { expr: "typeof Infinity", key: "number.inf_tipo" },
+              { expr: "-0 === 0", key: "number.zero_eq" },
+              { expr: "Number.MAX_SAFE_INTEGER", key: "number.max" },
+              { expr: "(3.14159).toFixed(2)", key: "number.to_fixed" },
+              { expr: 'parseInt("42px")', key: "number.parse_int" },
+              { expr: 'parseFloat("3.14abc")', key: "number.parse_float" },
+            ],
+          },
+        ],
+      )}
 
       <p>
         <strong>NaN</strong> é o único valor em JavaScript que não é igual a si mesmo.
@@ -313,20 +277,25 @@ const _secoes = {
         na aula de coerção — por enquanto, o essencial.
       </p>
 
-      ${_h.block('boolean.js', /* html */ `
+      ${_h.block(
+        "boolean.js",
+        /* html */ `
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-boolean">true</span>)      <span class="syn-comment">// "boolean"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-operator">!</span><span class="syn-boolean">true</span>)           <span class="syn-comment">// false</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-boolean">true</span> <span class="syn-operator">&&</span> <span class="syn-boolean">false</span>)  <span class="syn-comment">// false</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-boolean">false</span> <span class="syn-operator">||</span> <span class="syn-boolean">true</span>)  <span class="syn-comment">// true</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof true', key: 'boolean.tipo' },
-        { expr: '!true', key: 'boolean.not' },
-        { expr: 'true && false', key: 'boolean.and' },
-        { expr: 'false || true', key: 'boolean.or' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-boolean">false</span> <span class="syn-operator">||</span> <span class="syn-boolean">true</span>)  <span class="syn-comment">// true</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof true", key: "boolean.tipo" },
+              { expr: "!true", key: "boolean.not" },
+              { expr: "true && false", key: "boolean.and" },
+              { expr: "false || true", key: "boolean.or" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   undefined_tipo: () => /* html */ `
@@ -339,21 +308,26 @@ const _secoes = {
         para indicar ausência intencional).
       </p>
 
-      ${_h.block('undefined.js', /* html */ `
+      ${_h.block(
+        "undefined.js",
+        /* html */ `
 <span class="syn-keyword">let</span> <span class="syn-id">a</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">a</span>)   <span class="syn-comment">// "undefined"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">a</span>)          <span class="syn-comment">// undefined</span>
 
 <span class="syn-keyword">function</span> <span class="syn-fn">semReturn</span>() {}
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">semReturn</span>())  <span class="syn-comment">// undefined — função sem return</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof a', key: 'undef.tipo' },
-        { expr: 'a', key: 'undef.val' },
-        { expr: 'semReturn()', key: 'undef.fn_ret' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">semReturn</span>())  <span class="syn-comment">// undefined — função sem return</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof a", key: "undef.tipo" },
+              { expr: "a", key: "undef.val" },
+              { expr: "semReturn()", key: "undef.fn_ret" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   null_tipo: () => /* html */ `
@@ -366,16 +340,21 @@ const _secoes = {
         está vazio de propósito".
       </p>
 
-      ${_h.block('null.js', /* html */ `
+      ${_h.block(
+        "null.js",
+        /* html */ `
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-keyword">null</span>)        <span class="syn-comment">// "object" — bug histórico, não confie</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">null</span> <span class="syn-operator">===</span> <span class="syn-keyword">null</span>)   <span class="syn-comment">// true — forma correta de verificar`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof null', key: 'null.tipo' },
-        { expr: 'null === null', key: 'null.strict' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">null</span> <span class="syn-operator">===</span> <span class="syn-keyword">null</span>)   <span class="syn-comment">// true — forma correta de verificar</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof null", key: "null.tipo" },
+              { expr: "null === null", key: "null.strict" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   bigint: () => /* html */ `
@@ -388,7 +367,9 @@ const _secoes = {
         sem limite. Basta adicionar <code>n</code> no final do literal.
       </p>
 
-      ${_h.block('bigint.js', /* html */ `
+      ${_h.block(
+        "bigint.js",
+        /* html */ `
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-number">9007199254740991n</span>)   <span class="syn-comment">// "bigint"</span>
 
 <span class="syn-comment">// ── number perde precisão acima do limite ─────────────────────</span>
@@ -401,16 +382,26 @@ const _secoes = {
 <span class="syn-comment">// ── bigint mantém precisão ────────────────────────────────────</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(
   <span class="syn-number">9007199254740993n</span> <span class="syn-operator">===</span> <span class="syn-number">9007199254740994n</span>
-)   <span class="syn-comment">// false — correto!</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof 9007199254740991n', key: 'bigint.tipo' },
-        { expr: 'Number.MAX_SAFE_INTEGER', key: 'bigint.max_js' },
-        { expr: 'MAX + 1 === MAX + 2 <span class="syn-comment">// number</span>', key: 'bigint.safe', cls: 'code-console__line--warn' },
-        { expr: '...993n === ...994n <span class="syn-comment">// bigint</span>', key: 'bigint.bigint' },
-      ]
-    },
-  ])}
+)   <span class="syn-comment">// false — correto!</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof 9007199254740991n", key: "bigint.tipo" },
+              { expr: "Number.MAX_SAFE_INTEGER", key: "bigint.max_js" },
+              {
+                expr: 'MAX + 1 === MAX + 2 <span class="syn-comment">// number</span>',
+                key: "bigint.safe",
+                cls: "code-console__line--warn",
+              },
+              {
+                expr: '...993n === ...994n <span class="syn-comment">// bigint</span>',
+                key: "bigint.bigint",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   symbol: () => /* html */ `
@@ -423,18 +414,29 @@ const _secoes = {
         chaves de propriedades de objetos para evitar colisões de nomes.
       </p>
 
-      ${_h.block('symbol.js', /* html */ `
+      ${_h.block(
+        "symbol.js",
+        /* html */ `
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-fn">Symbol</span>(<span class="syn-string">"id"</span>))             <span class="syn-comment">// "symbol"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">Symbol</span>(<span class="syn-string">"id"</span>) <span class="syn-operator">===</span> <span class="syn-fn">Symbol</span>(<span class="syn-string">"id"</span>))  <span class="syn-comment">// false — cada Symbol é único</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">Symbol</span>(<span class="syn-string">"meu-id"</span>).<span class="syn-property">description</span>)   <span class="syn-comment">// "meu-id"</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof Symbol("id")', key: 'symbol.tipo' },
-        { expr: 'Symbol("id") === Symbol("id")', key: 'symbol.unico' },
-        { expr: 'Symbol("meu-id").description', key: 'symbol.descricao' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">Symbol</span>(<span class="syn-string">"meu-id"</span>).<span class="syn-property">description</span>)   <span class="syn-comment">// "meu-id"</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: 'typeof Symbol("id")', key: "symbol.tipo" },
+              {
+                expr: 'Symbol("id") === Symbol("id")',
+                key: "symbol.unico",
+              },
+              {
+                expr: 'Symbol("meu-id").description',
+                key: "symbol.descricao",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   imutabilidade: () => /* html */ `
@@ -510,15 +512,15 @@ const _secoes = {
     </section>`,
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONTENT
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export function content() {
-  return Object.values(_secoes).map(s => s()).join('\n')
+  return Object.values(_secoes)
+    .map((s) => s())
+    .join("\n")
 }
-
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // INIT
@@ -526,9 +528,9 @@ export function content() {
 
 export function initPrimitivos() {
   const resolver = (caminho) =>
-    caminho.split('.').reduce((obj, k) => obj?.[k], _dados)
+    caminho.split(".").reduce((obj, k) => obj?.[k], _dados)
 
-  document.querySelectorAll('[data-out]').forEach(el => {
+  document.querySelectorAll("[data-out]").forEach((el) => {
     const val = resolver(el.dataset.out)
     if (val == null) return
     el.textContent = val.text

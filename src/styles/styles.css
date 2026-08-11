@@ -16,3 +16,393 @@ main,
   z-index: 0;
 
 }
+
+
+.code-block__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--syn-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--syn-text-muted);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-default);
+}
+
+.code-block__copy:hover {
+  color: var(--syn-text);
+  border-color: var(--syn-text-muted);
+  background: var(--syn-bg-console);
+}
+
+.code-block__copy.is-copied {
+  color: var(--syn-string);
+  border-color: var(--syn-string);
+}
+
+
+
+
+/* =============================================================
+   ÍCONES — tamanho padrão
+   ============================================================= */
+
+svg {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+/* Ícones específicos que precisam de tamanho fixo */
+.lesson__table-icon,
+.modulo__lesson-icon svg,
+.lesson__nav-link svg,
+.lesson__nav-module svg,
+.lesson__btn-done-icon svg,
+.code-block__copy-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Ícone de fechar (X) — o que aparece grande na sua imagem */
+.close-icon,
+[data-close] svg,
+.modal__close svg,
+.toast__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+
+
+
+
+
+/* =============================================================
+   TABELA DE COMPARAÇÃO (var / let / const)
+   ============================================================= */
+
+.lesson__table-wrapper {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background-color: var(--card);
+  margin-top: var(--space-sm);
+}
+
+/* Cabeçalho */
+.lesson__table-header {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) repeat(3, 1fr);
+  background-color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.lesson__table-col-head {
+  padding: 0.7rem 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--foreground);
+}
+
+.lesson__table-col-head--var {
+  color: var(--syn-output-error);
+}
+
+.lesson__table-col-head--let {
+  color: var(--syn-keyword);
+}
+
+.lesson__table-col-head--const {
+  color: var(--syn-string);
+}
+
+/* Corpo */
+.lesson__table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson__table-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) repeat(3, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+
+.lesson__table-row:last-child {
+  border-bottom: none;
+}
+
+.lesson__table-row-label {
+  padding: 0.75rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  background-color: oklch(from var(--muted) l c h / 0.4);
+  border-right: 1px solid var(--border);
+}
+
+.lesson__table-cell {
+  padding: 0.7rem 0.75rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--foreground);
+  border-right: 1px solid var(--border);
+}
+
+.lesson__table-cell:last-child {
+  border-right: none;
+}
+
+/* Ícones da tabela */
+.lesson__table-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Estados visuais das células */
+.cell--good {
+  color: oklch(0.45 0.14 145);
+}
+
+.cell--bad {
+  color: oklch(0.52 0.18 25);
+}
+
+.cell--warn {
+  color: oklch(0.55 0.14 70);
+}
+
+[data-theme="dark"] .cell--good {
+  color: oklch(0.72 0.16 145);
+}
+
+[data-theme="dark"] .cell--bad {
+  color: oklch(0.70 0.18 25);
+}
+
+[data-theme="dark"] .cell--warn {
+  color: oklch(0.78 0.14 75);
+}
+
+/* Rodapé (Recomendação) */
+.lesson__table-footer {
+  border-top: 1px solid var(--border);
+  background-color: oklch(from var(--muted) l c h / 0.5);
+}
+
+.lesson__table-footer-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) repeat(3, 1fr);
+}
+
+.lesson__table-footer-label {
+  padding: 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+}
+
+.lesson__table-footer-cell {
+  padding: 0.85rem 0.75rem;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-right: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.lesson__table-footer-cell:last-child {
+  border-right: none;
+}
+
+.lesson__table-footer-cell--var {
+  color: oklch(0.52 0.18 25);
+}
+
+.lesson__table-footer-cell--let {
+  color: oklch(0.55 0.14 70);
+}
+
+.lesson__table-footer-cell--const {
+  color: oklch(0.45 0.14 145);
+}
+
+[data-theme="dark"] .lesson__table-footer-cell--var {
+  color: oklch(0.70 0.18 25);
+}
+
+[data-theme="dark"] .lesson__table-footer-cell--let {
+  color: oklch(0.78 0.14 75);
+}
+
+[data-theme="dark"] .lesson__table-footer-cell--const {
+  color: oklch(0.72 0.16 145);
+}
+
+/* Mobile — transforma em cards empilhados */
+@media (max-width: 700px) {
+  .lesson__table-header {
+    display: none;
+  }
+
+  .lesson__table-row,
+  .lesson__table-footer-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .lesson__table-row-label,
+  .lesson__table-footer-label {
+    background-color: var(--muted);
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .lesson__table-cell,
+  .lesson__table-footer-cell {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding-left: 1rem;
+  }
+
+  .lesson__table-cell:last-child,
+  .lesson__table-footer-cell:last-child {
+    border-bottom: none;
+  }
+
+  .lesson__table-cell--var::before {
+    content: "var — ";
+    font-weight: 700;
+    opacity: 0.7;
+  }
+  .lesson__table-cell--let::before {
+    content: "let — ";
+    font-weight: 700;
+    opacity: 0.7;
+  }
+  .lesson__table-cell--const::before {
+    content: "const — ";
+    font-weight: 700;
+    opacity: 0.7;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============================================================
+   TABELA NATIVA (.lesson__table) — estilo alinhado
+   ============================================================= */
+
+.lesson__table-wrapper {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--card);
+  margin-top: var(--space-sm);
+}
+
+.lesson__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.lesson__table thead {
+  background-color: var(--muted);
+}
+
+.lesson__table th {
+  padding: 0.75rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: left;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.02em;
+}
+
+.lesson__table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.lesson__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.lesson__table tbody tr:hover {
+  background-color: oklch(from var(--primary) l c h / 0.03);
+}
+
+/* Células de status */
+.lesson__table .cell--good {
+  color: oklch(0.45 0.14 145);
+  font-weight: 600;
+}
+
+.lesson__table .cell--bad {
+  color: oklch(0.52 0.18 25);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .lesson__table .cell--good {
+  color: oklch(0.72 0.16 145);
+}
+
+[data-theme="dark"] .lesson__table .cell--bad {
+  color: oklch(0.70 0.18 25);
+}
+
+/* Code dentro da tabela */
+.lesson__table code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78em;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .lesson__table {
+    font-size: 0.75rem;
+  }
+
+  .lesson__table th,
+  .lesson__table td {
+    padding: 0.6rem 0.75rem;
+  }
+}

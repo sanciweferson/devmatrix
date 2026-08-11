@@ -1,114 +1,67 @@
 // src/content/variaveis-tipos/07-referencia.js
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════════
-
-
-
-console.log("Desbloqueado após 5 segundos")
-const _h = {
-  btn_copy: /* html */ `
-    <button class="code-block__copy" type="button">
-      <span class="code-block__copy-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="14" height="14" x="8" y="8" rx="2"/>
-          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-        </svg>
-      </span>
-      <span class="code-block__copy-label">Copiar</span>
-    </button>`,
-
-  header: (filename) => /* html */ `
-    <div class="code-block__header">
-      <span class="code-block__filename">${filename}</span>
-      ${_h.btn_copy}
-    </div>`,
-
-  console: (label, linhas) => /* html */ `
-    <div class="code-console">
-      <div class="code-console__header">
-        <span class="code-console__label">${label}</span>
-      </div>
-      <div class="code-console__body">
-        ${linhas.map(({ expr, key, cls = '' }) => /* html */ `
-        <div class="code-console__line${cls ? ` ${cls}` : ''}">
-          <span class="code-console__prompt">›</span>
-          <span class="code-console__expr">${expr}</span>
-          <span class="code-console__arrow">→</span>
-          <span data-out="${key}"></span>
-        </div>`).join('')}
-      </div>
-    </div>`,
-
-  block: (filename, code, consoles = []) => /* html */ `
-    <div class="code-block">
-      ${_h.header(filename)}
-      <pre class="code-block__pre"><code class="code-block__code">${code}</code></pre>
-      ${consoles.map(c => _h.console(c.label, c.linhas)).join('')}
-    </div>`,
-}
-
+import { _h } from "@content/_shared/code-block"
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // DADOS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _dados = (() => {
-  const str = (v) => ({ text: `"${v}"`, cls: 'syn-output-str' })
-  const num = (v) => ({ text: String(v), cls: 'syn-output-num' })
-  const bool = (v) => ({ text: String(v), cls: 'syn-output-bool' })
-  const nil = () => ({ text: 'undefined', cls: 'syn-output-null' })
+  const str = (v) => ({ text: `"${v}"`, cls: "syn-output-str" })
+  const num = (v) => ({ text: String(v), cls: "syn-output-num" })
+  const bool = (v) => ({ text: String(v), cls: "syn-output-bool" })
+  const nil = () => ({ text: "undefined", cls: "syn-output-null" })
 
   // ── 1. Passagem por referência ────────────────────────────────────────────
   const _a = { x: 10 }
   const _b = _a
   _b.x = 99
-  const ref_a_x = _a.x   // 99 — a foi afetado
-  const ref_b_x = _b.x   // 99
+  const ref_a_x = _a.x
+  const ref_b_x = _b.x
 
   // ── 2. Mesma referência vs objetos diferentes ─────────────────────────────
   const _o1 = { x: 1 }
   const _o2 = { x: 1 }
   const _o3 = _o1
-  const eq_o1_o2 = _o1 === _o2   // false — objetos diferentes na memória
-  const eq_o1_o3 = _o1 === _o3   // true  — mesma referência
+  const eq_o1_o2 = _o1 === _o2
+  const eq_o1_o3 = _o1 === _o3
 
   // ── 3. Array é objeto ────────────────────────────────────────────────────
-  const arr_tipo = typeof []           // "object"
-  const arr_is_arr = Array.isArray([])   // true  — forma correta de verificar
-  const arr_is_arr2 = Array.isArray({})   // false
+  const arr_tipo = typeof []
+  const arr_is_arr = Array.isArray([])
+  const arr_is_arr2 = Array.isArray({})
 
   // ── 4. Função é objeto ────────────────────────────────────────────────────
-  function _fn() { }
-  const fn_tipo = typeof _fn            // "function"
-  const fn_is_obj = _fn instanceof Object // true — função é objeto
-  const fn_has_name = _fn.name            // "fn"
-  const fn_has_len = _fn.length          // 0 — número de parâmetros declarados
+  function _fn() {}
+  const fn_tipo = typeof _fn
+  const fn_is_obj = _fn instanceof Object
+  const fn_has_name = _fn.name
+  const fn_has_len = _fn.length
 
   // ── 5. Cópia rasa (shallow) ───────────────────────────────────────────────
   const _orig = { nome: "Ana", endereco: { cidade: "SP" } }
-  const _raso = { ..._orig }    // spread — cópia rasa
-  _raso.nome = "Bob"             // primitivo — não afeta original
-  _raso.endereco.cidade = "RJ"  // objeto aninhado — afeta original!
-  const shallow_orig_nome = _orig.nome             // "Ana" — não afetado
-  const shallow_orig_cidade = _orig.endereco.cidade  // "RJ"  — afetado!
-  const shallow_copia_nome = _raso.nome             // "Bob"
-  const shallow_copia_cidade = _raso.endereco.cidade // "RJ"
+  const _raso = { ..._orig }
+  _raso.nome = "Bob"
+  _raso.endereco.cidade = "RJ"
+  const shallow_orig_nome = _orig.nome
+  const shallow_orig_cidade = _orig.endereco.cidade
+  const shallow_copia_nome = _raso.nome
+  const shallow_copia_cidade = _raso.endereco.cidade
 
   // ── 6. Cópia profunda (deep) ──────────────────────────────────────────────
   const _orig2 = { nome: "Ana", endereco: { cidade: "SP" } }
-  const _deep = JSON.parse(JSON.stringify(_orig2))  // deep clone via JSON
+  const _deep = JSON.parse(JSON.stringify(_orig2))
   _deep.endereco.cidade = "RJ"
-  const deep_orig_cidade = _orig2.endereco.cidade   // "SP" — não afetado
-  const deep_clone_cidade = _deep.endereco.cidade    // "RJ"
+  const deep_orig_cidade = _orig2.endereco.cidade
+  const deep_clone_cidade = _deep.endereco.cidade
 
   // ── 7. Passagem de objeto para função ────────────────────────────────────
-  function _dobrar(obj) { obj.x *= 2 }
+  function _dobrar(obj) {
+    obj.x *= 2
+  }
   const _objFn = { x: 5 }
   _dobrar(_objFn)
-  const fn_obj_x = _objFn.x   // 10 — objeto foi mutado dentro da função
+  const fn_obj_x = _objFn.x
 
   return {
     ref: {
@@ -146,13 +99,11 @@ const _dados = (() => {
   }
 })()
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // SEÇÕES
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const _secoes = {
-
   introducao: () => /* html */ `
     <section class="lesson__section">
       <h2 class="lesson__section-title">O tipo de referência</h2>
@@ -182,21 +133,30 @@ const _secoes = {
         Modificar o objeto por qualquer um dos apontadores afeta o mesmo objeto.
       </p>
 
-      ${_h.block('por-referencia.js', /* html */ `
+      ${_h.block(
+        "por-referencia.js",
+        /* html */ `
 <span class="syn-keyword">const</span> <span class="syn-id">obj1</span> <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">10</span> }
 <span class="syn-keyword">const</span> <span class="syn-id">obj2</span> <span class="syn-operator">=</span> <span class="syn-id">obj1</span>   <span class="syn-comment">// obj2 aponta para o MESMO objeto</span>
 
 <span class="syn-id">obj2</span>.<span class="syn-property">x</span> <span class="syn-operator">=</span> <span class="syn-number">99</span>          <span class="syn-comment">// modifica o objeto compartilhado</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">obj1</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 99 — obj1 também foi afetado!</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">obj2</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 99</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'obj1.x <span class="syn-comment">// afetado via obj2</span>', key: 'ref.a_x', cls: 'code-console__line--warn' },
-        { expr: 'obj2.x', key: 'ref.b_x' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">obj2</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 99</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              {
+                expr: 'obj1.x <span class="syn-comment">// afetado via obj2</span>',
+                key: "ref.a_x",
+                cls: "code-console__line--warn",
+              },
+              { expr: "obj2.x", key: "ref.b_x" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   comparacao_objetos: () => /* html */ `
@@ -209,20 +169,31 @@ const _secoes = {
         são diferentes se estão em endereços diferentes.
       </p>
 
-      ${_h.block('comparacao.js', /* html */ `
+      ${_h.block(
+        "comparacao.js",
+        /* html */ `
 <span class="syn-keyword">const</span> <span class="syn-id">a</span> <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">1</span> }
 <span class="syn-keyword">const</span> <span class="syn-id">b</span> <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">1</span> }   <span class="syn-comment">// mesmo conteúdo, objeto diferente na memória</span>
 <span class="syn-keyword">const</span> <span class="syn-id">c</span> <span class="syn-operator">=</span> <span class="syn-id">a</span>          <span class="syn-comment">// mesma referência que a</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">a</span> <span class="syn-operator">===</span> <span class="syn-id">b</span>)   <span class="syn-comment">// false — objetos diferentes</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">a</span> <span class="syn-operator">===</span> <span class="syn-id">c</span>)   <span class="syn-comment">// true  — mesma referência</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'a === b <span class="syn-comment">// conteúdo igual, ref diferente</span>', key: 'eq.o1_o2' },
-        { expr: 'a === c <span class="syn-comment">// mesma referência</span>', key: 'eq.o1_o3' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">a</span> <span class="syn-operator">===</span> <span class="syn-id">c</span>)   <span class="syn-comment">// true  — mesma referência</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              {
+                expr: 'a === b <span class="syn-comment">// conteúdo igual, ref diferente</span>',
+                key: "eq.o1_o2",
+              },
+              {
+                expr: 'a === c <span class="syn-comment">// mesma referência</span>',
+                key: "eq.o1_o3",
+              },
+            ],
+          },
+        ],
+      )}
 
       <p>
         Para comparar o conteúdo de dois objetos, não existe operador nativo —
@@ -242,18 +213,23 @@ const _secoes = {
         <code>Array.isArray()</code>.
       </p>
 
-      ${_h.block('array-objeto.js', /* html */ `
+      ${_h.block(
+        "array-objeto.js",
+        /* html */ `
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> [])             <span class="syn-comment">// "object" — typeof não diferencia array</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">Array</span>.<span class="syn-fn">isArray</span>([]))   <span class="syn-comment">// true  — forma correta</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">Array</span>.<span class="syn-fn">isArray</span>({}))   <span class="syn-comment">// false</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof []', key: 'array.tipo' },
-        { expr: 'Array.isArray([])', key: 'array.is_arr' },
-        { expr: 'Array.isArray({})', key: 'array.is_arr2' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">Array</span>.<span class="syn-fn">isArray</span>({}))   <span class="syn-comment">// false</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof []", key: "array.tipo" },
+              { expr: "Array.isArray([])", key: "array.is_arr" },
+              { expr: "Array.isArray({})", key: "array.is_arr2" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   funcao_e_objeto: () => /* html */ `
@@ -266,22 +242,27 @@ const _secoes = {
         herdam de <code>Object.prototype</code> e podem ter propriedades adicionadas.
       </p>
 
-      ${_h.block('funcao-objeto.js', /* html */ `
+      ${_h.block(
+        "funcao-objeto.js",
+        /* html */ `
 <span class="syn-keyword">function</span> <span class="syn-fn">fn</span>(<span class="syn-id">a</span>, <span class="syn-id">b</span>) {}
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-keyword">typeof</span> <span class="syn-id">fn</span>)              <span class="syn-comment">// "function"</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">fn</span> <span class="syn-keyword">instanceof</span> <span class="syn-id">Object</span>)  <span class="syn-comment">// true — função é objeto</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">fn</span>.<span class="syn-property">name</span>)                <span class="syn-comment">// "fn" — propriedade do objeto função</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">fn</span>.<span class="syn-property">length</span>)              <span class="syn-comment">// 2 — nº de parâmetros declarados</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'typeof fn', key: 'funcao.tipo' },
-        { expr: 'fn instanceof Object', key: 'funcao.is_obj' },
-        { expr: 'fn.name', key: 'funcao.name' },
-        { expr: 'fn.length', key: 'funcao.length' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">fn</span>.<span class="syn-property">length</span>)              <span class="syn-comment">// 2 — nº de parâmetros declarados</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "typeof fn", key: "funcao.tipo" },
+              { expr: "fn instanceof Object", key: "funcao.is_obj" },
+              { expr: "fn.name", key: "funcao.name" },
+              { expr: "fn.length", key: "funcao.length" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   shallow_copy: () => /* html */ `
@@ -298,7 +279,9 @@ const _secoes = {
         fazem cópia rasa.
       </p>
 
-      ${_h.block('shallow-copy.js', /* html */ `
+      ${_h.block(
+        "shallow-copy.js",
+        /* html */ `
 <span class="syn-keyword">const</span> <span class="syn-id">original</span> <span class="syn-operator">=</span> {
   <span class="syn-property">nome</span>: <span class="syn-string">"Ana"</span>,
   <span class="syn-property">endereco</span>: { <span class="syn-property">cidade</span>: <span class="syn-string">"SP"</span> }   <span class="syn-comment">// objeto aninhado</span>
@@ -312,16 +295,23 @@ const _secoes = {
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">original</span>.<span class="syn-property">nome</span>)             <span class="syn-comment">// "Ana" — não afetado</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">original</span>.<span class="syn-property">endereco</span>.<span class="syn-property">cidade</span>)  <span class="syn-comment">// "RJ"  — afetado!</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">copia</span>.<span class="syn-property">nome</span>)               <span class="syn-comment">// "Bob"</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">copia</span>.<span class="syn-property">endereco</span>.<span class="syn-property">cidade</span>)    <span class="syn-comment">// "RJ"</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'original.nome', key: 'shallow.orig_nome' },
-        { expr: 'original.endereco.cidade', key: 'shallow.orig_cidade', cls: 'code-console__line--warn' },
-        { expr: 'copia.nome', key: 'shallow.copia_nome' },
-        { expr: 'copia.endereco.cidade', key: 'shallow.copia_cidade' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">copia</span>.<span class="syn-property">endereco</span>.<span class="syn-property">cidade</span>)    <span class="syn-comment">// "RJ"</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              { expr: "original.nome", key: "shallow.orig_nome" },
+              {
+                expr: "original.endereco.cidade",
+                key: "shallow.orig_cidade",
+                cls: "code-console__line--warn",
+              },
+              { expr: "copia.nome", key: "shallow.copia_nome" },
+              { expr: "copia.endereco.cidade", key: "shallow.copia_cidade" },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   deep_copy: () => /* html */ `
@@ -340,7 +330,9 @@ const _secoes = {
         (ES2022) ou uma biblioteca.
       </p>
 
-      ${_h.block('deep-copy.js', /* html */ `
+      ${_h.block(
+        "deep-copy.js",
+        /* html */ `
 <span class="syn-keyword">const</span> <span class="syn-id">original</span> <span class="syn-operator">=</span> {
   <span class="syn-property">nome</span>: <span class="syn-string">"Ana"</span>,
   <span class="syn-property">endereco</span>: { <span class="syn-property">cidade</span>: <span class="syn-string">"SP"</span> }
@@ -355,14 +347,23 @@ const _secoes = {
 <span class="syn-id">clone</span>.<span class="syn-property">endereco</span>.<span class="syn-property">cidade</span> <span class="syn-operator">=</span> <span class="syn-string">"RJ"</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">original</span>.<span class="syn-property">endereco</span>.<span class="syn-property">cidade</span>)  <span class="syn-comment">// "SP" — não afetado!</span>
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">clone</span>.<span class="syn-property">endereco</span>.<span class="syn-property">cidade</span>)     <span class="syn-comment">// "RJ"</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'original.endereco.cidade', key: 'deep.orig_cidade' },
-        { expr: 'clone.endereco.cidade', key: 'deep.clone_cidade' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">clone</span>.<span class="syn-property">endereco</span>.<span class="syn-property">cidade</span>)     <span class="syn-comment">// "RJ"</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              {
+                expr: "original.endereco.cidade",
+                key: "deep.orig_cidade",
+              },
+              {
+                expr: "clone.endereco.cidade",
+                key: "deep.clone_cidade",
+              },
+            ],
+          },
+        ],
+      )}
     </section>`,
 
   obj_em_funcao: () => /* html */ `
@@ -374,7 +375,9 @@ const _secoes = {
         É um dos comportamentos que mais surpreende quem vem de outras linguagens.
       </p>
 
-      ${_h.block('obj-em-funcao.js', /* html */ `
+      ${_h.block(
+        "obj-em-funcao.js",
+        /* html */ `
 <span class="syn-keyword">function</span> <span class="syn-fn">dobrar</span>(<span class="syn-id">obj</span>) {
   <span class="syn-id">obj</span>.<span class="syn-property">x</span> <span class="syn-operator">*=</span> <span class="syn-number">2</span>   <span class="syn-comment">// modifica o objeto original</span>
 }
@@ -382,13 +385,20 @@ const _secoes = {
 <span class="syn-keyword">const</span> <span class="syn-id">meuObj</span> <span class="syn-operator">=</span> { <span class="syn-property">x</span>: <span class="syn-number">5</span> }
 <span class="syn-fn">dobrar</span>(<span class="syn-id">meuObj</span>)
 
-<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">meuObj</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 10 — objeto foi mutado dentro da função!</span>`, [
-    {
-      label: 'Console', linhas: [
-        { expr: 'meuObj.x <span class="syn-comment">// após dobrar()</span>', key: 'fn_obj.x', cls: 'code-console__line--warn' },
-      ]
-    },
-  ])}
+<span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">meuObj</span>.<span class="syn-property">x</span>)   <span class="syn-comment">// 10 — objeto foi mutado dentro da função!</span>`,
+        [
+          {
+            label: "Console",
+            linhas: [
+              {
+                expr: 'meuObj.x <span class="syn-comment">// após dobrar()</span>',
+                key: "fn_obj.x",
+                cls: "code-console__line--warn",
+              },
+            ],
+          },
+        ],
+      )}
 
       <p>
         Para evitar mutações acidentais, passe uma cópia:
@@ -447,15 +457,15 @@ const _secoes = {
     </section>`,
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONTENT
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export function content() {
-  return Object.values(_secoes).map(s => s()).join('\n')
+  return Object.values(_secoes)
+    .map((s) => s())
+    .join("\n")
 }
-
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // INIT
@@ -463,9 +473,9 @@ export function content() {
 
 export function initReferencia() {
   const resolver = (caminho) =>
-    caminho.split('.').reduce((obj, k) => obj?.[k], _dados)
+    caminho.split(".").reduce((obj, k) => obj?.[k], _dados)
 
-  document.querySelectorAll('[data-out]').forEach(el => {
+  document.querySelectorAll("[data-out]").forEach((el) => {
     const val = resolver(el.dataset.out)
     if (val == null) return
     el.textContent = val.text
