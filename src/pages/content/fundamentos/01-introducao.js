@@ -29,9 +29,9 @@ export function content() {
       <h2 class="lesson__section-title">O que é JavaScript?</h2>
       <p>
         JavaScript é uma linguagem de programação criada em 1995 por Brendan Eich
-        enquanto trabalhava na Netscape. O objetivo original era simples: permitir
-        que páginas web respondessem a ações do usuário sem precisar recarregar a
-        página inteira.
+        enquanto trabalhava na Netscape. O objetivo original era tornar as páginas
+        web interativas, permitindo que respondessem a ações do usuário — como
+        cliques e validação de formulários — diretamente no navegador.
       </p>
       <p>
         O que começou como um script criado em dez dias se tornou uma das linguagens
@@ -50,7 +50,8 @@ export function content() {
       <h2 class="lesson__section-title">Como JavaScript é executado?</h2>
       <p>
         JavaScript não exige uma etapa de compilação manual e separada antes de rodar.
-        O código é analisado, preparado e executado pelo ambiente — browser ou Node.js.
+        O código é analisado, preparado e executado pela engine JavaScript do
+        ambiente — browser ou Node.js.
       </p>
       <p>
         Engines modernas como o V8 utilizam diferentes técnicas para executar e
