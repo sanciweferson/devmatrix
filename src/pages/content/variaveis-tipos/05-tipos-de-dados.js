@@ -1,4 +1,4 @@
-// src/content/variaveis-tipos/05-tipos-de-dados.js
+// src/pages/content/variaveis-tipos/05-tipos-de-dados.js
 
 import { _h } from "@content/_shared/code-block"
 

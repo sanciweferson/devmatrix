@@ -1,4 +1,4 @@
-// src/content/fundamentos/09-variable-environment.js
+// src/pages/content/fundamentos/09-variable-environment.js
 
 export function content() {
   return /* html */ `

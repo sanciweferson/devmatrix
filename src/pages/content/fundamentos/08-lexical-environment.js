@@ -1,4 +1,4 @@
-// src/content/fundamentos/08-lexical-environment.js
+// src/pages/content/fundamentos/08-lexical-environment.js
 
 export function content() {
   return /* html */ `

@@ -1,3 +1,7 @@
+
+// src/components/data/icons.js
+
+
 export function getIcon(id, variant = "default") {
   if (variant === "noIcon") return ""
 

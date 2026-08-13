@@ -1,4 +1,4 @@
-// src/content/fundamentos/07-execution-context.js
+// src/pagescontent/fundamentos/07-execution-context.js
 
 export function content() {
   return /* html */ `

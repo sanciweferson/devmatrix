@@ -1,4 +1,4 @@
-// src/content/fundamentos/11-ecossistema.js
+// src/pagescontent/fundamentos/11-ecossistema.js
 
 export function content() {
   return /* html */ `

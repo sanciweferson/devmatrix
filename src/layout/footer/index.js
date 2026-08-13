@@ -1,4 +1,4 @@
-// src/layout/footer.js
+// src/layout/footer/index.js
 // ─────────────────────────────────────────────────────────────────────────────
 // Responsabilidade deste módulo:
 //   Gerar o HTML estático do rodapé da aplicação como string.

@@ -1,5 +1,5 @@
 
-
+// src/utils/copy.js
 export const Copy =()=>{
   const year = new Date().getFullYear();
 

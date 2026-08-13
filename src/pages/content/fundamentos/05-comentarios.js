@@ -1,4 +1,4 @@
-// src/content/fundamentos/05-comentarios.js
+// src/pages/content/fundamentos/05-comentarios.js
 
 export function content() {
   return /* html */ `

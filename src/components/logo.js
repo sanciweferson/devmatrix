@@ -1,3 +1,6 @@
+
+// src/components/logo.js
+
 import { cx, escapeHtml } from "@utils/helpers"
 
 export function Logo({ className = "", alt = "DevMatrix" } = {}) {

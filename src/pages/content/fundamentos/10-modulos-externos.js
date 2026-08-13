@@ -1,4 +1,4 @@
-// src/content/fundamentos/10-modulos-externos.js
+// src/pages/content/fundamentos/10-modulos-externos.js
 
 export function content() {
   return /* html */ `

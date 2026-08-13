@@ -1,4 +1,4 @@
-// src/content/variaveis-tipos/07-referencia.js
+// src/pages/content/variaveis-tipos/07-referencia.js
 
 import { _h } from "@content/_shared/code-block"
 

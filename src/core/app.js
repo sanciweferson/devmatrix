@@ -1,3 +1,5 @@
+// src/core/app.js
+
 import { Layout } from "@layout/index";
 import { renderPage, initPage } from "@core/render";
 import { router } from "@core/router";

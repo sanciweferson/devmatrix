@@ -14,6 +14,8 @@
  * o "&" que acabamos de criar em "&lt;" seria escapado de novo,
  * virando "&amp;lt;" (errado).
  */
+
+// src/utils/helpers.js
 export const escapeHtml = (str) =>
   String(str)
     .replace(/&/g, "&amp;")

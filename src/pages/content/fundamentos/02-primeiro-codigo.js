@@ -1,4 +1,4 @@
-// src/content/fundamentos/02-primeiro-codigo.js
+// src/pages/content/fundamentos/02-primeiro-codigo.js
 
 // ── Valores usados nos exemplos ──────────────────────────────────────────────
 

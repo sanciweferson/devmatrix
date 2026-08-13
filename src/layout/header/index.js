@@ -1,4 +1,4 @@
-// Header.js
+//layout/header/index.js
 
 import { createLogo } from "@components/logo"
 import { escapeHtml, cx } from "@utils/helpers"

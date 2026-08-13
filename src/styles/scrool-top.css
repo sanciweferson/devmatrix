@@ -3,6 +3,8 @@
    Inserido via portal no <body> pelo initScrollTop().
 ========================================================= */
 
+/* scrool-top.css */
+
 .scroll-top {
   position: fixed;
   bottom: 1.75rem;

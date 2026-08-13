@@ -1,4 +1,4 @@
-// src/content/fundamentos/04-var-let-const.js
+// src/pages/content/fundamentos/04-var-let-const.js
 //
 // Página de comparação — var vs let vs const
 //

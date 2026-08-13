@@ -120,8 +120,9 @@ export function content() {
           <div class="lesson__card-icon">🖥️</div>
           <h3>Node.js</h3>
           <p>
-            Executa JavaScript fora do navegador, com acesso a sistema de
-            arquivos, rede e processos do sistema operacional.
+            Executa JavaScript fora do navegador usando a engine V8, com
+            acesso a sistema de arquivos, rede e processos do sistema
+            operacional.
           </p>
         </div>
         <div class="lesson__card">
@@ -136,8 +137,8 @@ export function content() {
           <div class="lesson__card-icon">🧩</div>
           <h3>Outros ambientes</h3>
           <p>
-            Edge servers, desktops via Electron e até microcontroladores
-            rodam JavaScript hoje.
+            Runtimes modernos como Bun e Deno, edge servers, desktops via
+            Electron e até microcontroladores rodam JavaScript hoje.
           </p>
         </div>
       </div>

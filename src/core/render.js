@@ -1,3 +1,6 @@
+// src/core/render.js
+
+
 import { routes } from "@/routes";
 import { getPage, hasPage, savePage } from "@core/cache";
 import { initHome } from "@pages/home";

@@ -5,7 +5,7 @@
    e botões, que não mudam entre modal (mobile) e sidebar
    (desktop).
 ========================================================= */
-
+/* petfil.css */
 .perfil__avatar-wrap {
   display: flex;
   flex-direction: column;

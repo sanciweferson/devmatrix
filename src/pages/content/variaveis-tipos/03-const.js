@@ -1,4 +1,4 @@
-// src/content/fundamentos/03-const.js
+// src/pages/content/fundamentos/03-const.js
 //
 // Arquitetura:
 //   _dados      — IIFE que calcula e retorna todos os valores por seção

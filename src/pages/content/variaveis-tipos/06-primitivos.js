@@ -1,4 +1,4 @@
-// src/content/variaveis-tipos/06-primitivos.js
+// src/pages/content/variaveis-tipos/06-primitivos.js
 
 import { _h } from "@content/_shared/code-block"
 

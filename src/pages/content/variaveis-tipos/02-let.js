@@ -1,4 +1,4 @@
-// src/content/fundamentos/02-let.js
+// src/pages/content/fundamentos/02-let.js
 //
 // Estrutura interna:
 //   _dados      — todos os valores calculados, organizados por seção

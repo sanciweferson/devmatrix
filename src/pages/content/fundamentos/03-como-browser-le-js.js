@@ -1,4 +1,4 @@
-// src/content/fundamentos/03-como-browser-le-js.js
+// src/pages/content/fundamentos/03-como-browser-le-js.js
 
 export function content() {
   return /* html */ `

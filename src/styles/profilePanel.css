@@ -10,7 +10,7 @@
    (--nav-ease, --nav-fast, --nav-normal, --nav-slow, --nav-shadow-lg,
    --nav-overlay-bg) — nada duplicado.
 ========================================================= */
-
+/* profilePanel.css */
 .profile-panel-overlay {
   position: fixed;
   inset: 0;

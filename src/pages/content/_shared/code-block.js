@@ -1,4 +1,4 @@
-// src/content/_shared/code-block.js
+// src/pages/content/_shared/code-block.js
 
 /**
  * Helpers de markup para blocos de código das aulas.

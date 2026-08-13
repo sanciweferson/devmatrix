@@ -1,4 +1,4 @@
-// src/content/fundamentos/06-strict-mode.js
+// src/pages/content/fundamentos/06-strict-mode.js
 
 export function content() {
   return /* html */ `

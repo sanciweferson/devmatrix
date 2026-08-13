@@ -1,4 +1,4 @@
-// src/data/data.js
+// src/components/data/data.js
 // ─────────────────────────────────────────────────────────────────────────────
 // Fonte única de verdade da aplicação.
 //

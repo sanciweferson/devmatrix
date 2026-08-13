@@ -1,4 +1,4 @@
-// src/content/variaveis-tipos/08-coercao.js
+// src/pages/content/variaveis-tipos/08-coercao.js
 
 import { _h } from "@content/_shared/code-block"
 

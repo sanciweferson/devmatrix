@@ -1,3 +1,5 @@
+// src/layout/index.js
+
 import { Header } from "@/layout/header";
 import { Footer } from "@layout/footer";
 

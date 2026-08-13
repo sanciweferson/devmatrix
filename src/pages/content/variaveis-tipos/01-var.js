@@ -1,4 +1,4 @@
-// src/content/fundamentos/01-var.js
+// src/pages/content/fundamentos/01-var.js
 
 // ── Valores usados nos exemplos ──────────────────────────────────────────────
 

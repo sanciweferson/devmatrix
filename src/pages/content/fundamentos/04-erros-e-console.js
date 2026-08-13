@@ -1,4 +1,4 @@
-// src/content/fundamentos/04-erros-e-console.js
+// src/pages/content/fundamentos/04-erros-e-console.js
 
 export function content() {
   return /* html */ `
