@@ -49,8 +49,10 @@ export function content() {
       <div class="lesson__callout">
         <span class="lesson__callout-icon">💡</span>
         <p>
-          <strong>Curiosidade:</strong> a Netscape foi comprada pela AOL em 1999, e seu
-          navegador deu origem, anos depois, ao Firefox — hoje mantido pela Mozilla.
+          <strong>Curiosidade:</strong> em 1998, a Netscape abriu o código do
+          Navigator, dando origem ao projeto Mozilla. A AOL comprou a Netscape
+          em 1999, mas o projeto seguiu — e anos depois lançou o Firefox, hoje
+          mantido pela Mozilla Foundation.
         </p>
       </div>
 
@@ -107,8 +109,11 @@ export function content() {
         sem que você precise realizar uma compilação manual.
       </p>
       <p>
-        Isso tem uma consequência importante: muitos erros só aparecem em tempo de
-        execução. Por isso entender o ambiente não é detalhe avançado — é base.
+        Isso tem uma consequência importante: nem todo erro se comporta do mesmo
+        jeito. Erros de sintaxe costumam ser detectados antes mesmo do código
+        rodar, mas muitos outros só aparecem em tempo de execução — quando um
+        caminho específico do programa é percorrido. Por isso entender o
+        ambiente não é detalhe avançado — é base.
       </p>
 
       <div class="code-block">
@@ -188,8 +193,9 @@ export function content() {
 
       <p>
         Essa distinção é essencial: <em>document</em> e <em>window</em> são
-        APIs globais típicas do browser. No Node.js, <em>process</em> é global
-        e módulos como <em>fs</em> fornecem acesso ao sistema de arquivos.
+        objetos globais disponibilizados pelo ambiente do navegador. No
+        Node.js, <em>process</em> é global e módulos como <em>fs</em>
+        fornecem acesso ao sistema de arquivos.
       </p>
       <p>
         No Node.js, <em>process</em> é uma variável <strong>global</strong>,
