@@ -1,18 +1,4 @@
 // src/content/fundamentos/01-introducao.js
-//
-// MDM JavaScript — Fundamentos
-// Aula 1: Introdução ao JavaScript
-//
-// Arquitetura:
-//   _node    — saídas simuladas do ambiente Node.js
-//   _h       — helpers de markup compartilhados
-//   content() — composição final do HTML
-//   init()   — resolução dos outputs data-out
-//
-// Dependências:
-//   @/pages/content/_shared/code-block.js
-//
-// O botão "Copiar" é gerenciado globalmente pelo sistema [data-copy].
 
 import { _h } from "@/pages/content/_shared/code-block.js"
 
@@ -258,6 +244,7 @@ export function content() {
 
       </div>
 
+
       <div class="lesson__callout">
 
         <span class="lesson__callout-icon">🔑</span>
@@ -288,6 +275,7 @@ export function content() {
         de um ambiente para outro não é a essência da linguagem, mas os
         recursos e APIs disponibilizados pelo <strong>runtime</strong>.
       </p>
+
 
       <div class="lesson__cards">
 
@@ -332,6 +320,7 @@ export function content() {
 
       </div>
 
+
       <p>
         Isso leva a uma distinção fundamental:
         <strong>JavaScript não é o navegador.</strong>
@@ -354,6 +343,7 @@ export function content() {
         Da mesma forma, o Node.js fornece APIs próprias para trabalhar com
         recursos que não pertencem ao ambiente de páginas web.
       </p>
+
 
       <div class="lesson__callout">
 
@@ -550,10 +540,12 @@ export function content() {
 
       </div>
 
+
       <p>
         Apesar da semelhança no nome, <strong>JavaScript e Java são
         linguagens diferentes</strong>. Uma não é uma versão da outra.
       </p>
+
 
       ${_h.block(
         "es2015-exemplos.js",
@@ -568,7 +560,7 @@ export function content() {
 <span class="syn-comment">// Com ES2015 (ES6)</span>
 <span class="syn-keyword">const</span> <span class="syn-id">nomeModerno</span> <span class="syn-operator">=</span> <span class="syn-string">"Sanciweferson"</span>
 
-<span class="syn-keyword">const</span> <span class="syn-id">saudarModerno</span> <span class="syn-operator">=</span> (<span class="syn-id">nome</span>) <span class="syn-operator">=&gt;</span> <span class="syn-string">\`Olá, \${nome}\`</span>
+<span class="syn-keyword">const</span> <span class="syn-id">saudarModerno</span> <span class="syn-operator">=</span> (<span class="syn-id">nome</span>) <span class="syn-operator">=&gt;</span> <span class="syn-string">&#96;Olá, &#36;{nome}&#96;</span>
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">saudar</span>(<span class="syn-id">nome</span>))
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-fn">saudarModerno</span>(<span class="syn-id">nomeModerno</span>))`,
@@ -623,6 +615,7 @@ export function content() {
         permitem executar JavaScript em threads separadas da main thread.
       </p>
 
+
       ${_h.block(
         "bloqueio.js",
         /* html */ `
@@ -650,6 +643,7 @@ export function content() {
           },
         ],
       )}
+
 
       <p>
         Esse comportamento está relacionado ao modelo de concorrência do
@@ -740,6 +734,7 @@ export function content() {
         entendemos escopo, contexto de execução, ambiente léxico e hoisting.
       </p>
 
+
       <div class="lesson__callout">
 
         <span class="lesson__callout-icon">🚀</span>
@@ -751,6 +746,7 @@ export function content() {
         </p>
 
       </div>
+
 
       <p>
         <strong>Resumo da aula:</strong>
@@ -785,27 +781,22 @@ export function content() {
   `
 }
 
-// ── Inicialização ─────────────────────────────────────────────────────────────
+// ── Injeção dos outputs via data-out ──────────────────────────────────────────
 //
 // O helper _h.block() gera:
 //
 //   <span class="syn-output" data-out="..."></span>
 //
-// O init() resolve esses elementos depois que o conteúdo da página
-// foi inserido no DOM.
-//
-// O botão "Copiar" NÃO é tratado aqui.
-// Ele permanece sob responsabilidade do sistema global [data-copy].
+// Aqui procuramos esses elementos pelo valor de data-out e inserimos
+// somente o texto da saída. Isso mantém a estrutura do HTML centralizada
+// no _shared/code-block.js.
 
 export function init() {
   const injetar = (key, valor) => {
     const elementos = document.querySelectorAll(`[data-out="${key}"]`)
 
     if (!elementos.length) {
-      if (
-        typeof console !== "undefined" &&
-        typeof console.warn === "function"
-      ) {
+      if (typeof console !== "undefined" && console.warn) {
         console.warn(
           `[01-introducao] elemento [data-out="${key}"] não encontrado ao injetar saída.`,
         )
@@ -823,7 +814,7 @@ export function init() {
 
   injetar("mensagem", `"${mensagem}"`)
 
-  // ── Console 2 — ambientes.js ─────────────────────────────────────────────
+  // ── Console 2 — ambientes.js ──────────────────────────────────────────────
   //
   // Valores reais do navegador atual.
   //
@@ -856,6 +847,3 @@ export function init() {
 
   injetar("bloqueio", `"Desbloqueado após 5 segundos"`)
 }
-
-
-
