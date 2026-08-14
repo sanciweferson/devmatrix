@@ -125,3 +125,7 @@ console.log(formatWhatsapp("11912345678"))       // → "(11) 91234-5678"
 console.log(isValidWhatsapp("(11) 91234-5678"))  // → true
 console.log(isValidWhatsapp("(10) 91234-5678"))  // → false — DDD 10 não existe
 console.log(isValidWhatsapp("(11) 81234-5678"))  // → false — falta o "9"
+
+
+
+
