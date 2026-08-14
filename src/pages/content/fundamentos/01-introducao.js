@@ -29,9 +29,12 @@ export function content() {
       <h2 class="lesson__section-title">O que é JavaScript?</h2>
       <p>
         JavaScript é uma linguagem de programação criada em 1995 por Brendan Eich
-        enquanto trabalhava na Netscape. O objetivo original era tornar as páginas
-        web interativas, permitindo que respondessem a ações do usuário — como
-        cliques e validação de formulários — diretamente no navegador.
+        enquanto trabalhava na Netscape — uma empresa de software americana,
+        fundada em 1994 por Marc Andreessen e Jim Clark, famosa pelo navegador
+        Netscape Navigator, que dominou a web nos anos 90, antes do Internet
+        Explorer. O objetivo original era tornar as páginas web interativas,
+        permitindo que respondessem a ações do usuário — como cliques e validação
+        de formulários — diretamente no navegador.
       </p>
       <p>
         O que começou como um script criado em dez dias se tornou uma das linguagens
@@ -42,6 +45,14 @@ export function content() {
         Entender onde ela nasceu ajuda a entender por que ela funciona do jeito que
         funciona — inclusive as partes confusas.
       </p>
+
+      <div class="lesson__callout">
+        <span class="lesson__callout-icon">💡</span>
+        <p>
+          <strong>Curiosidade:</strong> a Netscape foi comprada pela AOL, e seu
+          navegador deu origem, anos depois, ao Firefox — hoje mantido pela Mozilla.
+        </p>
+      </div>
     </section>
 
 
