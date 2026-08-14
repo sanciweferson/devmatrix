@@ -49,10 +49,41 @@ export function content() {
       <div class="lesson__callout">
         <span class="lesson__callout-icon">💡</span>
         <p>
-          <strong>Curiosidade:</strong> a Netscape foi comprada pela AOL, e seu
+          <strong>Curiosidade:</strong> a Netscape foi comprada pela AOL em 1999, e seu
           navegador deu origem, anos depois, ao Firefox — hoje mantido pela Mozilla.
         </p>
       </div>
+
+      <details class="lesson__deepdive">
+        <summary class="lesson__deepdive-summary">Aprofundando: o que foi a AOL e por que isso importa</summary>
+        <div class="lesson__deepdive-body">
+          <p>
+            A AOL (America Online) foi um dos maiores provedores de internet dos EUA
+            nos anos 90 — vendia acesso discado (dial-up) e oferecia um portal fechado
+            com e-mail, salas de bate-papo e o AIM (AOL Instant Messenger), um dos
+            mensageiros mais populares da época.
+          </p>
+          <p>
+            Em 1999, no auge de uma fase de expansão agressiva por aquisições, a AOL
+            comprou a Netscape. Mas a Netscape já estava perdendo a chamada
+            "guerra dos navegadores" para o Internet Explorer da Microsoft, que vinha
+            pré-instalado no Windows — uma vantagem de distribuição que nenhum
+            concorrente conseguia igualar. A compra pela AOL não reverteu esse
+            declínio, e o navegador foi sendo descontinuado aos poucos.
+          </p>
+          <p>
+            O legado ficou no código: o Netscape Navigator foi aberto (open source) e
+            deu origem ao projeto que depois se tornou o <strong>Firefox</strong>,
+            hoje mantido pela Mozilla Foundation.
+          </p>
+          <p>
+            A própria AOL passou por diversas fusões e vendas nas décadas seguintes
+            (fez parte da Verizon, depois de um grupo chamado Oath, depois Verizon
+            Media) e hoje tem uma relevância bem menor no mercado de tecnologia do
+            que teve nos anos 90.
+          </p>
+        </div>
+      </details>
     </section>
 
 
