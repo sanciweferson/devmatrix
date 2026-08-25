@@ -82,6 +82,46 @@ export function content() {
       <details class="lesson__deepdive">
 
         <summary class="lesson__deepdive-summary">
+          Aprofundando: de Mocha a JavaScript
+        </summary>
+
+        <div class="lesson__deepdive-body">
+
+          <p>
+            A linguagem não nasceu com o nome "JavaScript". Durante seu
+            desenvolvimento em 1995, o projeto foi chamado internamente de
+            <strong>Mocha</strong>. Pouco antes do lançamento beta do
+            Netscape Navigator 2.0, em setembro de 1995, ela foi renomeada
+            para <strong>LiveScript</strong>.
+          </p>
+
+          <p>
+            Em dezembro de 1995, a linguagem recebeu o nome definitivo de
+            <strong>JavaScript</strong>. Essa mudança aconteceu no contexto
+            de uma parceria entre a Netscape e a
+            <strong>Sun Microsystems</strong> (criadora da linguagem Java),
+            em um momento em que Java vinha ganhando grande popularidade no
+            mercado.
+          </p>
+
+          <p>
+            É importante não interpretar essa escolha de nome como se
+            JavaScript fosse derivado de Java ou uma variação dele. As duas
+            linguagens têm sintaxe superficialmente parecida — ambas
+            influenciadas pela família de linguagens estilo C — mas possuem
+            projetos, semânticas e modelos de execução bastante diferentes.
+            A aproximação no nome teve motivação principalmente estratégica
+            e comercial, aproveitando a visibilidade que Java tinha na época,
+            e não um parentesco técnico real entre as duas linguagens.
+          </p>
+
+        </div>
+
+      </details>
+
+      <details class="lesson__deepdive">
+
+        <summary class="lesson__deepdive-summary">
           Aprofundando: Netscape, Mozilla e Firefox
         </summary>
 
@@ -94,9 +134,20 @@ export function content() {
           </p>
 
           <p>
-            Em 1998, a Netscape iniciou a abertura do código de seu navegador,
-            dando origem ao projeto Mozilla. Esse projeto posteriormente
-            contribuiu para o surgimento do Firefox.
+            Em 1998, a Netscape abriu o código-fonte de seu navegador,
+            dando origem ao projeto <strong>Mozilla</strong>. Esse projeto
+            não gerou o Firefox imediatamente: primeiro deu origem ao
+            <strong>Mozilla Application Suite</strong>, um pacote de
+            aplicativos que incluía navegador, cliente de e-mail e outras
+            ferramentas.
+          </p>
+
+          <p>
+            Anos depois, um subconjunto dessa suíte foi extraído em um
+            navegador independente e mais enxuto, que evoluiu até se tornar
+            o <strong>Firefox</strong>. Ou seja, a cadeia foi
+            Netscape → código aberto → Mozilla → Mozilla Application Suite
+            → Firefox, e não uma transição direta.
           </p>
 
           <p>
@@ -237,8 +288,10 @@ export function content() {
           <div class="lesson__card-icon">🌍</div>
           <h3>Runtime</h3>
           <p>
-            É o ambiente de execução que inclui uma engine e outros recursos
-            e APIs necessários para executar aplicações.
+            É o ambiente de execução que reúne uma engine e outros recursos
+            e APIs necessários para executar aplicações. Em muitos
+            contextos da indústria, esse ambiente também é chamado
+            informalmente de <strong>host environment</strong>.
           </p>
         </div>
 
@@ -256,6 +309,22 @@ export function content() {
           Um <strong>runtime</strong> fornece a engine junto com outros
           recursos necessários para executar aplicações em determinado
           ambiente.
+        </p>
+
+      </div>
+
+      <div class="lesson__callout">
+
+        <span class="lesson__callout-icon">⚠️</span>
+
+        <p>
+          <strong>Runtime não é sinônimo exato de host environment:</strong>
+          na especificação ECMAScript, <strong>host environment</strong>
+          é um termo técnico com significado específico — é quem fornece
+          objetos e comportamentos que a própria especificação delega ao
+          ambiente. "Runtime" é um termo mais amplo, usado de formas
+          variadas pela indústria. Os dois termos se sobrepõem em vários
+          contextos, mas não devem ser tratados como sinônimos rigorosos.
         </p>
 
       </div>
@@ -500,6 +569,30 @@ export function content() {
         arrow functions, classes, módulos e muitos outros recursos.
       </p>
 
+      <p>
+        Vale a pena deixar clara a fronteira entre o que pertence à
+        especificação ECMAScript e o que pertence ao ambiente hospedeiro.
+        A especificação ECMAScript define, entre outras coisas:
+      </p>
+
+      <ul>
+        <li>a sintaxe da linguagem;</li>
+        <li>os tipos e valores fundamentais;</li>
+        <li>objetos e funções nativos (como <code>Array</code>, <code>Object</code>, <code>Promise</code>);</li>
+        <li>operadores e estruturas de controle;</li>
+        <li>a semântica de execução da linguagem;</li>
+        <li>o sistema de módulos (<code>import</code>/<code>export</code>);</li>
+        <li>o gerenciamento de execução definido pela própria especificação (como Execution Context e o modelo de Jobs/microtasks).</li>
+      </ul>
+
+      <p>
+        Já recursos como DOM, <code>window</code>, <code>document</code>,
+        <code>fetch</code> e Web Workers não fazem parte da especificação
+        ECMAScript. Eles vêm de especificações da plataforma Web — o
+        ambiente hospedeiro — e por isso só existem em ambientes que os
+        implementam, como o navegador.
+      </p>
+
       <div class="lesson__cards">
 
         <div class="lesson__card">
@@ -545,6 +638,25 @@ export function content() {
         Apesar da semelhança no nome, <strong>JavaScript e Java são
         linguagens diferentes</strong>. Uma não é uma versão da outra.
       </p>
+
+      <div class="lesson__callout">
+
+        <span class="lesson__callout-icon">🧩</span>
+
+        <p>
+          <strong>JavaScript não é uma única implementação:</strong>
+          JavaScript é a linguagem especificada pelo ECMAScript, e existem
+          diferentes engines que implementam essa especificação — V8,
+          SpiderMonkey, JavaScriptCore, entre outras. Cada engine é livre
+          para organizar sua própria arquitetura interna (parsing, geração
+          de bytecode, otimizações JIT etc.), desde que respeite o
+          comportamento observável exigido pela especificação. Essa
+          distinção entre "o que a especificação exige" e "como cada engine
+          implementa por dentro" vai ficar mais importante quando
+          estudarmos parsing, AST e o funcionamento interno da V8.
+        </p>
+
+      </div>
 
 
       ${_h.block(

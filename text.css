@@ -1,0 +1,365 @@
+src/styles/main.css
+/* Abordagem MOBILE-FIRST: os estilos "soltos" (fora de @media) valem pra
+   qualquer tela, incluindo a menor. Cada @media (min-width: ...) só ADICIONA
+   ajustes conforme a tela cresce — nunca remove nada do base. */
+
+:root {
+  --cor-fundo: #0f1115;
+  --cor-card: #1a1d24;
+  --cor-texto: #e4e6eb;
+  --cor-texto-fraco: #9198a8;
+  --cor-seguro: #2ecc71;
+  --cor-seguro-fundo: rgba(46, 204, 113, 0.08);
+  --cor-perigo: #e74c3c;
+  --cor-perigo-fundo: rgba(231, 76, 60, 0.08);
+  --fonte-mono: "Fira Code", "JetBrains Mono", monospace;
+
+  /* espaçamento em variável facilita ajustar tudo de uma vez no @media */
+  --espaco-secao: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  /* padding menor no celular, cresce em telas maiores (ver @media abaixo) */
+  padding: 20px 16px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+}
+
+#app {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 {
+  /* clamp(mínimo, ideal, máximo) — o tamanho da fonte flui suavemente
+     entre telas, sem precisar de um @media só pra isso */
+  font-size: clamp(1.3rem, 4vw + 0.5rem, 1.8rem);
+  margin: 0 0 var(--espaco-secao);
+}
+
+/* ---------- Formulário ---------- */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+form textarea {
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid #2a2e38;
+  background: var(--cor-card);
+  color: var(--cor-texto);
+  font-family: var(--fonte-mono);
+  /* 16px é o mínimo pra iOS Safari NÃO dar zoom automático ao focar o campo */
+  font-size: 16px;
+  line-height: 1.7; /* espaço maior entre linhas facilita ler payload de código */
+  resize: vertical;
+  outline: none;
+  /* transição suave ao focar, em vez do campo "pular" pra outra cor */
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+form textarea:focus {
+  /* substitui o outline padrão feio do navegador por um anel discreto,
+     usando a cor de destaque — ainda visível pra acessibilidade */
+  border-color: var(--cor-texto-fraco);
+  box-shadow: 0 0 0 3px rgba(228, 230, 235, 0.08);
+}
+
+/* :focus-visible reforça o anel quando a navegação é por teclado (Tab),
+   ficando mais evidente que o :focus comum de cima */
+form textarea:focus-visible {
+  box-shadow: 0 0 0 3px var(--cor-fundo), 0 0 0 5px var(--cor-seguro);
+}
+
+/* seleciona o texto com um destaque que combina com o tema escuro,
+   em vez do azul padrão do navegador que destoa */
+form textarea::selection {
+  background: rgba(46, 204, 113, 0.25);
+}
+
+/* scrollbar customizada (Chrome/Edge/Safari) pra combinar com o fundo escuro,
+   em vez da barra cinza clara padrão que aparece no seu print */
+form textarea::-webkit-scrollbar {
+  width: 10px;
+}
+form textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+form textarea::-webkit-scrollbar-thumb {
+  background: #2a2e38;
+  border-radius: 8px;
+  border: 2px solid var(--cor-card);
+}
+form textarea::-webkit-scrollbar-thumb:hover {
+  background: #3a3f4c;
+}
+
+/* Firefox usa essas duas propriedades em vez de ::-webkit-scrollbar */
+form textarea {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2e38 transparent;
+}
+
+form button {
+  /* min-height 44px = tamanho mínimo de área de toque recomendado
+     (Apple HIG / Material Design), pra não errar o toque no celular */
+  min-height: 44px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--cor-texto);
+  color: #0f1115;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  /* no celular o botão ocupa a largura toda — mais fácil de acertar o toque */
+  width: 100%;
+  outline: none;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+form button:hover {
+  opacity: 0.9;
+}
+
+form button:active {
+  /* leve "afundada" ao clicar, dá sensação de resposta física */
+  transform: scale(0.98);
+}
+
+/* :focus-visible só aparece quando a navegação é por TECLADO (Tab),
+   não quando é por clique de mouse — assim não polui o visual pra
+   quem usa mouse, mas ainda é acessível pra quem navega por teclado */
+form button:focus-visible {
+  box-shadow: 0 0 0 3px var(--cor-fundo), 0 0 0 5px var(--cor-seguro);
+}
+
+/* ---------- Grade dos 4 campos de teste ---------- */
+
+.campos {
+  display: grid;
+  /* mobile-first: 1 coluna só, cada campo empilhado */
+  grid-template-columns: 1fr;
+  gap: var(--espaco-secao);
+}
+
+.campo {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #2a2e38;
+}
+
+.campo h2 {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.campo p {
+  margin: 0;
+  padding: 14px;
+  font-family: var(--fonte-mono);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  /* evita que um card com pouco texto fique "espremido" ao lado
+     de um card com bastante texto na versão 2 colunas */
+  min-height: 60px;
+}
+
+.campo--seguro h2 { color: var(--cor-seguro); background: var(--cor-seguro-fundo); }
+.campo--seguro p  { background: var(--cor-seguro-fundo); }
+
+.campo--perigo h2 { color: var(--cor-perigo); background: var(--cor-perigo-fundo); }
+.campo--perigo p  { background: var(--cor-perigo-fundo); }
+
+/* ---------- Toast de aviso (substitui alert()) ---------- */
+
+.toast-xss {
+  position: fixed;
+  /* mobile-first: ocupa quase a largura toda, ancorado embaixo,
+     mais fácil de ler com o polegar do que um card pequeno no canto */
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #1a1d24;
+  border: 1px solid var(--cor-perigo);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color: var(--cor-texto);
+  font-size: 0.9rem;
+  animation: toast-entrada 0.25s ease-out;
+}
+
+.toast-xss strong { color: var(--cor-perigo); }
+.toast-xss span { color: var(--cor-texto-fraco); font-size: 0.8rem; }
+.toast-xss--saindo { animation: toast-saida 0.3s ease-in forwards; }
+
+@keyframes toast-entrada {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toast-saida {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(10px); }
+}
+
+/* ============================================================
+   BREAKPOINTS — só ajustes ADICIONAIS pra telas maiores
+   ============================================================ */
+
+/* Tablet e acima (~600px): 2 colunas nos campos, botão volta a ser
+   do tamanho do conteúdo (não precisa mais ocupar 100% da largura) */
+@media (min-width: 600px) {
+  :root {
+    --espaco-secao: 20px;
+  }
+
+  body {
+    padding: 40px 20px;
+  }
+
+  .campos {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  form {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  form textarea {
+    flex: 1;
+  }
+
+  form button {
+    width: auto;
+    align-self: flex-start;
+  }
+
+  /* em telas maiores, o toast volta a ser um card fixo no canto,
+     não precisa mais ocupar a largura toda */
+  .toast-xss {
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+    max-width: 320px;
+  }
+}
+
+/* Desktop grande (~960px): mais respiro geral */
+@media (min-width: 960px) {
+  #app {
+    max-width: 840px;
+  }
+}
+
+/* ---------- Seção 5: validação de link ---------- */
+
+.titulo-secao {
+  margin: 32px 0 10px;
+  font-size: 1rem;
+}
+
+.campo-link {
+  padding-bottom: 4px;
+}
+
+.campo-link h2 {
+  margin: 0;
+  padding: 10px 14px;
+}
+
+.campo-link p {
+  margin: 0;
+  padding: 14px;
+  font-family: var(--fonte-mono);
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.campo-link a {
+  color: var(--cor-seguro);
+  font-weight: 600;
+  outline: none;
+  border-radius: 4px;
+}
+
+.campo-link a:focus-visible {
+  box-shadow: 0 0 0 3px var(--cor-fundo), 0 0 0 5px var(--cor-seguro);
+}
+
+.campo-link small {
+  color: var(--cor-texto-fraco);
+}
+
+/* Botão de exemplo malicioso: visual propositalmente diferente do botão
+   principal, pra deixar claro que é "modo demonstração", não uma ação
+   normal do fluxo */
+.botao-exemplo {
+  display: block;
+  margin: -4px 0 16px;
+  padding: 6px 12px;
+  min-height: auto;
+  width: auto;
+  background: transparent;
+  color: var(--cor-perigo);
+  border: 1px dashed var(--cor-perigo);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.botao-exemplo:hover {
+  background: var(--cor-perigo-fundo);
+}
+
+.botao-exemplo:focus-visible {
+  box-shadow: 0 0 0 3px var(--cor-fundo), 0 0 0 5px var(--cor-perigo);
+}
+
+/* input de texto reaproveita o mesmo visual do textarea/botão */
+form input[type="text"] {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #2a2e38;
+  background: var(--cor-card);
+  color: var(--cor-texto);
+  font-family: var(--fonte-mono);
+  font-size: 16px; /* mesmo motivo do textarea: evita zoom automático no iOS */
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+form input[type="text"]:focus {
+  border-color: var(--cor-texto-fraco);
+  box-shadow: 0 0 0 3px rgba(228, 230, 235, 0.08);
+}
+
+form input[type="text"]:focus-visible {
+  box-shadow: 0 0 0 3px var(--cor-fundo), 0 0 0 5px var(--cor-seguro);
+}
+
+form input[type="text"]::selection {
+  background: rgba(46, 204, 113, 0.25);
+}
