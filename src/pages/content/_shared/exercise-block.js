@@ -2,7 +2,6 @@
 
 import { escapeHtml } from "@/utils/helpers.js"
 
-
 // Componente compartilhado de exercícios dissertativos.
 // Mesmo padrão do code-block.js: gera HTML puro e expõe um init()
 // para ligar a interatividade (toggle, autosave, progresso, dica,
@@ -45,9 +44,12 @@ import { escapeHtml } from "@/utils/helpers.js"
 //   abaixo). Essa checagem NÃO avalia se a resposta está correta — só
 //   filtra respostas vazias, curtas demais ou "lixo" digitado só para
 //   destravar o gabarito.
-// - Se o campo de resposta for esvaziado, o botão volta a travar. O
-//   conteúdo já revelado não é escondido de novo (não faria sentido
-//   esconder algo que o usuário já viu).
+// - A checagem roda em tempo real a cada `input`, e NÃO depende de
+//   localStorage/cache: mesmo em aba anônima ou com o cache limpo, o
+//   botão libera/trava dinamicamente a partir do valor atual do
+//   textarea. Se o campo de resposta for esvaziado, o botão volta a
+//   travar. O conteúdo já revelado não é escondido de novo (não faria
+//   sentido esconder algo que o usuário já viu).
 //
 // ── Colar (paste) ────────────────────────────────────────────────────────
 //
@@ -241,29 +243,147 @@ function saveAnswers(storageKey, answers) {
 // ── Validação heurística de consistência mínima ────────────────────────────
 //
 // Não avalia se a resposta está CORRETA — só filtra respostas vazias,
-// curtas demais ou "lixo" (ex: "aaaaaaa", "...........", "kkkkkkkk")
-// digitadas só para destravar o gabarito.
+// curtas demais ou "lixo" (ex: "aaaaaaa", "...........", "kkkkkkkk",
+// ou teclado-mash tipo "qualgtetdcd mvkfkofk c v v") digitadas só para
+// destravar o gabarito.
+//
+// Camadas da checagem, na ordem em que são aplicadas:
+//
+//   1. Tamanho mínimo do texto inteiro.
+//   2. Quantidade mínima de PALAVRAS VÁLIDAS — uma palavra só conta se
+//      tiver 3+ letras. Isso evita que "c", "v", "a" (letras soltas)
+//      infacionem artificialmente a contagem de palavras.
+//   3. Razão de palavras únicas — evita repetição tipo "não não não".
+//   4. Razão de caracteres que são letras — evita "........." ou
+//      strings cheias de pontuação/números.
+//   5. Presença de ao menos um CONECTOR comum do português (que, não,
+//      para, com, foi...) — uma resposta real, mesmo malfeita, quase
+//      sempre usa algum desses; teclado-mash aleatório não usa.
+//
+// Limite reconhecido: isso continua sendo heurística, não correção de
+// conteúdo. Alguém disposto a "enganar" o filtro pode digitar um texto
+// com conectores + enrolação e destravar mesmo assim. O objetivo aqui
+// é só filtrar o caso comum de "digitar qualquer coisa para destravar".
 
-const MIN_CARACTERES = 15
-const MIN_PALAVRAS = 3
+const MIN_CARACTERES = 20
+const MIN_PALAVRAS_VALIDAS = 4
+const TAMANHO_MIN_PALAVRA_VALIDA = 3
 const RAZAO_MIN_PALAVRAS_UNICAS = 0.5
-const RAZAO_MIN_LETRAS = 0.5
+const RAZAO_MIN_LETRAS = 0.6
+
+// Conectores/palavras funcionais comuns do português. Uma resposta
+// genuína — mesmo curta ou malfeita — quase sempre usa pelo menos um
+// desses. Teclado-mash aleatório, não.
+const CONECTORES_PT = new Set([
+  "que",
+  "para",
+  "com",
+  "não",
+  "isso",
+  "essa",
+  "esse",
+  "essas",
+  "esses",
+  "quando",
+  "porque",
+  "então",
+  "mas",
+  "foi",
+  "são",
+  "uma",
+  "um",
+  "uns",
+  "umas",
+  "de",
+  "da",
+  "do",
+  "das",
+  "dos",
+  "na",
+  "no",
+  "nas",
+  "nos",
+  "em",
+  "se",
+  "por",
+  "como",
+  "mais",
+  "muito",
+  "ele",
+  "ela",
+  "eles",
+  "elas",
+  "cada",
+  "todo",
+  "toda",
+  "todos",
+  "todas",
+  "ainda",
+  "também",
+  "já",
+  "sem",
+  "sobre",
+  "entre",
+  "até",
+  "pode",
+  "podem",
+  "deve",
+  "devem",
+  "pois",
+  "assim",
+  "dessa",
+  "desse",
+  "nessa",
+  "nesse",
+  "ser",
+  "estar",
+  "tem",
+  "têm",
+  "isto",
+  "aquilo",
+  "onde",
+  "qual",
+  "quais",
+  "seu",
+  "sua",
+  "seus",
+  "suas",
+  "seria",
+  "seriam",
+  "seu",
+  "seus",
+  "porém",
+  "seja",
+])
 
 function isRespostaConsistente(valor) {
   const texto = String(valor).trim()
 
+  // 1) Tamanho mínimo geral
   if (texto.length < MIN_CARACTERES) return false
 
-  const palavras = texto.split(/\s+/).filter(Boolean)
-  if (palavras.length < MIN_PALAVRAS) return false
+  const palavrasBrutas = texto.toLowerCase().split(/\s+/).filter(Boolean)
 
-  const palavrasUnicas = new Set(palavras.map((p) => p.toLowerCase()))
-  if (palavrasUnicas.size / palavras.length < RAZAO_MIN_PALAVRAS_UNICAS) {
+  // 2) Só conta como "palavra válida" quem tem 3+ letras — impede que
+  //    letras soltas ("c", "v") infacionem a contagem.
+  const palavrasValidas = palavrasBrutas.filter(
+    (p) => p.replace(/[^a-zà-öø-ÿ]/gi, "").length >= TAMANHO_MIN_PALAVRA_VALIDA,
+  )
+  if (palavrasValidas.length < MIN_PALAVRAS_VALIDAS) return false
+
+  // 3) Razão de palavras únicas (evita repetição tipo "não não não")
+  const unicas = new Set(palavrasValidas)
+  if (unicas.size / palavrasValidas.length < RAZAO_MIN_PALAVRAS_UNICAS) {
     return false
   }
 
-  const letras = texto.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ]/g, "")
+  // 4) Razão de caracteres que são letras (evita "..........", números soltos)
+  const letras = texto.replace(/[^a-zà-öø-ÿ]/gi, "")
   if (letras.length / texto.length < RAZAO_MIN_LETRAS) return false
+
+  // 5) Precisa conter ao menos um conector comum do português
+  const temConector = palavrasBrutas.some((p) => CONECTORES_PT.has(p))
+  if (!temConector) return false
 
   return true
 }
@@ -338,6 +458,10 @@ function init({ storageKey }) {
         answerBlock.hidden = expanded
       })
 
+      // Recalcula a trava do gabarito em tempo real, a cada tecla.
+      // Não depende de localStorage/cache — só do valor atual do
+      // textarea. Por isso funciona igual em aba anônima ou com
+      // cache limpo, e trava de novo se o campo for esvaziado.
       const atualizarTravaGabarito = () => {
         answerToggle.disabled = !isRespostaConsistente(textarea.value)
       }

@@ -3,7 +3,7 @@
 import { menuItems } from "@components/data/data"
 import { deletePage } from "../core/cache"
 import { EXERCICIOS_MAP } from "@content/exercicios-map.js"
-import "@pages/content/_shared/exercicios-page.css"
+// import "@pages/content/_shared/exercicios-page.css"
 
 const STORAGE_KEY = "jsplatform:progress"
 const LAST_LESSON_KEY = "jsplatform:last-lesson"
