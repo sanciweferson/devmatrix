@@ -3,21 +3,21 @@
 // Tabela de rotas da aplicação.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { Home } from "./pages/home";
-import { ModulePage } from "@pages/modulo.js";
-import { Lesson } from "@pages/lesson.js";
-import { LegalPage } from "./pages/legal";
-import { LoginPage } from "./pages/login";
-import { PerfilPage } from "./pages/perfil";
-import { ContatoPage } from "@pages/contato";
-import { FaqPage } from "@pages/faq";
+import { Home } from "./pages/home"
+import { ModulePage } from "@pages/modulo.js"
+import { Lesson } from "@pages/lesson.js"
+import { ExerciciosPage } from "@pages/exercicios.js"
+import { LegalPage } from "./pages/legal"
+import { LoginPage } from "./pages/login"
+import { PerfilPage } from "./pages/perfil"
+import { ContatoPage } from "@pages/contato"
+import { FaqPage } from "@pages/faq"
 
 export const routes = [
-
   // ── Home ──────────────────────────────────────────────────────────────────
   {
     path: "/",
-    component: Home
+    component: Home,
   },
 
   { path: "/login", component: LoginPage },
@@ -78,6 +78,12 @@ export const routes = [
     component: () => ModulePage({ modulo: "modulos-es6" }),
   },
 
+  // ── Exercícios (rota específica — precisa vir antes do catch-all de aula) ──
+  {
+    path: "/:modulo/:slug/exercicios",
+    component: ExerciciosPage,
+  },
+
   // ── Aulas ─────────────────────────────────────────────────────────────────
   {
     path: "/:modulo/:slug",
@@ -87,7 +93,7 @@ export const routes = [
   // ── 404 ───────────────────────────────────────────────────────────────────
   {
     path: "*",
-    component: () => /*html*/`
+    component: () => /*html*/ `
       <section style="text-align: center; padding: 4rem 2rem;">
         <h1>404 — Página não encontrada</h1>
         <p>O endereço <strong>${window.location.pathname}</strong> não existe.</p>
@@ -95,5 +101,4 @@ export const routes = [
       </section>
     `,
   },
-
 ]

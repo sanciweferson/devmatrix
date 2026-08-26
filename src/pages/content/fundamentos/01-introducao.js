@@ -1,8 +1,6 @@
 // src/content/fundamentos/01-introducao.js
 
 import { _h } from "@/pages/content/_shared/code-block.js"
-import { _ex } from "@/pages/content/_shared/exercise-block.js"
-import { exerciciosAula01 } from "./01-introducao.exercicios.js"
 
 // ── Valores usados nos exemplos ──────────────────────────────────────────────
 
@@ -534,9 +532,12 @@ export function content() {
         <p>
           <strong>Observação:</strong>
           ferramentas de desenvolvimento podem alterar o ambiente de execução,
-          por exemplo, fornecendo polyfills ou compatibilidade para determinadas
-          APIs. Por isso, o comportamento de alguns objetos pode variar conforme
-          a configuração do projeto.
+          por exemplo, fornecendo <strong>polyfills</strong> — código que
+          reproduz, em ambientes que não o possuem nativamente, um recurso
+          definido pela especificação ECMAScript ou por uma Web API — ou
+          outras formas de compatibilidade para determinadas APIs. Por isso,
+          o comportamento de alguns objetos pode variar conforme a
+          configuração do projeto.
         </p>
 
       </div>
@@ -892,12 +893,6 @@ export function content() {
 
     </section>
 
-    ${_ex.block({
-      storageKey: "jsplatform:exercises:/fundamentos/01-introducao",
-      titulo: "Exercícios — Aula 01",
-      grupos: exerciciosAula01,
-    })}
-
   `
 }
 
@@ -966,6 +961,4 @@ export function init() {
   // ── Console 4 — bloqueio.js ───────────────────────────────────────────────
 
   injetar("bloqueio", `"Desbloqueado após 5 segundos"`)
-
-  _ex.init({ storageKey: "jsplatform:exercises:/fundamentos/01-introducao" })
 }

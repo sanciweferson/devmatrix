@@ -1,8 +1,12 @@
 // src/pages/content/_shared/exercise-block.js
-//
+
+import { escapeHtml } from "@/utils/helpers.js"
+
+
 // Componente compartilhado de exercícios dissertativos.
 // Mesmo padrão do code-block.js: gera HTML puro e expõe um init()
-// para ligar a interatividade (toggle, autosave, progresso).
+// para ligar a interatividade (toggle, autosave, progresso, dica,
+// gabarito e bloqueio de colagem).
 //
 // Uso na aula:
 //
@@ -10,7 +14,17 @@
 //     storageKey: "jsplatform:exercises:/fundamentos/01-introducao",
 //     titulo: "Exercícios — Aula 01",
 //     grupos: [
-//       { titulo: "Bloco 1 — ...", questoes: [{ id: "q1", texto: "..." }] },
+//       {
+//         titulo: "Bloco 1 — ...",
+//         questoes: [
+//           {
+//             id: "q1",
+//             texto: "...",
+//             dica: "...",       // opcional — se ausente, o botão não aparece
+//             gabarito: "...",   // opcional — se ausente, o botão não aparece
+//           },
+//         ],
+//       },
 //     ],
 //   })}
 //
@@ -20,16 +34,34 @@
 //
 // Persistência: cada resposta é salva (debounce 500ms) em localStorage,
 // na chave storageKey, como { [questionId]: texto }.
+//
+// ── Gabarito e dica ─────────────────────────────────────────────────────
+//
+// - `dica` é opcional e sempre acessível — serve só para destravar o
+//   raciocínio, sem entregar a resposta.
+// - `gabarito` é opcional. Quando presente, o botão "Ver gabarito" nasce
+//   desabilitado e só libera quando a resposta digitada passa por uma
+//   checagem heurística de consistência mínima (ver `isRespostaConsistente`
+//   abaixo). Essa checagem NÃO avalia se a resposta está correta — só
+//   filtra respostas vazias, curtas demais ou "lixo" digitado só para
+//   destravar o gabarito.
+// - Se o campo de resposta for esvaziado, o botão volta a travar. O
+//   conteúdo já revelado não é escondido de novo (não faria sentido
+//   esconder algo que o usuário já viu).
+//
+// ── Colar (paste) ────────────────────────────────────────────────────────
+//
+// O textarea bloqueia os eventos `paste` e `drop` para desincentivar
+// colar a resposta pronta. É importante registrar a limitação: isso é
+// fricção, não uma trava de segurança real — dá para contornar digitando
+// em outro lugar, usando ditado por voz ou inspecionando o DOM. Também
+// pode atrapalhar quem depende de colar por necessidade de acessibilidade.
+// Ative com essa consciência.
 
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;")
-}
-
+// escapeAttr fica local (não está em helpers.js): propositalmente não
+// escapa aspas simples, porque é usado só em atributos entre aspas
+// duplas — diferente de escapeHtml, que precisa cobrir os dois casos
+// por ser usado em texto/conteúdo mais genérico.
 function escapeAttr(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -40,9 +72,11 @@ function escapeAttr(value) {
 
 function questionItem(questao, numero) {
   const numeroFormatado = String(numero).padStart(2, "0")
+  const temDica = Boolean(questao.dica)
+  const temGabarito = Boolean(questao.gabarito)
 
   return /* html */ `
-    <div class="exercise-block__question">
+    <div class="exercise-block__question" data-question-wrap>
 
       <div class="exercise-block__question-head">
         <span class="exercise-block__question-number">${numeroFormatado}</span>
@@ -55,6 +89,61 @@ function questionItem(questao, numero) {
         placeholder="Digite sua resposta..."
         rows="3"
       ></textarea>
+
+      ${
+        temDica || temGabarito
+          ? /* html */ `
+      <div class="exercise-block__actions">
+        ${
+          temDica
+            ? /* html */ `
+        <button
+          class="exercise-block__hint-toggle"
+          type="button"
+          data-hint-toggle
+          aria-expanded="false"
+        >
+          💡 Ver dica
+        </button>`
+            : ""
+        }
+        ${
+          temGabarito
+            ? /* html */ `
+        <button
+          class="exercise-block__answer-toggle"
+          type="button"
+          data-answer-toggle
+          aria-expanded="false"
+          disabled
+        >
+          📖 Ver gabarito
+        </button>`
+            : ""
+        }
+      </div>`
+          : ""
+      }
+
+      ${
+        temDica
+          ? /* html */ `
+      <div class="exercise-block__hint" data-hint hidden>
+        <span class="exercise-block__hint-label">Dica</span>
+        <p>${escapeHtml(questao.dica)}</p>
+      </div>`
+          : ""
+      }
+
+      ${
+        temGabarito
+          ? /* html */ `
+      <div class="exercise-block__answer" data-answer hidden>
+        <span class="exercise-block__answer-label">Resposta esperada</span>
+        <p>${escapeHtml(questao.gabarito)}</p>
+      </div>`
+          : ""
+      }
 
     </div>
   `
@@ -79,9 +168,14 @@ function groupBlock(grupo, offset) {
  * @param {Object} config
  * @param {string} config.storageKey
  * @param {string} [config.titulo]
- * @param {Array<{ titulo: string, questoes: Array<{ id: string, texto: string }> }>} config.grupos
+ * @param {Array<{ titulo: string, questoes: Array<{ id: string, texto: string, dica?: string, gabarito?: string }> }>} config.grupos
  */
-function block({ storageKey, titulo = "Exercícios", grupos = [] }) {
+function block({
+  storageKey,
+  titulo = "Exercícios",
+  grupos = [],
+  startOpen = false,
+}) {
   const total = grupos.reduce((acc, g) => acc + g.questoes.length, 0)
 
   let offset = 0
@@ -100,14 +194,14 @@ function block({ storageKey, titulo = "Exercícios", grupos = [] }) {
         class="exercise-block__toggle"
         type="button"
         data-exercise-toggle
-        aria-expanded="false"
+        aria-expanded="${startOpen}"
       >
         <span class="exercise-block__toggle-icon">📝</span>
         <span class="exercise-block__toggle-label">Fazer exercícios</span>
         <span class="exercise-block__toggle-count">${total} questões</span>
       </button>
 
-      <div class="exercise-block__body" data-exercise-body hidden>
+      <div class="exercise-block__body" data-exercise-body ${startOpen ? "" : "hidden"}>
 
         <div class="exercise-block__intro">
           <h2 class="exercise-block__title">${escapeHtml(titulo)}</h2>
@@ -144,10 +238,41 @@ function saveAnswers(storageKey, answers) {
   localStorage.setItem(storageKey, JSON.stringify(answers))
 }
 
+// ── Validação heurística de consistência mínima ────────────────────────────
+//
+// Não avalia se a resposta está CORRETA — só filtra respostas vazias,
+// curtas demais ou "lixo" (ex: "aaaaaaa", "...........", "kkkkkkkk")
+// digitadas só para destravar o gabarito.
+
+const MIN_CARACTERES = 15
+const MIN_PALAVRAS = 3
+const RAZAO_MIN_PALAVRAS_UNICAS = 0.5
+const RAZAO_MIN_LETRAS = 0.5
+
+function isRespostaConsistente(valor) {
+  const texto = String(valor).trim()
+
+  if (texto.length < MIN_CARACTERES) return false
+
+  const palavras = texto.split(/\s+/).filter(Boolean)
+  if (palavras.length < MIN_PALAVRAS) return false
+
+  const palavrasUnicas = new Set(palavras.map((p) => p.toLowerCase()))
+  if (palavrasUnicas.size / palavras.length < RAZAO_MIN_PALAVRAS_UNICAS) {
+    return false
+  }
+
+  const letras = texto.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ]/g, "")
+  if (letras.length / texto.length < RAZAO_MIN_LETRAS) return false
+
+  return true
+}
+
 // ── Inicialização ────────────────────────────────────────────────────────
 
 /**
- * Liga toggle, autosave e progresso. Chamar dentro do init() da aula.
+ * Liga toggle, autosave, progresso, dica, gabarito e bloqueio de colar.
+ * Chamar dentro do init() da aula.
  * @param {Object} config
  * @param {string} config.storageKey - mesma chave usada no block()
  */
@@ -187,6 +312,60 @@ function init({ storageKey }) {
       section.scrollIntoView({ behavior: "smooth", block: "start" })
     }
   })
+
+  // ── Dica, gabarito e bloqueio de colar, por questão ──────────────────────
+
+  section.querySelectorAll("[data-question-wrap]").forEach((wrap) => {
+    const textarea = wrap.querySelector("[data-question-id]")
+    const hintToggle = wrap.querySelector("[data-hint-toggle]")
+    const hintBlock = wrap.querySelector("[data-hint]")
+    const answerToggle = wrap.querySelector("[data-answer-toggle]")
+    const answerBlock = wrap.querySelector("[data-answer]")
+
+    if (hintToggle && hintBlock) {
+      hintToggle.addEventListener("click", () => {
+        const expanded = hintToggle.getAttribute("aria-expanded") === "true"
+        hintToggle.setAttribute("aria-expanded", String(!expanded))
+        hintBlock.hidden = expanded
+      })
+    }
+
+    if (answerToggle && answerBlock) {
+      answerToggle.addEventListener("click", () => {
+        if (answerToggle.disabled) return
+        const expanded = answerToggle.getAttribute("aria-expanded") === "true"
+        answerToggle.setAttribute("aria-expanded", String(!expanded))
+        answerBlock.hidden = expanded
+      })
+
+      const atualizarTravaGabarito = () => {
+        answerToggle.disabled = !isRespostaConsistente(textarea.value)
+      }
+
+      atualizarTravaGabarito()
+      textarea.addEventListener("input", atualizarTravaGabarito)
+    }
+
+    // Bloqueio de colar: paste (Ctrl+V, menu de contexto) e drop (arrastar texto)
+    let colarTimeout = null
+    const bloquearColagem = (event) => {
+      event.preventDefault()
+      if (!status) return
+
+      status.textContent =
+        "Colar está desativado neste exercício — digite sua resposta."
+
+      clearTimeout(colarTimeout)
+      colarTimeout = setTimeout(() => {
+        status.textContent = ""
+      }, 2500)
+    }
+
+    textarea.addEventListener("paste", bloquearColagem)
+    textarea.addEventListener("drop", bloquearColagem)
+  })
+
+  // ── Autosave ──────────────────────────────────────────────────────────
 
   textareas.forEach((textarea) => {
     textarea.addEventListener("input", () => {

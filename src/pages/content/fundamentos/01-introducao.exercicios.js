@@ -5,54 +5,89 @@
 // enxuto e facilitar a manutenção/adição de novas questões.
 //
 // 50 questões, organizadas em 8 blocos.
+//
+// Cada questão aceita dois campos opcionais:
+//   - dica: pista curta para destravar o raciocínio, sempre acessível.
+//   - gabarito: resposta-modelo, revelada só depois que a resposta do
+//     usuário passa pela checagem heurística de consistência mínima
+//     (ver isRespostaConsistente em exercise-block.js).
+//
+// Status atual: Bloco 1 já tem dica/gabarito como exemplo do esquema.
+// Blocos 2–8 ainda não têm — o botão de gabarito/dica simplesmente não
+// aparece nessas questões até o conteúdo ser adicionado.
 
 export const exerciciosAula01 = [
   {
     titulo: "Bloco 1 — Origem e história do JavaScript",
     questoes: [
-      { id: "q1", texto: "Em que ano o JavaScript foi criado e quem o criou?" },
+      {
+        id: "q1",
+        texto: "Em que ano o JavaScript foi criado e quem o criou?",
+        gabarito:
+          "Foi criado em 1995 por Brendan Eich, enquanto ele trabalhava na Netscape.",
+      },
       {
         id: "q2",
         texto: "Em qual empresa a linguagem foi originalmente desenvolvida?",
+        gabarito:
+          "Na Netscape, empresa responsável pelo navegador Netscape Navigator.",
       },
       {
         id: "q3",
         texto: "Qual era o objetivo original do JavaScript ao ser criado?",
+        gabarito:
+          "Adicionar comportamento e interatividade às páginas web, permitindo que elas respondessem a ações do usuário, como cliques e preenchimento de formulários, diretamente no navegador.",
       },
       {
         id: "q4",
         texto:
           "Qual foi o primeiro nome interno dado ao projeto antes de se chamar JavaScript?",
+        gabarito:
+          "O projeto foi chamado internamente de Mocha durante seu desenvolvimento em 1995.",
       },
       {
         id: "q5",
         texto:
           "Para qual nome o projeto foi renomeado pouco antes do lançamento beta do Netscape Navigator 2.0?",
+        gabarito: "Foi renomeado para LiveScript, em setembro de 1995.",
       },
       {
         id: "q6",
         texto:
           'Em que contexto (parceria com qual empresa) o nome "JavaScript" foi definido?',
+        gabarito:
+          "O nome definitivo veio em dezembro de 1995, no contexto de uma parceria entre a Netscape e a Sun Microsystems (criadora do Java), em um momento em que o Java estava em alta no mercado.",
       },
       {
         id: "q7",
         texto:
           "Por que é um erro achar que JavaScript é uma variação ou derivação do Java?",
+        dica: "Pense na diferença entre 'nome parecido' e 'parentesco técnico real'.",
+        gabarito:
+          "Porque, apesar da semelhança no nome e de uma sintaxe superficialmente parecida (ambas influenciadas pela família de linguagens estilo C), são linguagens com projetos, semânticas e modelos de execução bastante diferentes — uma não é versão nem derivação técnica da outra.",
       },
       {
         id: "q8",
         texto:
           'O que motivou a escolha de um nome parecido com "Java", já que as linguagens não são relacionadas tecnicamente?',
+        dica: "Pense em marketing, não em engenharia.",
+        gabarito:
+          "A escolha teve motivação principalmente estratégica e comercial: aproveitar a popularidade que o Java, da Sun Microsystems, tinha na época — não um parentesco técnico entre as linguagens.",
       },
       {
         id: "q9",
         texto:
           "O que aconteceu com a Netscape em 1998 que deu origem ao projeto Mozilla?",
+        gabarito:
+          "A Netscape abriu o código-fonte do seu navegador, o que deu origem ao projeto Mozilla.",
       },
       {
         id: "q10",
         texto:
           "Qual foi a cadeia de evolução entre Netscape, Mozilla, Mozilla Application Suite e Firefox?",
+        dica: "Houve uma etapa intermediária — uma suíte de aplicativos — entre o projeto Mozilla e o navegador Firefox propriamente dito.",
+        gabarito:
+          "Netscape → abertura do código-fonte → projeto Mozilla → Mozilla Application Suite (pacote de aplicativos com navegador, e-mail etc.) → extração de um navegador independente e mais enxuto, que evoluiu até se tornar o Firefox. Não foi uma transição direta de Netscape para Firefox.",
       },
     ],
   },

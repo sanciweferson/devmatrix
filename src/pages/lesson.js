@@ -2,6 +2,8 @@
 
 import { menuItems } from "@components/data/data"
 import { deletePage } from "../core/cache"
+import { EXERCICIOS_MAP } from "@content/exercicios-map.js"
+import "@pages/content/_shared/exercicios-page.css"
 
 const STORAGE_KEY = "jsplatform:progress"
 const LAST_LESSON_KEY = "jsplatform:last-lesson"
@@ -40,6 +42,8 @@ const Icons = {
   copy: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
 
   copied: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`,
+
+  edit: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
 }
 
 import {
@@ -159,6 +163,14 @@ export function Lesson({ modulo, slug }) {
 
   const contentFn = CONTENT_MAP[`${modulo}/${slug}`]
 
+  // Exercícios agora vivem numa página própria (/:modulo/:slug/exercicios).
+  // O card só aparece se essa aula tiver exercícios cadastrados no
+  // EXERCICIOS_MAP — aulas sem exercícios não mostram nada aqui.
+  const exerciciosData = EXERCICIOS_MAP[`${modulo}/${slug}`]
+  const totalExercicios = exerciciosData
+    ? exerciciosData.grupos.reduce((acc, g) => acc + g.questoes.length, 0)
+    : 0
+
   return /* html */ `
     <div class="lesson">
       <div class="lesson__topbar lesson__anim-item">
@@ -199,6 +211,24 @@ export function Lesson({ modulo, slug }) {
             : /* html */ `<p class="lesson__no-content">Conteúdo em breve.</p>`
         }
       </article>
+
+      ${
+        exerciciosData
+          ? /* html */ `
+      <a
+        href="/${modulo}/${slug}/exercicios"
+        data-link
+        class="lesson__exercises-cta lesson__anim-item"
+      >
+        <span class="lesson__exercises-cta-icon">${Icons.edit}</span>
+        <span class="lesson__exercises-cta-text">
+          <strong>Fazer exercícios</strong>
+          <small>${totalExercicios} questões dissertativas desta aula</small>
+        </span>
+        <span class="lesson__exercises-cta-arrow">${Icons.arrowR}</span>
+      </a>`
+          : ""
+      }
 
       <nav class="lesson__nav lesson__anim-item" aria-label="Navegação entre aulas">
         <div class="lesson__nav-prev">
