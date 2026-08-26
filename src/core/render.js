@@ -109,6 +109,11 @@ export function updatePage() {
 
   main.innerHTML = content
 
+  // Reseta o scroll a cada troca de rota — sem isso, a SPA mantém a
+  // posição de scroll da página anterior (pushState não reseta scroll
+  // como um reload de página tradicional faria).
+  window.scrollTo(0, 0)
+
   requestAnimationFrame(() => {
     currentCleanup = initPage(window.location.pathname)
     cleanupScrollTop = initScrollTop()
