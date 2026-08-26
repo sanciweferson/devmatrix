@@ -68,8 +68,9 @@ import { escapeHtml } from "@/utils/helpers.js"
 // Como rede de segurança adicional, o evento `input` monitora saltos
 // abruptos de tamanho do texto (ex.: +6 caracteres de uma vez). Se a
 // diferença for maior que o limite, o valor é revertido para o estado
-// anterior. Isso pega casos em que o teclado mobile injeta texto sem
-// disparar o `inputType` esperado no `beforeinput`.
+// anterior, o mesmo aviso de colagem é exibido e o fluxo é interrompido
+// com stopImmediatePropagation() para o autosave não rodar nem mostrar
+// "Salvo" indevidamente.
 //
 // Ainda assim, é fricção, não uma trava de segurança real — dá para
 // contornar digitando em outro lugar, usando ditado por voz ou
@@ -468,6 +469,18 @@ function init({ storageKey }) {
   // (tecla a tecla) quase nunca ultrapassa 1–2 caracteres por evento.
   const MAX_CHARS_POR_EVENTO = 5
 
+  // Aviso único reutilizado por paste, drop, beforeinput e salto abrupto.
+  let colarTimeout = null
+  const mostrarAvisoColagem = () => {
+    if (!status) return
+    status.textContent =
+      "Colar está desativado neste exercício — digite sua resposta."
+    clearTimeout(colarTimeout)
+    colarTimeout = setTimeout(() => {
+      status.textContent = ""
+    }, 2500)
+  }
+
   section.querySelectorAll("[data-question-wrap]").forEach((wrap) => {
     const textarea = wrap.querySelector("[data-question-id]")
     const hintToggle = wrap.querySelector("[data-hint-toggle]")
@@ -483,6 +496,10 @@ function init({ storageKey }) {
       })
     }
 
+    // Trava do gabarito — registrada depois do detector de salto para
+    // que, em caso de colagem bloqueada, o stopImmediatePropagation
+    // impeça também a liberação indevida do botão.
+    let atualizarTravaGabarito = null
     if (answerToggle && answerBlock) {
       answerToggle.addEventListener("click", () => {
         if (answerToggle.disabled) return
@@ -491,33 +508,15 @@ function init({ storageKey }) {
         answerBlock.hidden = expanded
       })
 
-      // Recalcula a trava do gabarito em tempo real, a cada tecla.
-      // Não depende de localStorage/cache — só do valor atual do
-      // textarea. Por isso funciona igual em aba anônima ou com
-      // cache limpo, e trava de novo se o campo for esvaziado.
-      const atualizarTravaGabarito = () => {
+      atualizarTravaGabarito = () => {
         answerToggle.disabled = !isRespostaConsistente(textarea.value)
       }
 
       atualizarTravaGabarito()
-      textarea.addEventListener("input", atualizarTravaGabarito)
     }
 
-    // Bloqueio de colar: paste (Ctrl+V, menu de contexto), drop
-    // (arrastar texto), beforeinput (sugestão de clipboard do teclado)
-    // e fallback por salto abrupto de caracteres no input.
-    let colarTimeout = null
+    // Bloqueio de colar: paste, drop, beforeinput e fallback de salto.
     let valorAnterior = textarea.value
-
-    const mostrarAvisoColagem = () => {
-      if (!status) return
-      status.textContent =
-        "Colar está desativado neste exercício — digite sua resposta."
-      clearTimeout(colarTimeout)
-      colarTimeout = setTimeout(() => {
-        status.textContent = ""
-      }, 2500)
-    }
 
     const bloquearColagem = (event) => {
       event.preventDefault()
@@ -530,33 +529,44 @@ function init({ storageKey }) {
       }
     }
 
-    // Fallback: se o texto crescer de forma abrupta (sugestão do teclado
-    // que não disparou beforeinput com o inputType esperado), reverte
-    // para o valor anterior e avisa o usuário.
-    const detectarSaltoAbrupto = () => {
+    // Fallback: salto abrupto no input (prévia do teclado que não
+    // disparou beforeinput com o inputType esperado).
+    // Reverte o valor, mostra o MESMO aviso do paste e interrompe o
+    // fluxo com stopImmediatePropagation para o autosave (e a trava
+    // do gabarito) não rodarem neste evento.
+    const detectarSaltoAbrupto = (event) => {
       const atual = textarea.value
       const delta = atual.length - valorAnterior.length
 
       if (delta > MAX_CHARS_POR_EVENTO) {
         textarea.value = valorAnterior
         mostrarAvisoColagem()
+        event.stopImmediatePropagation()
         return
       }
 
       valorAnterior = atual
     }
 
+    // Ordem importa: o detector de salto precisa rodar ANTES do
+    // autosave e da trava do gabarito, para poder parar o evento.
     textarea.addEventListener("paste", bloquearColagem)
     textarea.addEventListener("drop", bloquearColagem)
     textarea.addEventListener("beforeinput", bloquearViaBeforeInput)
     textarea.addEventListener("input", detectarSaltoAbrupto)
 
-    // Garante sincronia caso o valor tenha sido setado pelo load do
-    // localStorage antes de ligarmos os listeners.
+    if (atualizarTravaGabarito) {
+      textarea.addEventListener("input", atualizarTravaGabarito)
+    }
+
+    // Sincroniza após o load do localStorage.
     valorAnterior = textarea.value
   })
 
   // ── Autosave ──────────────────────────────────────────────────────────
+  // Registrado por último de propósito: se o detector de salto chamar
+  // stopImmediatePropagation, este listener não executa e não sobrescreve
+  // o aviso de colagem com "Salvando..." / "Salvo ✓".
 
   textareas.forEach((textarea) => {
     textarea.addEventListener("input", () => {
