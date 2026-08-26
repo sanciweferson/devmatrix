@@ -372,3 +372,125 @@
   transform: translateX(3px);
   color: var(--primary);
 }
+
+
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CABEÇALHO — PÁGINA DE EXERCÍCIOS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.exercicios-page__header {
+   margin-bottom: var(--space-xl);
+}
+
+/* ── Título da aula ── */
+
+.exercicios-page__header h1 {
+   margin: 0 0 var(--space-xs);
+
+   color: var(--foreground);
+
+   font-size: var(--text-3xl);
+   line-height: var(--lh-3xl);
+   font-weight: 700;
+}
+
+/* ── Subtítulo ── */
+
+.exercicios-page__header h2 {
+   margin: 0 0 var(--space-lg);
+
+   color: var(--muted-foreground);
+
+   font-size: var(--text-xl);
+   line-height: var(--lh-xl);
+   font-weight: 500;
+}
+
+/* ── Informações: Nome + Data ── */
+
+.exercicios-page__info {
+   display: flex;
+   gap: var(--space-lg);
+
+   padding: var(--space-md);
+
+   background: var(--card);
+
+   border: 1px solid var(--border);
+   border-radius: var(--radius-lg);
+
+   box-shadow: var(--shadow-sm);
+}
+
+.exercicios-page__info label {
+   display: flex;
+   flex-direction: column;
+   gap: var(--space-xs);
+
+   flex: 1;
+
+   color: var(--foreground);
+
+   font-size: var(--text-sm);
+   line-height: var(--lh-sm);
+}
+
+.exercicios-page__info input {
+   width: 100%;
+   box-sizing: border-box;
+
+   padding: 0.65rem 0.75rem;
+
+   background: var(--background);
+   color: var(--foreground);
+
+   border: 1px solid var(--input);
+   border-radius: var(--radius-md);
+
+   font: inherit;
+   font-size: var(--text-base);
+
+   outline: none;
+
+   transition:
+      border-color var(--duration-base) var(--ease-default),
+      box-shadow var(--duration-base) var(--ease-default);
+}
+
+.exercicios-page__info input::placeholder {
+   color: var(--muted-foreground);
+}
+
+.exercicios-page__info input:hover {
+   border-color: var(--ring);
+}
+
+.exercicios-page__info input:focus {
+   border-color: var(--primary);
+
+   box-shadow:
+      0 0 0 3px color-mix(
+         in oklch,
+         var(--primary) 18%,
+         transparent
+      );
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 640px) {
+   .exercicios-page__header h1 {
+      font-size: var(--text-2xl);
+   }
+
+   .exercicios-page__header h2 {
+      font-size: var(--text-lg);
+   }
+
+   .exercicios-page__info {
+      flex-direction: column;
+      gap: var(--space-md);
+   }
+}

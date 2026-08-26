@@ -1,10 +1,9 @@
-
 // src/content/fundamentos/02-primeiro-codigo.exercicios.js
 //
 // Dados dos exercícios dissertativos da Aula 02 — Primeiro código.
 // Mesmo padrão de 01-introducao.exercicios.js.
 //
-// 50 questões, organizadas em 9 blocos, todas com gabarito.
+// 50 questões, organizadas em 10 blocos de 5, todas com gabarito.
 // q1–q30 vieram de uma sessão com o GPT (com 2 ajustes de formatação);
 // q31–q50 completam o conjunto. dica está presente só nas questões mais
 // reflexivas/abertas — o resto conta só com o gabarito.
@@ -148,7 +147,8 @@ export const exerciciosAula02 = [
       },
       {
         id: "q18",
-        texto: "Qual é a diferença entre o que uma função faz e o valor que ela retorna?",
+        texto:
+          "Qual é a diferença entre o que uma função faz e o valor que ela retorna?",
         dica: "Pensa em duas perguntas separadas: 'o que aconteceu na tela?' vs 'o que a chamada da função devolveu?'",
         gabarito:
           "O que a função faz é o efeito colateral (por exemplo, imprimir algo na tela); o que ela retorna é o valor de retorno — duas coisas independentes que acontecem juntas quando a função roda.",
@@ -209,6 +209,11 @@ export const exerciciosAula02 = [
         gabarito:
           "O navegador carrega o HTML, o script JavaScript é executado no momento apropriado (por exemplo, após o parsing, com defer) e então o código altera a página — modificando elementos, textos ou comportamento com base no que foi programado.",
       },
+    ],
+  },
+  {
+    titulo: "Bloco 6 — Scripts, defer e ordem de execução",
+    questoes: [
       {
         id: "q26",
         texto:
@@ -250,7 +255,7 @@ export const exerciciosAula02 = [
     ],
   },
   {
-    titulo: "Bloco 6 — O console em detalhe",
+    titulo: "Bloco 7 — O console em detalhe",
     questoes: [
       {
         id: "q31",
@@ -290,7 +295,7 @@ export const exerciciosAula02 = [
     ],
   },
   {
-    titulo: "Bloco 7 — REPL: os dois prints",
+    titulo: "Bloco 8 — REPL: os dois prints",
     questoes: [
       {
         id: "q36",
@@ -330,7 +335,7 @@ export const exerciciosAula02 = [
     ],
   },
   {
-    titulo: "Bloco 8 — defer, async e type=module (aprofundamento)",
+    titulo: "Bloco 9 — defer, async e type=module (aprofundamento)",
     questoes: [
       {
         id: "q41",
@@ -342,7 +347,7 @@ export const exerciciosAula02 = [
       {
         id: "q42",
         texto: 'Por que a aula chama o defer de "o melhor dos dois mundos"?',
-        dica: "Compara o que defer resolve do <head> com o que resolve do parsing — os \"dois mundos\" são esses dois problemas.",
+        dica: 'Compara o que defer resolve do <head> com o que resolve do parsing — os "dois mundos" são esses dois problemas.',
         gabarito:
           "Porque ele combina as vantagens dos dois cenários: o script fica no <head>, onde faz sentido semanticamente, não bloqueia o parsing do HTML (baixa em paralelo), e o DOM já está completo quando o código executa.",
       },
@@ -370,7 +375,7 @@ export const exerciciosAula02 = [
     ],
   },
   {
-    titulo: "Bloco 9 — Primeiro código real e fechamento",
+    titulo: "Bloco 10 — Primeiro código real e fechamento",
     questoes: [
       {
         id: "q46",
