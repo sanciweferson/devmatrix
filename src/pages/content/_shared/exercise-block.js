@@ -1,4 +1,3 @@
-
 // src/pages/content/_shared/exercise-block.js
 
 import { escapeHtml } from "@/utils/helpers.js"
@@ -65,6 +64,12 @@ import { escapeHtml } from "@/utils/helpers.js"
 // `inputType: "insertReplacementText"` (ou, em alguns teclados,
 // `"insertFromPaste"`). Sem interceptar esse evento, o texto entra no
 // campo mesmo com `paste` bloqueado.
+//
+// Como rede de segurança adicional, o evento `input` monitora saltos
+// abruptos de tamanho do texto (ex.: +6 caracteres de uma vez). Se a
+// diferença for maior que o limite, o valor é revertido para o estado
+// anterior. Isso pega casos em que o teclado mobile injeta texto sem
+// disparar o `inputType` esperado no `beforeinput`.
 //
 // Ainda assim, é fricção, não uma trava de segurança real — dá para
 // contornar digitando em outro lugar, usando ditado por voz ou
@@ -458,6 +463,11 @@ function init({ storageKey }) {
     "insertFromYank",
   ]
 
+  // Limite de caracteres inseridos de uma só vez no fallback de salto.
+  // Valores baixos pegam colagem/sugestão de teclado; digitação normal
+  // (tecla a tecla) quase nunca ultrapassa 1–2 caracteres por evento.
+  const MAX_CHARS_POR_EVENTO = 5
+
   section.querySelectorAll("[data-question-wrap]").forEach((wrap) => {
     const textarea = wrap.querySelector("[data-question-id]")
     const hintToggle = wrap.querySelector("[data-hint-toggle]")
@@ -494,20 +504,24 @@ function init({ storageKey }) {
     }
 
     // Bloqueio de colar: paste (Ctrl+V, menu de contexto), drop
-    // (arrastar texto) e beforeinput (sugestão de clipboard do teclado —
-    // ver comentário de TIPOS_COLAR_BLOQUEADOS acima).
+    // (arrastar texto), beforeinput (sugestão de clipboard do teclado)
+    // e fallback por salto abrupto de caracteres no input.
     let colarTimeout = null
-    const bloquearColagem = (event) => {
-      event.preventDefault()
-      if (!status) return
+    let valorAnterior = textarea.value
 
+    const mostrarAvisoColagem = () => {
+      if (!status) return
       status.textContent =
         "Colar está desativado neste exercício — digite sua resposta."
-
       clearTimeout(colarTimeout)
       colarTimeout = setTimeout(() => {
         status.textContent = ""
       }, 2500)
+    }
+
+    const bloquearColagem = (event) => {
+      event.preventDefault()
+      mostrarAvisoColagem()
     }
 
     const bloquearViaBeforeInput = (event) => {
@@ -516,9 +530,30 @@ function init({ storageKey }) {
       }
     }
 
+    // Fallback: se o texto crescer de forma abrupta (sugestão do teclado
+    // que não disparou beforeinput com o inputType esperado), reverte
+    // para o valor anterior e avisa o usuário.
+    const detectarSaltoAbrupto = () => {
+      const atual = textarea.value
+      const delta = atual.length - valorAnterior.length
+
+      if (delta > MAX_CHARS_POR_EVENTO) {
+        textarea.value = valorAnterior
+        mostrarAvisoColagem()
+        return
+      }
+
+      valorAnterior = atual
+    }
+
     textarea.addEventListener("paste", bloquearColagem)
     textarea.addEventListener("drop", bloquearColagem)
     textarea.addEventListener("beforeinput", bloquearViaBeforeInput)
+    textarea.addEventListener("input", detectarSaltoAbrupto)
+
+    // Garante sincronia caso o valor tenha sido setado pelo load do
+    // localStorage antes de ligarmos os listeners.
+    valorAnterior = textarea.value
   })
 
   // ── Autosave ──────────────────────────────────────────────────────────
