@@ -1,3 +1,4 @@
+
 // src/pages/content/_shared/exercise-block.js
 
 import { escapeHtml } from "@/utils/helpers.js"
@@ -53,12 +54,22 @@ import { escapeHtml } from "@/utils/helpers.js"
 //
 // ── Colar (paste) ────────────────────────────────────────────────────────
 //
-// O textarea bloqueia os eventos `paste` e `drop` para desincentivar
-// colar a resposta pronta. É importante registrar a limitação: isso é
-// fricção, não uma trava de segurança real — dá para contornar digitando
-// em outro lugar, usando ditado por voz ou inspecionando o DOM. Também
-// pode atrapalhar quem depende de colar por necessidade de acessibilidade.
-// Ative com essa consciência.
+// O textarea bloqueia os eventos `paste`, `drop` e as inserções de texto
+// em bloco vindas de `beforeinput` (colagem, sugestão de clipboard do
+// teclado, arrastar-e-soltar) para desincentivar colar a resposta pronta.
+//
+// É importante registrar por que os três são necessários: bloquear só
+// `paste` não impede a prévia de clipboard sugerida por teclados como
+// o Gboard (Android) — quando o usuário toca nessa sugestão, o navegador
+// não dispara `paste`; ele dispara `beforeinput` com
+// `inputType: "insertReplacementText"` (ou, em alguns teclados,
+// `"insertFromPaste"`). Sem interceptar esse evento, o texto entra no
+// campo mesmo com `paste` bloqueado.
+//
+// Ainda assim, é fricção, não uma trava de segurança real — dá para
+// contornar digitando em outro lugar, usando ditado por voz ou
+// inspecionando o DOM. Também pode atrapalhar quem depende de colar por
+// necessidade de acessibilidade. Ative com essa consciência.
 
 // escapeAttr fica local (não está em helpers.js): propositalmente não
 // escapa aspas simples, porque é usado só em atributos entre aspas
@@ -435,6 +446,18 @@ function init({ storageKey }) {
 
   // ── Dica, gabarito e bloqueio de colar, por questão ──────────────────────
 
+  // Tipos de inserção de `beforeinput` que representam texto entrando
+  // "em bloco" em vez de ser digitado tecla a tecla. É essa lista que
+  // pega a prévia de clipboard sugerida pelo teclado (Gboard etc.),
+  // que dispara "insertReplacementText" em vez de "paste".
+  const TIPOS_COLAR_BLOQUEADOS = [
+    "insertFromPaste",
+    "insertFromPasteAsQuotation",
+    "insertReplacementText",
+    "insertFromDrop",
+    "insertFromYank",
+  ]
+
   section.querySelectorAll("[data-question-wrap]").forEach((wrap) => {
     const textarea = wrap.querySelector("[data-question-id]")
     const hintToggle = wrap.querySelector("[data-hint-toggle]")
@@ -470,7 +493,9 @@ function init({ storageKey }) {
       textarea.addEventListener("input", atualizarTravaGabarito)
     }
 
-    // Bloqueio de colar: paste (Ctrl+V, menu de contexto) e drop (arrastar texto)
+    // Bloqueio de colar: paste (Ctrl+V, menu de contexto), drop
+    // (arrastar texto) e beforeinput (sugestão de clipboard do teclado —
+    // ver comentário de TIPOS_COLAR_BLOQUEADOS acima).
     let colarTimeout = null
     const bloquearColagem = (event) => {
       event.preventDefault()
@@ -485,8 +510,15 @@ function init({ storageKey }) {
       }, 2500)
     }
 
+    const bloquearViaBeforeInput = (event) => {
+      if (TIPOS_COLAR_BLOQUEADOS.includes(event.inputType)) {
+        bloquearColagem(event)
+      }
+    }
+
     textarea.addEventListener("paste", bloquearColagem)
     textarea.addEventListener("drop", bloquearColagem)
+    textarea.addEventListener("beforeinput", bloquearViaBeforeInput)
   })
 
   // ── Autosave ──────────────────────────────────────────────────────────
