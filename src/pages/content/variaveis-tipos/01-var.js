@@ -52,14 +52,25 @@ for (var _loop_i = 0; _loop_i < 3; _loop_i++) {}
 const _loop_fora = _loop_i // 3
 
 // Seção 8 — bug do var em loop com closure
-// Todos os callbacks compartilham o mesmo binding de _ci.
-// Quando forem executados, _ci já terá o valor 3.
+//
+// Esta demonstração precisa envolver funções que realmente capturam o
+// binding de `_ci` — não apenas ler o valor de `_ci` três vezes depois
+// do loop (isso não seria closure, só leitura tardia de uma variável).
+//
+// Por isso, criamos três callbacks DENTRO do loop e só os executamos
+// DEPOIS que ele termina. Como var não cria um binding novo a cada
+// iteração, os três callbacks compartilham o mesmo `_ci`. Quando são
+// finalmente executados, `_ci` já vale 3 para todos eles.
 
-var _ci
+var _closureCallbacks = []
 
-for (_ci = 0; _ci < 3; _ci++) {}
+for (var _ci = 0; _ci < 3; _ci++) {
+  _closureCallbacks.push(function () {
+    return _ci
+  })
+}
 
-const _closure_real = [_ci, _ci, _ci] // [3, 3, 3]
+const _closure_real = _closureCallbacks.map((callback) => callback()) // [3, 3, 3]
 
 // Seção 9 — redeclaração silenciosa
 var _redecl = "primeiro"
@@ -77,10 +88,9 @@ const _redecl_2 = _redecl
 // só se aplica a scripts clássicos executados no navegador.
 
 // Seção 11 — var dentro de try/catch/finally
-var _try_var
 
 try {
-  _try_var = "declarado no try"
+  var _try_var = "declarado no try"
 } catch (e) {}
 
 const _try_fora = _try_var
@@ -238,6 +248,15 @@ export function content() {
 
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">nome</span>) <span class="syn-comment">// "Ana"</span></code></pre>
   </div>
+
+  <p>
+    Esse "modelo didático" é só uma forma de visualizar o comportamento —
+    o JavaScript não move literalmente as linhas do código para cima.
+    Na prática, o binding de <code>var</code> é criado durante a
+    instanciação do contexto de execução, já inicializado com
+    <code>undefined</code>; a atribuição continua ocorrendo na posição
+    original, durante a execução normal das instruções.
+  </p>
 
   <div class="lesson__output">
     <div class="lesson__output-header">
@@ -598,7 +617,7 @@ export function content() {
 
 <!-- ── 8. var em loop ── -->
 <section class="lesson__section">
-  <h2 class="lesson__section-title">var em loop vaza para o escopo externo</h2>
+  <h2 class="lesson__section-title">var em loop permanece acessível fora do bloco</h2>
 
   <p>
     Quando o contador de um <code>for</code> é declarado com
@@ -987,6 +1006,19 @@ export function content() {
     <code>arguments</code> é um objeto <strong>array-like</strong>, mas não
     é uma instância de <code>Array</code>.
   </p>
+
+  <div class="lesson__callout">
+    <span class="lesson__callout-icon">⚠️</span>
+
+    <p>
+      <strong>Não é uma característica de var:</strong>
+      <code>arguments</code> está disponível em qualquer função
+      tradicional, independentemente de você usar <code>var</code>,
+      <code>let</code> ou <code>const</code> dentro dela. Ele aparece
+      nesta aula porque, historicamente, era muito comum utilizá-lo em
+      conjunto com <code>var</code>, antes de rest parameters existirem.
+    </p>
+  </div>
 
   <div class="code-block">
     <div class="code-block__header">
