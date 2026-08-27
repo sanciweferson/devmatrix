@@ -10,13 +10,6 @@
   transition:
     background-color var(--nav-normal) var(--nav-ease),
     border-color var(--nav-normal) var(--nav-ease);
-
-  /* NOVO: sticky footer pattern.
-     Isso só funciona se o container pai (main/wrapper da página) tiver
-     display:flex; flex-direction:column; min-height:100vh;
-     Esse ajuste no pai não está neste arquivo — precisa ser feito no
-     arquivo de layout raiz da aplicação (ver observação no final). */
-  margin-top: auto;
 }
 
 .footer__inner {
@@ -81,30 +74,20 @@
 
 /* =========================================================
    NAV — colunas de módulos
-   ANTES: display:flex + flex-wrap + min-width:10rem em cada grupo.
-   Isso soma ~22rem (10+10+gap) de largura mínima necessária antes
-   de quebrar — e diferentes navegadores mobile calculam a viewport
-   efetiva (barra de endereço, scrollbar) de forma levemente
-   diferente, então o ponto de quebra batia em telas onde no Chrome
-   ainda cabiam 2 colunas.
-   AGORA: grid explícito de 2 colunas, que não depende de soma de
-   larguras mínimas acumuladas — sempre 2 colunas no mobile,
-   independente de motor de renderização.
 ========================================================= */
 
 .footer__nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem 2rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
 .footer__nav-group {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  /* NOVO: min-width:0 é essencial em item de grid — sem isso, o item
-     não encolhe abaixo do conteúdo (texto longo) e estoura a coluna */
-  min-width: 0;
+  flex: 1;
+  min-width: 10rem;
 }
 
 .footer__nav-heading {
@@ -138,12 +121,11 @@
   transition:
     color var(--nav-normal) var(--nav-ease),
     background-color var(--nav-normal) var(--nav-ease);
+}
 
-  /* NOVO: impede que labels longos (ex: "Prototipos & Classes") estourem
-     a largura da coluna em motores Gecko/WebKit mais antigos */
-  min-width: 0;
-  word-break: break-word;
-  hyphens: auto;
+.footer__nav-link:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
 }
 
 .footer__nav-icon {
@@ -239,18 +221,10 @@
   }
 
   .footer__nav {
-    /* NOVO: no desktop volta pro comportamento original — flex em linha,
-       colunas de largura natural alinhadas à direita, sem quebra */
-    display: flex;
     flex: 1;
     justify-content: flex-end;
     gap: 3rem;
     flex-wrap: nowrap;
-  }
-
-  .footer__nav-group {
-    flex: initial;
-    min-width: 10rem;
   }
 
   .footer__bottom {
