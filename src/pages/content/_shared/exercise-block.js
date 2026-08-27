@@ -1,3 +1,4 @@
+cat > /home/workdir/artifacts/exercise-block.js << 'ENDOFFILE'
 // src/pages/content/_shared/exercise-block.js
 
 import { escapeHtml } from "@/utils/helpers.js"
@@ -107,8 +108,9 @@ import { escapeHtml } from "@/utils/helpers.js"
 // abruptos de tamanho do texto (ex.: +6 caracteres de uma vez). Se a
 // diferença for maior que o limite, o valor é revertido para o estado
 // anterior, o mesmo aviso de colagem é exibido e o fluxo é interrompido
-// com stopImmediatePropagation() para o autosave não rodar nem mostrar
-// "Salvo" indevidamente.
+// com stopImmediatePropagation() para o autosave e a trava de gabarito
+// NÃO rodarem com o valor temporário (isso evita o bug de teclado móvel
+// que liberava o gabarito ao tocar na sugestão de colar).
 //
 // Ainda assim, é fricção, não uma trava de segurança real.
 
@@ -818,6 +820,9 @@ function init({ storageKey }) {
       if (delta > MAX_CHARS_POR_EVENTO) {
         textarea.value = valorAnterior
         mostrarAvisoColagem()
+        // Impede que listeners posteriores (trava de gabarito, autosave)
+        // vejam o valor temporário da sugestão do teclado e liberem o
+        // gabarito ou salvem indevidamente.
         event.stopImmediatePropagation()
         return
       }
@@ -828,8 +833,8 @@ function init({ storageKey }) {
     textarea.addEventListener("paste", bloquearColagem)
     textarea.addEventListener("drop", bloquearColagem)
     textarea.addEventListener("beforeinput", bloquearViaBeforeInput)
-    // Precisa rodar antes do autosave/trava de gabarito para poder
-    // interromper o evento com stopImmediatePropagation.
+    // Precisa rodar ANTES dos listeners de trava de gabarito e autosave
+    // para poder interromper o evento com stopImmediatePropagation.
     textarea.addEventListener("input", detectarSaltoAbrupto)
   }
 
@@ -892,6 +897,13 @@ function init({ storageKey }) {
       const id = textarea.dataset.questionId
       if (answers[id]) textarea.value = answers[id]
 
+      // Proteção contra colagem/sugestão de teclado DEVE ser registrada
+      // ANTES de qualquer listener de input que leia o valor (trava de
+      // gabarito e autosave). Assim o detectarSaltoAbrupto consegue
+      // reverter e dar stopImmediatePropagation antes da trava rodar
+      // com o valor temporário do autocomplete mobile.
+      protegerContraColagem(textarea)
+
       if (answerToggle && answerBlock) {
         answerToggle.addEventListener("click", () => {
           if (answerToggle.disabled) return
@@ -901,14 +913,16 @@ function init({ storageKey }) {
         })
 
         const atualizarTravaGabarito = () => {
+          // Lê sempre o valor atual do textarea (estado da DOM), nunca
+          // um e.target.value transitório de evento interceptado.
           answerToggle.disabled = !isRespostaConsistente(textarea.value)
         }
 
         atualizarTravaGabarito()
+        // Listener de trava DEPOIS da proteção, para só ver valores já
+        // filtrados (ou ser interrompido pelo stopImmediatePropagation).
         textarea.addEventListener("input", atualizarTravaGabarito)
       }
-
-      protegerContraColagem(textarea)
 
       textarea.addEventListener("input", () => {
         if (status) status.textContent = "Salvando..."
@@ -1000,6 +1014,7 @@ function init({ storageKey }) {
       if (answers[id]) editor.value = answers[id]
       sincronizarHighlight()
 
+      // Proteção registrada antes dos demais listeners de input.
       protegerContraColagem(editor)
 
       editor.addEventListener("input", sincronizarHighlight)
@@ -1033,6 +1048,8 @@ function init({ storageKey }) {
 
       if (runBtn && output) {
         runBtn.addEventListener("click", () => {
+          // Validação de saída só ocorre no clique explícito de "Executar".
+          // Nunca em onInput / onChange.
           const resultado = executarCodigo(editor.value)
 
           output.hidden = false
@@ -1094,3 +1111,4 @@ export const _ex = {
   block,
   init,
 }
+ENDOFFILE
