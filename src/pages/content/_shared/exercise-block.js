@@ -1,4 +1,3 @@
-cat > /home/workdir/artifacts/exercise-block.js << 'ENDOFFILE'
 // src/pages/content/_shared/exercise-block.js
 
 import { escapeHtml } from "@/utils/helpers.js"
@@ -109,8 +108,11 @@ import { escapeHtml } from "@/utils/helpers.js"
 // diferença for maior que o limite, o valor é revertido para o estado
 // anterior, o mesmo aviso de colagem é exibido e o fluxo é interrompido
 // com stopImmediatePropagation() para o autosave e a trava de gabarito
-// NÃO rodarem com o valor temporário (isso evita o bug de teclado móvel
-// que liberava o gabarito ao tocar na sugestão de colar).
+// NÃO rodarem com o valor temporário. Além disso, a trava do gabarito
+// (dissertativa) é reavaliada imediatamente após o revert e só libera
+// de fato após um debounce de ~350ms + checagem no blur — assim um
+// valor temporário da sugestão do teclado não deixa o botão liberado
+// mesmo que o texto nunca permaneça no campo.
 //
 // Ainda assim, é fricção, não uma trava de segurança real.
 
@@ -799,7 +801,14 @@ function init({ storageKey }) {
 
   const MAX_CHARS_POR_EVENTO = 5
 
-  function protegerContraColagem(textarea) {
+  /**
+   * @param {HTMLTextAreaElement} textarea
+   * @param {{ onReverted?: () => void }} [opts]
+   *   onReverted é chamado logo após reverter um salto abrupto, para
+   *   reavaliar a trava do gabarito com o valor restaurado (evita que o
+   *   botão fique liberado por causa de um valor temporário do teclado).
+   */
+  function protegerContraColagem(textarea, opts = {}) {
     let valorAnterior = textarea.value
 
     const bloquearColagem = (event) => {
@@ -824,6 +833,8 @@ function init({ storageKey }) {
         // vejam o valor temporário da sugestão do teclado e liberem o
         // gabarito ou salvem indevidamente.
         event.stopImmediatePropagation()
+        // Reavalia a trava imediatamente com o valor já restaurado.
+        if (typeof opts.onReverted === "function") opts.onReverted()
         return
       }
 
@@ -897,12 +908,26 @@ function init({ storageKey }) {
       const id = textarea.dataset.questionId
       if (answers[id]) textarea.value = answers[id]
 
-      // Proteção contra colagem/sugestão de teclado DEVE ser registrada
-      // ANTES de qualquer listener de input que leia o valor (trava de
-      // gabarito e autosave). Assim o detectarSaltoAbrupto consegue
-      // reverter e dar stopImmediatePropagation antes da trava rodar
-      // com o valor temporário do autocomplete mobile.
-      protegerContraColagem(textarea)
+      // Função síncrona que aplica o estado atual do campo na trava.
+      // Usada no init, no blur, e logo após um revert de colagem.
+      const aplicarTravaGabarito = () => {
+        if (!answerToggle) return
+        answerToggle.disabled = !isRespostaConsistente(textarea.value)
+      }
+
+      // Versão debounced: evita que um valor temporário da sugestão do
+      // teclado (mesmo que dure poucos ms) deixe o botão liberado.
+      // Só libera de fato se o valor continuar consistente após ~350ms.
+      let travaTimeout = null
+      const atualizarTravaGabaritoDebounced = () => {
+        if (!answerToggle) return
+        clearTimeout(travaTimeout)
+        travaTimeout = setTimeout(aplicarTravaGabarito, 350)
+      }
+
+      // Proteção ANTES de qualquer listener de input que leia o valor.
+      // onReverted força a trava de volta com o valor restaurado.
+      protegerContraColagem(textarea, { onReverted: aplicarTravaGabarito })
 
       if (answerToggle && answerBlock) {
         answerToggle.addEventListener("click", () => {
@@ -912,16 +937,14 @@ function init({ storageKey }) {
           answerBlock.hidden = expanded
         })
 
-        const atualizarTravaGabarito = () => {
-          // Lê sempre o valor atual do textarea (estado da DOM), nunca
-          // um e.target.value transitório de evento interceptado.
-          answerToggle.disabled = !isRespostaConsistente(textarea.value)
-        }
+        aplicarTravaGabarito()
 
-        atualizarTravaGabarito()
-        // Listener de trava DEPOIS da proteção, para só ver valores já
-        // filtrados (ou ser interrompido pelo stopImmediatePropagation).
-        textarea.addEventListener("input", atualizarTravaGabarito)
+        // Listener de trava DEPOIS da proteção + debounced.
+        textarea.addEventListener("input", atualizarTravaGabaritoDebounced)
+
+        // Checagem final ao sair do campo: garante estado correto
+        // mesmo se algum evento transitório tiver escapado.
+        textarea.addEventListener("blur", aplicarTravaGabarito)
       }
 
       textarea.addEventListener("input", () => {
@@ -1111,4 +1134,3 @@ export const _ex = {
   block,
   init,
 }
-ENDOFFILE
