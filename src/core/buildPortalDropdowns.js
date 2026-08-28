@@ -229,7 +229,7 @@ export function buildPortalDropdowns(headerEl) {
 
     portal.innerHTML = /* html */ `
       <li class="nav__dropdown-header" role="none">
-        <a href="${item.href}" class="nav__dropdown-link" role="menuitem">
+        <a data-link href="${item.href}" class="nav__dropdown-link" role="menuitem">
           ${item.label} — Ver tudo
         </a>
       </li>
@@ -237,7 +237,7 @@ export function buildPortalDropdowns(headerEl) {
         .map(
           (sub) => /* html */ `
             <li role="none">
-              <a href="${sub.href}" class="nav__dropdown-link" role="menuitem">
+              <a data-link href="${sub.href}" class="nav__dropdown-link" role="menuitem">
                 ${sub.label}
               </a>
             </li>

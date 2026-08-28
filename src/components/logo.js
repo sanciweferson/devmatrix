@@ -76,7 +76,7 @@ export const createLogo = ({
 } = {}) => {
   const logoSvg = Logo({ className: cx("logo__svg", svgVariant) });
   return /* html */ `
-    <a href="${escapeHtml(href)}" class="${cx("logo", className)}" aria-label="${escapeHtml(ariaLabel)}">
+    <a href="${escapeHtml(href)}" data-link="" class="${cx("logo", className)}" aria-label="${escapeHtml(ariaLabel)}">
       ${logoSvg}
     </a>
   `;
