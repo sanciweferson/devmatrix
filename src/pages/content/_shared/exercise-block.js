@@ -210,6 +210,86 @@ const JS_KEYWORDS = new Set([
 const JS_LITERALS_NULLISH = new Set(["null", "undefined"])
 const JS_LITERALS_BOOLEAN = new Set(["true", "false"])
 
+// Objetos/funções globais nativos — coloridos como "builtin"
+// (ex.: console em console.log, Math, Array, JSON, etc.)
+const JS_BUILTINS = new Set([
+  "console",
+  "Math",
+  "Object",
+  "Array",
+  "String",
+  "Number",
+  "Boolean",
+  "Date",
+  "JSON",
+  "Promise",
+  "Map",
+  "Set",
+  "WeakMap",
+  "WeakSet",
+  "Symbol",
+  "Error",
+  "RegExp",
+  "parseInt",
+  "parseFloat",
+  "isNaN",
+  "isFinite",
+  "encodeURI",
+  "decodeURI",
+  "encodeURIComponent",
+  "decodeURIComponent",
+  "setTimeout",
+  "setInterval",
+  "clearTimeout",
+  "clearInterval",
+  "NaN",
+  "Infinity",
+])
+
+// Métodos comuns de console / Array / Object — coloridos como "method"
+// (ex.: log em console.log, push, map, keys, etc.)
+const JS_METHODS = new Set([
+  "log",
+  "warn",
+  "error",
+  "info",
+  "debug",
+  "table",
+  "clear",
+  "dir",
+  "trace",
+  "assert",
+  "push",
+  "pop",
+  "shift",
+  "unshift",
+  "slice",
+  "splice",
+  "map",
+  "filter",
+  "reduce",
+  "forEach",
+  "find",
+  "findIndex",
+  "includes",
+  "indexOf",
+  "join",
+  "split",
+  "concat",
+  "keys",
+  "values",
+  "entries",
+  "assign",
+  "freeze",
+  "toString",
+  "valueOf",
+  "then",
+  "catch",
+  "finally",
+  "stringify",
+  "parse",
+])
+
 const TOKEN_REGEX =
   /(\/\/[^\n]*)|(\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)/g
 
@@ -248,8 +328,13 @@ function highlightJs(source) {
         html += `<span class="syn-nullish">${escapeHtml(full)}</span>`
       } else if (JS_LITERALS_BOOLEAN.has(palavra)) {
         html += `<span class="syn-boolean">${escapeHtml(full)}</span>`
+      } else if (JS_BUILTINS.has(palavra)) {
+        html += `<span class="syn-builtin">${escapeHtml(full)}</span>`
+      } else if (JS_METHODS.has(palavra)) {
+        html += `<span class="syn-method">${escapeHtml(full)}</span>`
       } else {
-        html += escapeHtml(full)
+        // Identificadores (nomes de variáveis, funções do aluno, etc.)
+        html += `<span class="syn-ident">${escapeHtml(full)}</span>`
       }
     }
 
