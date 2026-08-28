@@ -17,22 +17,21 @@
 // NENHUMA MUDANÇA em relação ao projeto antigo.
 // O arquivo é idêntico — só os comentários foram expandidos.
 // ─────────────────────────────────────────────────────────────────────────────
-import { menuItems } from "@components/data/data";
+import { menuItems } from "@components/data/data"
 
 // Chave do localStorage — mesma usada em home.js e lesson.js.
 // Centralizar em uma constante evita typos que causariam bugs silenciosos
 // (progresso salvo com uma chave, lido com outra — sempre 0%).
-const STORAGE_KEY = "jsplatform:progress";
+const STORAGE_KEY = "jsplatform:progress"
 
 // Lê o progresso do localStorage com proteção contra JSON corrompido.
 function getProgress() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {};
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {}
   } catch {
-    return {};
+    return {}
   }
 }
-
 
 // ─── ÍCONES ───────────────────────────────────────────────────────────────────
 //
@@ -47,8 +46,7 @@ const Icons = {
   circle: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>`,
   play: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
   arrow: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`,
-};
-
+}
 
 // ─── DESCRIÇÕES DOS MÓDULOS ───────────────────────────────────────────────────
 //
@@ -60,19 +58,29 @@ const Icons = {
 //   outro lugar. Mantê-las aqui evita que data.js acumule responsabilidades
 //   de apresentação que não pertencem a ele.
 const MODULE_DESCRIPTIONS = {
-  "fundamentos": "Base do ambiente, motor e contexto de execução. O que acontece antes do seu código rodar.",
-  "variaveis-tipos": "Como o JS armazena e interpreta dados. O que é um valor e como a linguagem o vê.",
-  "funcoes": "Funções são cidadãs de primeira classe. O que exatamente uma função é e como ela se comporta.",
-  "objetos": "A estrutura fundamental de dados em JS. Como a linguagem organiza informações relacionadas.",
-  "arrays-iteracao": "Coleções ordenadas e o modelo funcional de iteração. Como o JS processa listas de dados.",
-  "escopo-closures": "Como o JS resolve nomes de variáveis e preserva memória. Por que funções lembram de onde foram criadas.",
-  "this-contexto": "O mecanismo mais confuso do JS, explicado do zero. A quem `this` se refere em cada contexto.",
-  "prototipos-classes": "A herança real do JS antes e depois do açúcar sintático. Como objetos herdam comportamento.",
-  "async": "O modelo de concorrência do JS de callbacks até async/await. Como lidar com operações assíncronas.",
-  "dom-eventos": "A ponte entre JS e o que o usuário vê. Como manipular a página e reagir a interações.",
-  "modulos-es6": "O sistema oficial de módulos da linguagem. Como JS organiza código em múltiplos arquivos.",
-};
-
+  fundamentos:
+    "Base do ambiente, motor e contexto de execução. O que acontece antes do seu código rodar.",
+  "variaveis-tipos":
+    "Como o JS armazena e interpreta dados. O que é um valor e como a linguagem o vê.",
+  funcoes:
+    "Funções são cidadãs de primeira classe. O que exatamente uma função é e como ela se comporta.",
+  objetos:
+    "A estrutura fundamental de dados em JS. Como a linguagem organiza informações relacionadas.",
+  "arrays-iteracao":
+    "Coleções ordenadas e o modelo funcional de iteração. Como o JS processa listas de dados.",
+  "escopo-closures":
+    "Como o JS resolve nomes de variáveis e preserva memória. Por que funções lembram de onde foram criadas.",
+  "this-contexto":
+    "O mecanismo mais confuso do JS, explicado do zero. A quem `this` se refere em cada contexto.",
+  "prototipos-classes":
+    "A herança real do JS antes e depois do açúcar sintático. Como objetos herdam comportamento.",
+  async:
+    "O modelo de concorrência do JS de callbacks até async/await. Como lidar com operações assíncronas.",
+  "dom-eventos":
+    "A ponte entre JS e o que o usuário vê. Como manipular a página e reagir a interações.",
+  "modulos-es6":
+    "O sistema oficial de módulos da linguagem. Como JS organiza código em múltiplos arquivos.",
+}
 
 // ─── RENDERIZAÇÃO ─────────────────────────────────────────────────────────────
 
@@ -86,8 +94,8 @@ const MODULE_DESCRIPTIONS = {
 //   1 → "01", 10 → "10"
 //   Mantém o alinhamento visual da lista.
 const createLessonItem = (lesson, index, progress) => {
-  const done = !!progress[lesson.href];
-  const number = String(index + 1).padStart(2, "0");
+  const done = !!progress[lesson.href]
+  const number = String(index + 1).padStart(2, "0")
 
   return /* html */ `
     <li class="modulo__lesson-item ${done ? "modulo__lesson-item--done" : ""}">
@@ -108,9 +116,8 @@ const createLessonItem = (lesson, index, progress) => {
         </span>
 
       </a>
-    </li>`;
-};
-
+    </li>`
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ModulePage({ modulo })
@@ -124,12 +131,12 @@ const createLessonItem = (lesson, index, progress) => {
 //   String HTML completa, ou mensagem de erro se o módulo não for encontrado.
 // ─────────────────────────────────────────────────────────────────────────────
 export function ModulePage({ modulo }) {
-  const progress = getProgress();
+  const progress = getProgress()
 
   // Encontra o módulo no menuItems pelo id.
   // menuItems.find() retorna o primeiro item onde m.id === modulo,
   // ou undefined se nenhum bater.
-  const moduleData = menuItems.find(m => m.id === modulo);
+  const moduleData = menuItems.find((m) => m.id === modulo)
 
   // Guard: módulo não encontrado — exibe mensagem de erro amigável.
   // Isso acontece se a URL for digitada manualmente com um id inválido.
@@ -138,17 +145,17 @@ export function ModulePage({ modulo }) {
       <div class="modulo modulo--not-found">
         <p>Módulo <strong>${modulo}</strong> não encontrado.</p>
         <a href="/" data-link>← Voltar para o início</a>
-      </div>`;
+      </div>`
   }
 
-  const total = moduleData.sub.length;
-  const completed = moduleData.sub.filter(l => progress[l.href]).length;
-  const percent = Math.round((completed / total) * 100);
+  const total = moduleData.sub.length
+  const completed = moduleData.sub.filter((l) => progress[l.href]).length
+  const percent = Math.round((completed / total) * 100)
 
   // Próxima aula não concluída — usada pelo botão "Continuar".
   // find() retorna a primeira aula cujo href NÃO está no progresso.
   // Se todas foram concluídas, retorna undefined → nextLesson é null/undefined.
-  const nextLesson = moduleData.sub.find(l => !progress[l.href]);
+  const nextLesson = moduleData.sub.find((l) => !progress[l.href])
 
   return /* html */ `
     <div class="modulo">
@@ -198,34 +205,34 @@ export function ModulePage({ modulo }) {
           2. Algumas concluídas      → "Continuar de onde parei"
           3. Todas concluídas        → badge "Módulo concluído" (sem link)
       -->
-      ${nextLesson
-      ? /* html */ `
+      ${
+        nextLesson
+          ? /* html */ `
           <div class="modulo__continue modulo__anim-item">
             <a href="${nextLesson.href}" data-link class="modulo__btn-continue">
               ${completed === 0 ? "Começar módulo" : "Continuar de onde parei"}
               ${Icons.arrow}
             </a>
           </div>`
-      : /* html */ `
+          : /* html */ `
           <div class="modulo__continue modulo__anim-item">
             <span class="modulo__badge-done">✓ Módulo concluído</span>
           </div>`
-    }
+      }
 
       <!-- ── Lista de aulas ── -->
       <section class="modulo__lessons modulo__anim-item">
         <h2 class="modulo__lessons-title">Aulas</h2>
         <ul class="modulo__lesson-list">
-          ${moduleData.sub.map((lesson, i) =>
-      createLessonItem(lesson, i, progress)
-    ).join("")}
+          ${moduleData.sub
+            .map((lesson, i) => createLessonItem(lesson, i, progress))
+            .join("")}
         </ul>
       </section>
 
     </div>
-  `;
+  `
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // initModulePage()
@@ -241,19 +248,18 @@ export function ModulePage({ modulo }) {
 //   que sempre espera uma função de retorno de initPage().
 // ─────────────────────────────────────────────────────────────────────────────
 export function initModulePage() {
-
   // Animação de entrada escalonada — mesmo padrão da home e da lesson.
   // Cada .modulo__anim-item recebe um delay crescente de 0.08s.
   requestAnimationFrame(() => {
     document.querySelectorAll(".modulo__anim-item").forEach((el, i) => {
-      el.style.animationDelay = `${i * 0.08}s`;
-      el.classList.add("modulo__anim-run");
-    });
-  });
+      el.style.animationDelay = `${i * 0.08}s`
+      el.classList.add("modulo__anim-run")
+    })
+  })
 
   // Cleanup vazio: esta página não tem timers nem listeners para remover.
   // O retorno existe para manter o contrato com render.js:
   //   currentCleanup = initPage(path)
   //   currentCleanup?.() → seria erro se retornássemos undefined
-  return function cleanup() { };
+  return function cleanup() {}
 }
