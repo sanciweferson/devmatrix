@@ -84,7 +84,7 @@ export function ExerciciosPage({ modulo, slug }) {
         </h1>
 
         <h2>
-          Questões Dissertativas
+          Questões práticas desta aula
         </h2>
 
     <div class="exercicios-page__info">

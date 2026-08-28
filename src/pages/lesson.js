@@ -223,7 +223,7 @@ export function Lesson({ modulo, slug }) {
         <span class="lesson__exercises-cta-icon">${Icons.edit}</span>
         <span class="lesson__exercises-cta-text">
           <strong>Fazer exercícios</strong>
-          <small>${totalExercicios} questões dissertativas desta aula</small>
+          <small>${totalExercicios} exrcícios desta aula</small>
         </span>
         <span class="lesson__exercises-cta-arrow">${Icons.arrowR}</span>
       </a>`
