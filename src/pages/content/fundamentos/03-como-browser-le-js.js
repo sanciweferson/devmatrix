@@ -26,9 +26,10 @@ export function content() {
       <p>
         Durante o <strong>parsing</strong>, o motor analisa a estrutura do
         código e constrói representações internas, como a <strong>AST</strong>
-        (Abstract Syntax Tree — Árvore Sintática Abstrata), para poder executar
-        o programa. É assim que o motor "entende a estrutura" do código antes
-        de rodar qualquer coisa.
+        (Abstract Syntax Tree — Árvore Sintática Abstrata) — uma estrutura que
+        representa a organização do código e que o engine utiliza durante o
+        processamento do programa. É assim que o motor "entende a estrutura"
+        do código antes de rodar qualquer coisa.
       </p>
       <p>
         <em>Parsing</em> e <em>compilação</em> não são exatamente a mesma coisa
@@ -60,7 +61,7 @@ export function content() {
 <span class="syn-fn">saudar</span>(<span class="syn-string">"Ana"</span>)
 
 <span class="syn-keyword">function</span> <span class="syn-fn">saudar</span>(<span class="syn-id">nome</span>) {
-  <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-string">\`Olá, \${<span class="syn-id">nome</span>}!\`</span>)
+  <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-string">&#96;Olá, &#36;{<span class="syn-id">nome</span>}!&#96;</span>)
 }</code></pre>
         <div class="code-console">
           <div class="code-console__header">
@@ -79,11 +80,12 @@ export function content() {
 
       <p>
         Isso só funciona com <code>function</code> declarations. Arrow functions
-        e expressões de função armazenadas em variáveis <strong>não</strong>
-        são içadas da mesma forma: a variável pode existir no ambiente antes da
-        linha da atribuição, mas a função em si não está disponível para ser
-        chamada antes dessa atribuição acontecer — vamos explorar isso em
-        detalhes no módulo de Funções.
+        e expressões de função armazenadas em variáveis (com <code>var</code>,
+        <code>let</code> ou <code>const</code>) têm um comportamento diferente:
+        o <em>binding</em> da variável é criado antes da execução chegar até
+        ali, mas ele só recebe a função como valor no momento em que a linha de
+        atribuição é executada. Chamar a variável antes disso não vai encontrar
+        a função — vamos explorar isso em detalhes no módulo de Funções.
       </p>
 
       <div class="code-block">
@@ -96,7 +98,7 @@ export function content() {
             <span class="code-block__copy-label">Copiar</span>
           </button>
         </div>
-        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// var é declarada e inicializada com undefined antes da execução</span>
+        <pre class="code-block__pre"><code class="code-block__code"><span class="syn-comment">// var tem seu binding criado e inicializado com undefined antes da execução das instruções</span>
 <span class="syn-comment">// A atribuição com 10 só acontece quando esta linha é executada</span>
 <span class="syn-fn">console</span>.<span class="syn-fn">log</span>(<span class="syn-id">x</span>)   <span class="syn-comment">// undefined — não é ReferenceError</span>
 <span class="syn-keyword">var</span> <span class="syn-id">x</span> <span class="syn-operator">=</span> <span class="syn-number">10</span>
@@ -134,8 +136,9 @@ export function content() {
       </div>
 
       <p>
-        Esse período entre o início do escopo e a linha onde <code>let</code> ou
-        <code>const</code> são de fato declaradas é chamado de
+        O período entre a criação do <em>binding</em> de <code>let</code> ou
+        <code>const</code> (no início do escopo) e o momento em que ele é
+        inicializado (na linha da declaração) é chamado de
         <strong>Temporal Dead Zone (TDZ)</strong>. É durante esse período que
         tentar acessar a variável lança o <code>ReferenceError</code> que você
         viu acima. Vamos aprofundar isso mais à frente — por enquanto, basta
@@ -162,7 +165,8 @@ export function content() {
       <p>
         O motor mantém uma estrutura chamada <strong>Call Stack</strong> (pilha de
         chamadas) para controlar o que está sendo executado em cada momento.
-        A execução começa em um contexto global e, quando uma função é chamada,
+        O código executado fora de qualquer função roda no contexto global e,
+        quando uma função é chamada,
         seu contexto é colocado no topo da Call Stack. Quando a função termina,
         esse contexto é removido.
       </p>
@@ -233,17 +237,20 @@ export function content() {
     <section class="lesson__section">
       <h2 class="lesson__section-title">Erros de sintaxe param tudo</h2>
       <p>
-        Se o motor encontrar um erro de sintaxe durante o parsing, ele para
-        <strong>antes</strong> de executar qualquer linha. O script não é
-        executado.
+        Se o motor encontrar um erro de sintaxe durante o parsing, a análise
+        desse script não é concluída, e nenhuma instrução dele chega a ser
+        executada.
       </p>
       <p>
         Isso é diferente de um erro em tempo de execução (<em>runtime</em>).
         Um erro em tempo de execução interrompe o fluxo síncrono atual a partir
         do ponto em que ocorreu. Se houver tratamento com <code>try/catch</code>,
         o programa pode continuar a partir do tratamento definido. Um
-        <code>SyntaxError</code>, por outro lado, impede qualquer execução
-        do arquivo inteiro — mesmo o código antes do erro nunca chega a rodar.
+        <code>SyntaxError</code>, por outro lado, impede a execução do script
+        inteiro: como o motor não consegue concluir a análise, nenhuma
+        instrução — nem mesmo o código escrito antes do erro — chega a rodar.
+        (A mensagem exata do erro pode variar um pouco entre engines e
+        browsers diferentes.)
       </p>
 
       <div class="code-block">
@@ -284,7 +291,7 @@ export function content() {
 
     <!-- ── 5. Resumo visual ── -->
     <section class="lesson__section">
-      <h2 class="lesson__section-title">O ciclo completo</h2>
+      <h2 class="lesson__section-title">Uma visão geral do processo</h2>
       <p>
         Quando o browser precisa executar um arquivo JavaScript, esse processo
         envolve etapas como carregamento, análise e execução:
@@ -297,8 +304,9 @@ export function content() {
           <p>
             O browser obtém o arquivo <code>.js</code> — normalmente por uma
             requisição de rede, mas podendo também vir de cache ou outras
-            fontes. Com <code>defer</code>, isso acontece em paralelo com o
-            HTML.
+            fontes. Com <code>defer</code>, o download pode acontecer em
+            paralelo enquanto o HTML ainda está sendo analisado, mas a
+            execução do script só começa depois que o parsing do HTML termina.
           </p>
         </div>
         <div class="lesson__card">
@@ -306,8 +314,10 @@ export function content() {
           <h3>2. Parsing</h3>
           <p>
             O motor analisa a estrutura do código, verifica a sintaxe e
-            constrói representações internas como a AST. Hoisting é um efeito
-            desse processo. Erros de sintaxe param tudo.
+            constrói representações internas como a AST. O ambiente de
+            execução também é preparado com os bindings das declarações; é
+            esse comportamento que descrevemos didaticamente como hoisting.
+            Erros de sintaxe param tudo.
           </p>
         </div>
         <div class="lesson__card">

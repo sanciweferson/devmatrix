@@ -25,6 +25,7 @@
 * {
   margin: 0;
   padding: 0;
+
 }
 
 html {
@@ -36,6 +37,7 @@ html {
   color: var(--foreground);
   font-size: 16px;
   scroll-behavior: smooth;
+ 
 }
 
 body {
@@ -52,6 +54,7 @@ body {
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+   
 }
 header,
 img,

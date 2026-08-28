@@ -36,8 +36,9 @@ export function content() {
           <div class="lesson__card-icon">🔴</div>
           <h3>SyntaxError</h3>
           <p>
-            O código está escrito de forma inválida. O motor detecta isso na
-            fase de parsing, o que impede a execução daquele script.
+            O código está escrito de forma inválida. O motor detecta isso
+            durante o parsing: a análise não é concluída, e nenhuma instrução
+            daquele script chega a ser executada.
           </p>
         </div>
         <div class="lesson__card">
@@ -115,7 +116,8 @@ export function content() {
         O motor aponta a linha onde <em>percebeu</em> o problema — que nem sempre
         é onde você cometeu o erro. Um parêntese não fechado na linha 10 pode
         gerar um erro apontando para a linha 15. Olhe sempre para as linhas
-        anteriores ao erro.
+        anteriores ao erro. (A mensagem exata pode variar entre engines e
+        browsers diferentes.)
       </p>
     </section>
 
@@ -216,7 +218,7 @@ export function content() {
               <span class="code-console__prompt">›</span>
               <span class="code-console__expr">elemento.textContent</span>
               <span class="code-console__arrow">→</span>
-              <span class="syn-output-error">TypeError: Cannot read properties of null</span>
+              <span class="syn-output-error">TypeError: Cannot read properties of null (reading 'textContent')</span>
             </div>
           </div>
         </div>
